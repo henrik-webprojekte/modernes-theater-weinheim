@@ -1,4 +1,4 @@
-﻿---
+---
 const nav = [
   {label: "Start", href: "/"},
   {label: "Programm", href: "/programm"},
@@ -10,25 +10,51 @@ const nav = [
 ]
 
 const currentPath = Astro.url.pathname
+
+const navLinks = nav.slice(0, 3)
+const navRechts = nav.slice(3)
 ---
 
-<header class="bg-tiefschwalz text-creme border-b border-vintage-gold/50" style="background: #1A1310;">
-  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+<header class="bg-tiefschwarz text-creme border-b border-vintage-gold/50 relative" style="background: #1A1310;">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
 
-    <a href="/" class="flex items-center gap-3 shrink-0">
-      <span class="bg-creme text-tiefschwarz px-2 py-1 rounded-sm leading-none">
-        <span class="block font-display text-sm">Modernes</span>
-        <span class="block font-display text-sm">Theater</span>
+    <a href="/" class="flex items-center shrink-0 group" aria-label="Modernes Theater — zur Startseite">
+      <span class="bg-creme rounded-sm px-2 py-1 inline-flex items-center transition-transform group-hover:scale-[1.03]">
+        <img
+          src="/logos/modernes-theater-logo.png"
+          alt="Modernes Theater 3D"
+          class="h-12 lg:h-14 w-auto"
+        />
       </span>
     </a>
 
-    <nav class="hidden md:flex items-center gap-5 text-xs tracking-wider">
-      {nav.map((item) => (
+    <nav class="hidden md:flex flex-1 items-center justify-center gap-5 text-xs tracking-wider">
+      {navLinks.map((item) => (
         <a
           href={item.href}
           class:list={[
-            "hover:text-vintage-gold transition-colors",
-            currentPath === item.href ? "text-vintage-gold" : "text-creme",
+            "relative hover:text-vintage-gold transition-colors py-1",
+            currentPath === item.href
+              ? "text-vintage-gold after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-vintage-gold"
+              : "text-creme",
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="hidden md:block w-36 lg:w-44 shrink-0" aria-hidden="true"></div>
+
+    <nav class="hidden md:flex flex-1 items-center justify-center gap-5 text-xs tracking-wider">
+      {navRechts.map((item) => (
+        <a
+          href={item.href}
+          class:list={[
+            "relative hover:text-vintage-gold transition-colors py-1",
+            currentPath === item.href
+              ? "text-vintage-gold after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-vintage-gold"
+              : "text-creme",
           ]}
         >
           {item.label}
@@ -38,7 +64,7 @@ const currentPath = Astro.url.pathname
 
     <a
       href="tel:0620162155"
-      class="hidden md:flex items-center gap-2 text-xs text-vintage-gold hover:text-creme transition-colors"
+      class="hidden md:flex items-center gap-2 text-xs text-vintage-gold hover:text-creme transition-colors shrink-0"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
@@ -47,7 +73,7 @@ const currentPath = Astro.url.pathname
     </a>
 
     <button
-      class="md:hidden text-creme p-1"
+      class="md:hidden text-creme p-1 ml-auto"
       aria-label="Menü öffnen"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -58,4 +84,11 @@ const currentPath = Astro.url.pathname
     </button>
 
   </div>
+
+  <img
+    src="/logos/vintage-rauten.png"
+    alt=""
+    aria-hidden="true"
+    class="hidden md:block absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 h-32 lg:h-40 w-auto pointer-events-none z-20 drop-shadow-[0_6px_10px_rgba(0,0,0,0.55)]"
+  />
 </header>
