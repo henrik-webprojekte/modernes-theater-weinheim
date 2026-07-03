@@ -1,0 +1,207 @@
+---
+import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+import {getSaele, type Saal} from "../lib/sanity"
+
+const saele = await getSaele()
+
+type Fallback = {
+  kicker: string
+  charakterUntertitel: string
+  technik: string
+  fakten: {label: string; wert: string}[]
+  hintergrund: string
+  darkText: boolean
+}
+
+const fallbackPerSlug: Record<string, Fallback> = {
+  chic: {
+    kicker: "Unser Klassiker",
+    charakterUntertitel: "Der Vorhang öffnet sich, das Licht wird warm",
+    technik: "2K-3D-Projektor · 7.1-Ton · 35 mm · Spotlightanlage",
+    fakten: [
+      {label: "Plätze", wert: "201"},
+      {label: "Balkon", wert: "2 VIP-Reihen"},
+      {label: "Bühne", wert: "mit Piano"},
+    ],
+    hintergrund: "#F5EDE0",
+    darkText: true,
+  },
+  cherie: {
+    kicker: "Unser Premium-Saal",
+    charakterUntertitel: "Lounge-Sessel, gedimmtes Licht, ein Blick auf zwei Burgen",
+    technik: "Modernste 3D-Projektion · VPT-Intense-3D-Ton mit Decken-Lautsprechern · Klimaanlage",
+    fakten: [
+      {label: "Plätze", wert: "74"},
+      {label: "Lounge", wert: "4 VIP-Sessel"},
+      {label: "Foyer", wert: "separat"},
+    ],
+    hintergrund: "#1A1020",
+    darkText: false,
+  },
+  charme: {
+    kicker: "Klein und gemütlich",
+    charakterUntertitel: "Zurücklehnen, entspannen, einen Film genießen",
+    technik: "Digitaler 2K-Filmprojektor · 5.1-Tonanlage",
+    fakten: [
+      {label: "Plätze", wert: "70"},
+      {label: "Sessel", wert: "Recliner"},
+      {label: "Beliebt für", wert: "Konsolen"},
+    ],
+    hintergrund: "#FAF0DE",
+    darkText: true,
+  },
+  kinogarten: {
+    kicker: "Für die warme Jahreszeit",
+    charakterUntertitel: "Achtzig Quadratmeter unter freiem Himmel, mit Blick auf die Windeck",
+    technik: "Outdoor-Projektion · Bar & kleine Bühne · Über 24 Stufen erreichbar",
+    fakten: [
+      {label: "Personen", wert: "65"},
+      {label: "Fläche", wert: "80 m²"},
+      {label: "Extras", wert: "Bar & Bühne"},
+    ],
+    hintergrund: "#182018",
+    darkText: false,
+  },
+}
+
+const reihenfolge = ["chic", "cherie", "charme", "kinogarten"]
+
+const sortierteSaele = [...saele].sort((a, b) => {
+  const ai = reihenfolge.indexOf(a.slug.current)
+  const bi = reihenfolge.indexOf(b.slug.current)
+  return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+})
+
+function getFallback(saal: Saal): Fallback {
+  return (
+    fallbackPerSlug[saal.slug.current] ?? {
+      kicker: "Unser Raum",
+      charakterUntertitel: "",
+      technik: "",
+      fakten: [
+        {label: "Plätze", wert: String(saal.plaetze)},
+      ],
+      hintergrund: "#F5EDE0",
+      darkText: true,
+    }
+  )
+}
+---
+
+<Layout title="Unsere Säle — Modernes Theater Weinheim">
+  <Header />
+
+  <main>
+
+    <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
+      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
+      <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
+          Drei Häuser unter einem Dach
+        </p>
+        <h1 class="font-display text-4xl md:text-6xl leading-tight text-creme mb-4">
+          Unsere Säle
+        </h1>
+        <p class="text-base text-creme/80 max-w-2xl mx-auto leading-relaxed mb-8">
+          Chic für das große Kino-Erlebnis. Cherie für den intimen Abend. Charme für den entspannten Filmgenuss. Und ein Kinogarten für die warme Jahreszeit.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3">
+          {sortierteSaele.map((saal) => (
+            <a
+              href={`#${saal.slug.current}`}
+              class="text-xs tracking-widest border rounded px-3 py-1.5 hover:bg-vintage-gold/10 transition-colors"
+              style={`color: ${saal.farbakzent ?? "#C9A55C"}; border-color: ${saal.farbakzent ?? "#C9A55C"}`}
+            >
+              {saal.name} ↓
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {sortierteSaele.map((saal, i) => {
+      const fb = getFallback(saal)
+      const kicker = saal.kicker ?? fb.kicker
+      const charakter = saal.charakterUntertitel ?? fb.charakterUntertitel
+      const technik = saal.technik ?? fb.technik
+      const bildLinks = i % 2 === 0
+      const accent = saal.farbakzent ?? "#C9A55C"
+      const kickerColor = fb.darkText ? "#8A6B3D" : accent
+      const textColor = fb.darkText ? "#4A3814" : "#C9BAA0"
+      const nameColor = fb.darkText ? "#1A1310" : "#F5EDE0"
+      return (
+        <section id={saal.slug.current} class="px-6 py-16 md:py-20" style={`background: ${fb.hintergrund};`}>
+          <div class={`max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center ${bildLinks ? "" : "md:[direction:rtl]"}`}>
+
+            <div class={bildLinks ? "" : "md:[direction:ltr]"}>
+              <div class="aspect-[4/3] rounded border overflow-hidden relative" style={`border-color: ${accent}; background: ${fb.darkText ? "#4A2818" : "#2A1A3A"};`}>
+                <div class="absolute inset-0" style={`background: radial-gradient(ellipse at 40% 30%, ${accent}44 0%, transparent 70%);`}></div>
+                <div class="absolute bottom-3 left-0 right-0 text-center text-[10px] uppercase tracking-widest text-creme/85">
+                  Foto {saal.name}
+                </div>
+              </div>
+            </div>
+
+            <div class={bildLinks ? "" : "md:[direction:ltr]"}>
+              <p class="text-xs uppercase tracking-[0.3em] mb-2" style={`color: ${kickerColor};`}>{kicker}</p>
+              <h2 class="font-display text-4xl md:text-5xl leading-tight mb-2" style={`color: ${nameColor};`}>{saal.name}</h2>
+              {charakter && (
+                <p class="italic text-sm md:text-base mb-4" style={`color: ${accent};`}>{charakter}</p>
+              )}
+              {saal.kurzbeschreibung && (
+                <p class="text-sm md:text-base leading-relaxed mb-6" style={`color: ${textColor};`}>{saal.kurzbeschreibung}</p>
+              )}
+
+              <div class="grid grid-cols-3 gap-2 mb-4">
+                {fb.fakten.map((fakt) => (
+                  <div
+                    class="rounded p-2.5 text-center"
+                    style={fb.darkText
+                      ? `background: #FAF6EE; border: 0.5px solid #E5D8C0; border-top: 2px solid ${accent};`
+                      : `background: rgba(255,255,255,0.06); border-top: 2px solid ${accent};`}
+                  >
+                    <div class="font-display text-lg md:text-xl" style={`color: ${nameColor};`}>{fakt.wert}</div>
+                    <div class="text-[10px] uppercase tracking-widest mt-0.5" style={`color: ${fb.darkText ? "#8A6B3D" : accent};`}>{fakt.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {technik && (
+                <>
+                  <p class="text-[10px] uppercase tracking-[0.2em] mb-1" style={`color: ${kickerColor};`}>Technik</p>
+                  <p class="text-xs md:text-sm leading-relaxed" style={`color: ${textColor};`}>{technik}</p>
+                </>
+              )}
+            </div>
+
+          </div>
+        </section>
+      )
+    })}
+
+    <section class="bg-kino-rot text-creme px-6 py-16 text-center" style="background: #6B1818;">
+      <div class="max-w-3xl mx-auto">
+        <p class="text-xs uppercase tracking-[0.3em] text-creme/70 mb-3">
+          Alle Räume auch buchbar
+        </p>
+        <h2 class="font-display text-3xl md:text-4xl leading-tight mb-4">
+          Feiern Sie bei uns
+        </h2>
+        <p class="text-base text-creme/85 max-w-xl mx-auto leading-relaxed mb-6">
+          Ob Firmenevent, Geburtstag oder Vereinsfeier — wir vermieten unsere Säle und den Kinogarten für Ihre Veranstaltung.
+        </p>
+        <a
+          href="/vermietung"
+          class="inline-block border border-vintage-gold text-creme px-6 py-3 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
+        >
+          Zur Vermietung
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>

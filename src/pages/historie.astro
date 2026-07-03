@@ -1,0 +1,93 @@
+---
+import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+
+const meilensteine = [
+  {
+    jahr: "1924",
+    titel: "Die Luvo-Lichtspiele öffnen",
+    text: 'Am 23. Dezember eröffnet der Konditormeister Ludwig Vogel das erste Kino in der Weinheimer Innenstadt — im Hinterhaus seines Café Vogel. Ein kleiner Saal, große Ambitionen: der Name „Luvo-Lichtspiele" ist eine Verkürzung seines eigenen Namens.',
+  },
+  {
+    jahr: "1925",
+    titel: "Aus Luvo wird das Moderne Theater",
+    text: 'Nur drei Monate nach der Eröffnung übernimmt Franz Ade den Betrieb und gibt ihm den Namen, der ihn bis heute begleitet: „Modernes Theater". Der Beginn einer Institution im Weinheimer Kulturleben.',
+  },
+  {
+    jahr: "2015",
+    titel: "Cherie eröffnet",
+    text: 'Im Dezember 2015 kommt ein neuer Saal hinzu: „Cherie" — kleiner, exklusiver, mit Lounge-Sesseln, eigenem Foyer und einem handgemalten Wandbild der beiden Weinheimer Burgen. Modernste 3D-Projektion trifft auf Wohnzimmer-Atmosphäre.',
+  },
+  {
+    jahr: "Heute",
+    titel: "Drei Säle, ein Kinogarten, ein Programm für alle",
+    text: "Chic, Cherie, Charme und der Kinogarten unter freiem Himmel — das Moderne Theater bleibt, was es seit über 100 Jahren ist: ein Ort, an dem Weinheim gemeinsam ins Licht schaut.",
+  },
+]
+---
+
+<Layout title="Historie — Modernes Theater Weinheim">
+  <Header />
+
+  <main>
+
+    <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
+      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
+      <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
+          Über 100 Jahre Kino in Weinheim
+        </p>
+        <h1 class="font-display text-4xl md:text-6xl leading-tight text-creme mb-4">
+          Unsere Geschichte
+        </h1>
+        <p class="text-base text-creme/80 max-w-2xl mx-auto leading-relaxed">
+          Vom Café-Hinterhaus zum ältesten Innenstadtkino der Region — die kurze Chronik eines Hauses, das mit seiner Stadt gewachsen ist.
+        </p>
+      </div>
+    </section>
+
+    <section class="bg-creme px-6 py-16" style="background: #F5EDE0;">
+      <div class="max-w-2xl mx-auto">
+        <div class="relative pl-8">
+          <div class="absolute left-[7px] top-3 bottom-3 w-[1px]" style="background: #C9A55C;"></div>
+
+          {meilensteine.map((m, i) => (
+            <div class="relative mb-10 last:mb-0">
+              <div
+                class="absolute -left-8 top-2 w-4 h-4 rounded-full"
+                style={i === meilensteine.length - 1
+                  ? "background: #C9A55C; border: 2px solid #6B1818;"
+                  : "background: #6B1818; border: 2px solid #C9A55C;"}
+              ></div>
+              <div class="font-display text-3xl text-kino-rot mb-1">{m.jahr}</div>
+              <h2 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{m.titel}</h2>
+              <p class="text-sm md:text-base text-tiefschwarz/85 leading-relaxed">{m.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-off-white px-6 py-16" style="background: #FAF6EE;">
+      <div class="max-w-5xl mx-auto">
+        <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3 text-center">Bilder aus dem Archiv</p>
+        <h2 class="font-display text-2xl text-tiefschwarz text-center mb-8">Ein Blick in vergangene Zeiten</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[1, 2, 3, 4].map(() => (
+            <div class="aspect-[4/3] rounded overflow-hidden border relative" style="border-color: #C9A55C; filter: grayscale(1) sepia(0.15);">
+              <div class="absolute inset-0" style="background: radial-gradient(ellipse at 50% 40%, #6A6A65 0%, #2A2A28 90%);"></div>
+              <div class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-widest text-creme/85">Archivbild</div>
+            </div>
+          ))}
+        </div>
+        <p class="text-xs italic text-warmes-braun/80 text-center mt-6">
+          Historische Aufnahmen folgen — das Weinheimer Stadtmuseum hat uns Zusammenarbeit zugesagt.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>

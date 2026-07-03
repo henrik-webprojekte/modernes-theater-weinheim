@@ -1,17 +1,118 @@
+﻿---
+import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+import {getSaele} from "../lib/sanity"
+
+const saele = await getSaele()
 ---
 
----
+<Layout title="Modernes Theater Weinheim — Kino, Eventlocation und mehr">
+  <Header />
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+  <main>
+
+    <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
+      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
+      <div class="max-w-4xl mx-auto px-6 py-24 text-center">
+        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-4">
+          Seit 1924 in Weinheim
+        </p>
+        <h1 class="font-display text-5xl md:text-7xl leading-tight text-creme mb-6">
+          Modernes Theater
+        </h1>
+        <p class="text-lg text-creme/80 max-w-2xl mx-auto leading-relaxed mb-8">
+          Drei Säle, jeder mit eigenem Charakter. Ein Kinogarten für die warme Jahreszeit.
+          Und ein Programm, das die ganze Familie bewegt.
+        </p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a
+            href="/programm"
+            class="bg-kino-rot text-creme px-6 py-3 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
+          >
+            Aktuelles Programm
+          </a>
+          <a
+            href="/saele"
+            class="border border-vintage-gold text-vintage-gold px-6 py-3 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
+          >
+            Unsere Säle
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-creme px-6 py-20" style="background: #F5EDE0;">
+      <div class="max-w-5xl mx-auto text-center">
+        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
+          Drei Häuser unter einem Dach
+        </p>
+        <h2 class="font-display text-4xl md:text-5xl leading-tight text-tiefschwarz mb-4">
+          Unsere Säle
+        </h2>
+        <p class="text-base text-tiefschwarz/75 max-w-2xl mx-auto leading-relaxed mb-12">
+          Jeder Saal hat seinen eigenen Charakter — vom klassischen Vorhang bis zur
+          Premium-Lounge.
+        </p>
+
+        {saele.length === 0 && (
+          <div class="bg-off-white border border-vintage-gold/50 rounded p-8 max-w-lg mx-auto">
+            <p class="text-warmes-braun italic">
+              Noch keine Säle in Sanity angelegt. Öffne das Studio auf
+              <a href="http://localhost:3333" class="text-kino-rot underline mx-1">localhost:3333</a>
+              und lege welche an — dann erscheinen sie hier automatisch.
+            </p>
+          </div>
+        )}
+
+        {saele.length > 0 && (
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {saele.map((saal) => (
+              <article
+                class="bg-tiefschwarz text-creme p-6 rounded text-left border-t-2"
+                style={`background: #1A1310; border-top-color: ${saal.farbakzent ?? "#C9A55C"};`}
+              >
+                <h3 class="font-display text-3xl mb-2">{saal.name}</h3>
+                <p
+                  class="text-xs uppercase tracking-widest mb-4"
+                  style={`color: ${saal.farbakzent ?? "#C9A55C"};`}
+                >
+                  {saal.plaetze} Plätze
+                </p>
+                {saal.kurzbeschreibung && (
+                  <p class="text-sm text-creme/70 leading-relaxed">
+                    {saal.kurzbeschreibung}
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+
+    <section class="bg-kino-rot text-creme px-6 py-16 text-center" style="background: #6B1818;">
+      <div class="max-w-3xl mx-auto">
+        <p class="text-xs uppercase tracking-[0.3em] text-creme/70 mb-3">
+          Ihr Anlass, unser Ort
+        </p>
+        <h2 class="font-display text-3xl md:text-4xl leading-tight mb-4">
+          Feiern Sie bei uns
+        </h2>
+        <p class="text-base text-creme/85 max-w-xl mx-auto leading-relaxed mb-6">
+          Firmenevents, Geburtstage, Vereinsfeiern — mit eigenem Kinogarten
+          und Blick auf die Windeck.
+        </p>
+        <a
+          href="/vermietung"
+          class="inline-block border border-vintage-gold text-creme px-6 py-3 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
+        >
+          Zur Vermietung
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,135 @@
+---
+import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+import {getSaele} from "../lib/sanity"
+
+const saele = await getSaele()
+const reihenfolge = ["chic", "cherie", "charme", "kinogarten"]
+const sortierteSaele = [...saele].sort((a, b) => {
+  const ai = reihenfolge.indexOf(a.slug.current)
+  const bi = reihenfolge.indexOf(b.slug.current)
+  return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+})
+
+const schritte = [
+  {nummer: 1, titel: "Anfrage senden", text: "Ihre Wünsche in wenigen Feldern"},
+  {nummer: 2, titel: "Termin & Angebot", text: "Wir melden uns mit Details"},
+  {nummer: 3, titel: "Ablauf besprechen", text: "Catering, Technik, Programm"},
+  {nummer: 4, titel: "Ihren Abend genießen", text: "Zurücklehnen und feiern"},
+]
+---
+
+<Layout title="Vermietung — Modernes Theater Weinheim">
+  <Header />
+
+  <main>
+
+    <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
+      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
+      <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
+          Ihr Anlass, unser Ort
+        </p>
+        <h1 class="font-display text-4xl md:text-6xl leading-tight text-creme mb-4">
+          Feiern Sie bei uns
+        </h1>
+        <p class="text-base text-creme/80 max-w-2xl mx-auto leading-relaxed">
+          Firmenevents, Geburtstage, Vereinsfeiern — mit Kinoerlebnis, Catering und Kinogarten.
+        </p>
+      </div>
+    </section>
+
+    <section class="bg-off-white px-6 py-16" style="background: #FAF6EE;">
+      <div class="max-w-5xl mx-auto">
+        <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3 text-center">Räume im Überblick</p>
+        <h2 class="font-display text-3xl text-tiefschwarz text-center mb-8">Was Sie mieten können</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {sortierteSaele.map((saal) => (
+            <a
+              href={`/saele#${saal.slug.current}`}
+              class="bg-creme border rounded p-4 text-center hover:shadow-md transition-shadow"
+              style={`border-top: 2px solid ${saal.farbakzent ?? "#C9A55C"}; border-color: #E5D8C0; border-top-color: ${saal.farbakzent ?? "#C9A55C"}; background: #F5EDE0;`}
+            >
+              <div class="font-display text-xl text-tiefschwarz mb-1">{saal.name}</div>
+              <div class="text-xs text-warmes-braun uppercase tracking-widest">{saal.plaetze} Plätze</div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-creme px-6 py-16" style="background: #F5EDE0;">
+      <div class="max-w-5xl mx-auto">
+        <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3 text-center">So läuft's ab</p>
+        <h2 class="font-display text-3xl text-tiefschwarz text-center mb-10">Vier Schritte zum Event</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {schritte.map((s) => (
+            <div class="text-center">
+              <div class="w-12 h-12 rounded-full border-2 border-vintage-gold text-kino-rot font-display text-2xl mx-auto mb-3 flex items-center justify-center">
+                {s.nummer}
+              </div>
+              <div class="font-display text-lg text-tiefschwarz mb-1">{s.titel}</div>
+              <div class="text-sm text-warmes-braun leading-relaxed">{s.text}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-off-white px-6 py-16" style="background: #FAF6EE;">
+      <div class="max-w-2xl mx-auto">
+        <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3 text-center">Ihre Anfrage</p>
+        <h2 class="font-display text-3xl text-tiefschwarz text-center mb-8">Erzählen Sie uns von Ihrem Anlass</h2>
+
+        <form class="space-y-4" method="post" action="mailto:veranstaltung@kinoweinheim.de" enctype="text/plain">
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs uppercase tracking-widest text-warmes-braun mb-1" for="name">Ihr Name</label>
+              <input id="name" name="Name" type="text" required class="w-full bg-creme border border-vintage-gold/40 rounded px-3 py-2 text-sm text-tiefschwarz focus:outline-none focus:border-kino-rot" style="background: #F5EDE0;" />
+            </div>
+            <div>
+              <label class="block text-xs uppercase tracking-widest text-warmes-braun mb-1" for="email">E-Mail</label>
+              <input id="email" name="Email" type="email" required class="w-full bg-creme border border-vintage-gold/40 rounded px-3 py-2 text-sm text-tiefschwarz focus:outline-none focus:border-kino-rot" style="background: #F5EDE0;" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs uppercase tracking-widest text-warmes-braun mb-1" for="datum">Wunsch-Datum</label>
+              <input id="datum" name="Datum" type="date" class="w-full bg-creme border border-vintage-gold/40 rounded px-3 py-2 text-sm text-tiefschwarz focus:outline-none focus:border-kino-rot" style="background: #F5EDE0;" />
+            </div>
+            <div>
+              <label class="block text-xs uppercase tracking-widest text-warmes-braun mb-1" for="raum">Wunsch-Raum</label>
+              <select id="raum" name="Raum" class="w-full bg-creme border border-vintage-gold/40 rounded px-3 py-2 text-sm text-tiefschwarz focus:outline-none focus:border-kino-rot" style="background: #F5EDE0;">
+                <option value="">Keine Präferenz</option>
+                {sortierteSaele.map((saal) => (
+                  <option value={saal.name}>{saal.name} ({saal.plaetze} Plätze)</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs uppercase tracking-widest text-warmes-braun mb-1" for="nachricht">Ihre Nachricht</label>
+            <textarea id="nachricht" name="Nachricht" rows="5" placeholder="Erzählen Sie uns von Ihrem Anlass, Anzahl Gäste, Catering-Wünsche …" class="w-full bg-creme border border-vintage-gold/40 rounded px-3 py-2 text-sm text-tiefschwarz focus:outline-none focus:border-kino-rot" style="background: #F5EDE0;"></textarea>
+          </div>
+
+          <div class="text-center pt-2">
+            <button type="submit" class="bg-kino-rot text-creme px-8 py-3 rounded font-medium tracking-wider hover:bg-tiefschwarz transition-colors">
+              Anfrage senden
+            </button>
+            <p class="text-xs text-warmes-braun/80 mt-3">
+              Alternativ per E-Mail an <a href="mailto:veranstaltung@kinoweinheim.de" class="text-kino-rot">veranstaltung@kinoweinheim.de</a> oder Tel. <a href="tel:0620162155" class="text-kino-rot">06201 · 62155</a>
+            </p>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,13 @@
+﻿@import "tailwindcss";
+
+@theme {
+  --color-kino-rot: #6B1818;
+  --color-tiefschwarz: #1A1310;
+  --color-vintage-gold: #C9A55C;
+  --color-creme: #F5EDE0;
+  --color-off-white: #FAF6EE;
+  --color-warmes-braun: #8A6B3D;
+
+  --font-display: "Limelight", ui-serif, Georgia, serif;
+  --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+}

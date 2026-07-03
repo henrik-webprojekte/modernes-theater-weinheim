@@ -1,0 +1,155 @@
+---
+import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+import {getEvents, type Event} from "../lib/sanity"
+
+const sanityEvents = await getEvents()
+
+type StaticEvent = {
+  titel: string
+  kategorie: string
+  wiederkehrend: string
+  kurzbeschreibung: string
+  farbe: string
+}
+
+const fallbackEvents: StaticEvent[] = [
+  {
+    titel: "Kaffee-Tee-Kino",
+    kategorie: "kaffee-tee-kino",
+    wiederkehrend: "Jeden 1. Mittwoch im Monat",
+    kurzbeschreibung: "Ein besonderer Film am Nachmittag — mit Kaffee, Tee und Kuchen zum Kinoticket. Einlass 14:00, Beginn 15:00.",
+    farbe: "#C9A55C",
+  },
+  {
+    titel: "Enzo-Day",
+    kategorie: "enzo-day",
+    wiederkehrend: "Jeden Montag und Freitag ab 16:00",
+    kurzbeschreibung: "Kaffee, Prosecco und mehr — unser Kino wird zur entspannten Café-Alternative im Zentrum von Weinheim.",
+    farbe: "#6B1818",
+  },
+  {
+    titel: "Open-Air-Sommer",
+    kategorie: "open-air",
+    wiederkehrend: "30. Juli – 06. September 2026",
+    kurzbeschreibung: "Sechs Locations zwischen Weinheim, Hemsbach und Hockenheim — Open-Air-Kino in Kooperation mit lokalen Partnern.",
+    farbe: "#9BC988",
+  },
+  {
+    titel: "Zauberer Schmittini",
+    kategorie: "schmittini",
+    wiederkehrend: "01.11.2026 & 13.12.2026",
+    kurzbeschreibung: "Unser Lieblingszauberer kehrt zurück auf die Bühne im Chic. Ein Abend voller Illusion und Charme.",
+    farbe: "#B88955",
+  },
+  {
+    titel: "Sneak Preview",
+    kategorie: "sondervorstellung",
+    wiederkehrend: "Wechselnd",
+    kurzbeschreibung: "Der Film wird erst nach dem Trailer verraten — für 5 € ein Überraschungsabend im Kinosessel.",
+    farbe: "#9A7DC9",
+  },
+  {
+    titel: "Sondervorstellungen",
+    kategorie: "sondervorstellung",
+    wiederkehrend: "Nach Ankündigung",
+    kurzbeschreibung: "Klassiker der Filmgeschichte, Themenabende und ausgewählte Sonderreihen — folgen Sie unserem Newsletter für aktuelle Termine.",
+    farbe: "#8A6B3D",
+  },
+]
+
+function farbeFuerKategorie(kategorie: string): string {
+  const farben: Record<string, string> = {
+    "kaffee-tee-kino": "#C9A55C",
+    "enzo-day": "#6B1818",
+    "open-air": "#9BC988",
+    "schmittini": "#B88955",
+    "sondervorstellung": "#9A7DC9",
+    "sonstiges": "#8A6B3D",
+  }
+  return farben[kategorie] ?? "#C9A55C"
+}
+
+function formatDatum(startDatum: string, endDatum?: string): string {
+  const opt: Intl.DateTimeFormatOptions = {day: "2-digit", month: "2-digit", year: "numeric"}
+  const start = new Date(startDatum).toLocaleDateString("de-DE", opt)
+  if (!endDatum) return start
+  const ende = new Date(endDatum).toLocaleDateString("de-DE", opt)
+  return `${start} – ${ende}`
+}
+
+const zeigeSanity = sanityEvents.length > 0
+---
+
+<Layout title="Events — Modernes Theater Weinheim">
+  <Header />
+
+  <main>
+
+    <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
+      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
+      <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
+          Neben dem Kinoprogramm
+        </p>
+        <h1 class="font-display text-4xl md:text-6xl leading-tight text-creme mb-4">
+          Sonderreihen & Events
+        </h1>
+        <p class="text-base text-creme/80 max-w-2xl mx-auto leading-relaxed">
+          Sechs regelmäßige Reihen und wechselnde Sondervorstellungen — für alle, die mehr als Blockbuster suchen.
+        </p>
+      </div>
+    </section>
+
+    <section class="bg-creme px-6 py-16" style="background: #F5EDE0;">
+      <div class="max-w-5xl mx-auto">
+        {zeigeSanity ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {sanityEvents.map((event: Event) => (
+              <article
+                class="bg-off-white border border-vintage-gold/20 rounded p-5"
+                style={`background: #FAF6EE; border-top: 3px solid ${farbeFuerKategorie(event.kategorie)};`}
+              >
+                <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style={`color: ${farbeFuerKategorie(event.kategorie)};`}>
+                  {event.wiederkehrend ?? formatDatum(event.startDatum, event.endDatum)}
+                </p>
+                <h2 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{event.titel}</h2>
+                {event.kurzbeschreibung && (
+                  <p class="text-sm text-tiefschwarz/85 leading-relaxed">{event.kurzbeschreibung}</p>
+                )}
+                {event.ort && (
+                  <p class="text-xs text-warmes-braun italic mt-3">Ort: {event.ort}</p>
+                )}
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {fallbackEvents.map((event) => (
+              <article
+                class="bg-off-white border border-vintage-gold/20 rounded p-5"
+                style={`background: #FAF6EE; border-top: 3px solid ${event.farbe};`}
+              >
+                <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style={`color: ${event.farbe};`}>
+                  {event.wiederkehrend}
+                </p>
+                <h2 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{event.titel}</h2>
+                <p class="text-sm text-tiefschwarz/85 leading-relaxed">{event.kurzbeschreibung}</p>
+              </article>
+            ))}
+          </div>
+        )}
+
+        {!zeigeSanity && (
+          <p class="text-xs text-warmes-braun italic text-center mt-8">
+            Standard-Programm angezeigt · Konkrete Termine pflegen Sie im Sanity-Studio unter „Event".
+          </p>
+        )}
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>
