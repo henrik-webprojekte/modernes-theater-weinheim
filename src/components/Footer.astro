@@ -53,11 +53,30 @@
 
     <div class="pt-6 border-t border-vintage-gold/25 flex flex-col md:flex-row md:justify-between gap-3 text-xs text-creme/50">
       <div>© Woinemer Kino GmbH & Co. KG</div>
-      <div class="flex gap-4">
+      <div class="flex flex-wrap gap-4">
         <a href="/impressum" class="hover:text-vintage-gold transition-colors">Impressum</a>
         <a href="/datenschutz" class="hover:text-vintage-gold transition-colors">Datenschutz</a>
+        <button
+          type="button"
+          data-cookie-reset
+          class="hover:text-vintage-gold transition-colors text-left cursor-pointer"
+        >Cookie-Einstellungen ändern</button>
       </div>
     </div>
+
+    <script>
+      const resetButtons = document.querySelectorAll<HTMLButtonElement>("[data-cookie-reset]")
+      resetButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          try {
+            localStorage.removeItem("cookie-consent")
+          } catch {
+            // Privatmodus kann Speicher blockieren
+          }
+          window.location.reload()
+        })
+      })
+    </script>
 
   </div>
 </footer>
