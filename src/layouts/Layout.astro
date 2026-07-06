@@ -1,5 +1,6 @@
 ﻿---
 import "../styles/global.css";
+import CookieBanner from "../components/CookieBanner.astro";
 
 interface Props {
   title?: string;
@@ -30,5 +31,6 @@ const {
   </head>
   <body class="bg-creme text-tiefschwarz font-sans antialiased">
     <slot />
+    <CookieBanner />
   </body>
 </html>
