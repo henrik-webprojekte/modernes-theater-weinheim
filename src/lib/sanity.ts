@@ -90,6 +90,41 @@ export async function getEvents(): Promise<Event[]> {
   )
 }
 
+export async function getFilmSlugs(): Promise<string[]> {
+  const slugs = await sanity.fetch<{current: string}[]>(
+    `*[_type == "film" && status == "aktiv" && defined(slug.current)]{ "current": slug.current }`
+  )
+  return slugs.map((s) => s.current)
+}
+
+export async function getFilmBySlug(slug: string): Promise<Film | null> {
+  return sanity.fetch<Film | null>(
+    `*[_type == "film" && slug.current == $slug][0]{
+      _id,
+      titel,
+      slug,
+      plakat,
+      laenge,
+      fsk,
+      genre,
+      kurzbeschreibung,
+      trailerUrl,
+      istIn3dVerfuegbar,
+      istSneak,
+      istSonderreihe,
+      badges,
+      status,
+      vorstellungen[] {
+        datum,
+        uhrzeit,
+        format,
+        "saal": saal->{ _id, name, farbakzent }
+      }
+    }`,
+    {slug}
+  )
+}
+
 export async function getAktiveFilme(): Promise<Film[]> {
   return sanity.fetch<Film[]>(
     `*[_type == "film" && status == "aktiv"] | order(titel asc) {

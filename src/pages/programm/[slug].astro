@@ -1,0 +1,245 @@
+---
+import Layout from "../../layouts/Layout.astro"
+import Header from "../../components/Header.astro"
+import Footer from "../../components/Footer.astro"
+import {getFilmSlugs, getFilmBySlug, type Vorstellung} from "../../lib/sanity"
+
+export async function getStaticPaths() {
+  const slugs = await getFilmSlugs()
+  return slugs.map((slug) => ({params: {slug}}))
+}
+
+const {slug} = Astro.params
+const film = slug ? await getFilmBySlug(slug) : null
+
+if (!film) {
+  return Astro.redirect("/programm")
+}
+
+const wochentage = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"]
+
+function formatDatum(datum: string): string {
+  const d = new Date(datum)
+  const tag = wochentage[d.getDay()]
+  const opt: Intl.DateTimeFormatOptions = {day: "2-digit", month: "2-digit", year: "numeric"}
+  return `${tag}, ${d.toLocaleDateString("de-DE", opt)}`
+}
+
+type GroupedVorstellungen = {
+  datum: string
+  formatted: string
+  entries: Vorstellung[]
+}
+
+const vorstellungen = film.vorstellungen ?? []
+const gruppiert: GroupedVorstellungen[] = []
+
+for (const v of vorstellungen) {
+  if (!v.datum) continue
+  const existing = gruppiert.find((g) => g.datum === v.datum)
+  if (existing) {
+    existing.entries.push(v)
+  } else {
+    gruppiert.push({
+      datum: v.datum,
+      formatted: formatDatum(v.datum),
+      entries: [v],
+    })
+  }
+}
+
+gruppiert.sort((a, b) => (a.datum < b.datum ? -1 : 1))
+for (const g of gruppiert) {
+  g.entries.sort((a, b) => (a.uhrzeit ?? "").localeCompare(b.uhrzeit ?? ""))
+}
+
+const fskFarben: Record<number, string> = {
+  0: "#4A8055",
+  6: "#4A8055",
+  12: "#B88955",
+  16: "#B88955",
+  18: "#6B1818",
+}
+---
+
+<Layout title={`${film.titel} — Modernes Theater Weinheim`} description={film.kurzbeschreibung}>
+  <Header />
+
+  <main>
+
+    <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
+      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
+
+      <div class="max-w-5xl mx-auto px-6 py-6">
+        <a href="/programm" class="inline-flex items-center gap-2 text-xs text-vintage-gold hover:text-creme transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Zurück zum Programm
+        </a>
+      </div>
+
+      <div class="max-w-5xl mx-auto px-6 pb-16 flex flex-col md:flex-row gap-8 md:gap-10">
+
+        <div class="mx-auto md:mx-0 shrink-0">
+          <div
+            class="rounded overflow-hidden border border-vintage-gold/60 relative flex items-center justify-center text-vintage-gold/80 text-xs uppercase tracking-widest text-center"
+            style="width: 200px; height: 300px; background: linear-gradient(135deg, #4A1414 0%, #2A0808 100%);"
+          >
+            {film.plakat ? "Plakat folgt" : "Kein Plakat"}
+          </div>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2 mb-3">
+            {film.badges?.includes("neu") && (
+              <span class="bg-kino-rot text-creme text-[10px] uppercase tracking-widest px-2 py-1 rounded">Neu</span>
+            )}
+            {film.istIn3dVerfuegbar && (
+              <span class="text-[10px] uppercase tracking-widest px-2 py-1 rounded border" style="border-color: #9A7DC9; color: #C9A5F5;">Auch in 3D</span>
+            )}
+            {film.istSneak && (
+              <span class="text-[10px] uppercase tracking-widest px-2 py-1 rounded border border-vintage-gold text-vintage-gold">Sneak Preview</span>
+            )}
+            {film.istSonderreihe && (
+              <span class="text-[10px] uppercase tracking-widest px-2 py-1 rounded border border-warmes-braun/60 text-warmes-braun">Sonderreihe</span>
+            )}
+          </div>
+
+          <h1 class="font-display text-3xl md:text-5xl leading-tight text-creme mb-4 text-balance">{film.titel}</h1>
+
+          <div class="flex flex-wrap items-center gap-3 text-xs text-creme/80 uppercase tracking-widest mb-6">
+            <span>{film.laenge} Minuten</span>
+            <span class="text-creme/40">·</span>
+            <span class="px-2 py-0.5 rounded font-medium" style={`background: ${fskFarben[film.fsk] ?? "#8A6B3D"}; color: white;`}>FSK {film.fsk}</span>
+            {film.genre && (
+              <>
+                <span class="text-creme/40">·</span>
+                <span>{film.genre}</span>
+              </>
+            )}
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <a
+              href="tel:0620162155"
+              class="bg-kino-rot text-creme px-6 py-3 rounded font-medium tracking-wider hover:bg-tiefschwarz border border-kino-rot transition-colors"
+            >
+              Karten reservieren
+            </a>
+            {film.trailerUrl && (
+              <a
+                href={film.trailerUrl}
+                target="_blank"
+                rel="noopener"
+                class="border border-vintage-gold text-vintage-gold px-6 py-3 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
+              >
+                Trailer ansehen ↗
+              </a>
+            )}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    {film.kurzbeschreibung && (
+      <section class="bg-off-white px-6 py-12" style="background: #FAF6EE;">
+        <div class="max-w-3xl mx-auto">
+          <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3">Worum es geht</p>
+          <p class="text-lg text-tiefschwarz/85 leading-relaxed">{film.kurzbeschreibung}</p>
+        </div>
+      </section>
+    )}
+
+    <section class="bg-creme px-6 py-16" style="background: #F5EDE0;">
+      <div class="max-w-4xl mx-auto">
+        <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3 text-center">Alle Termine</p>
+        <h2 class="font-display text-3xl md:text-4xl text-tiefschwarz text-center mb-10">Vorstellungen</h2>
+
+        {gruppiert.length === 0 && (
+          <div class="bg-off-white border border-vintage-gold/40 rounded p-8 text-center">
+            <p class="text-warmes-braun italic">Für diesen Film sind aktuell keine Vorstellungen geplant.</p>
+          </div>
+        )}
+
+        {gruppiert.length > 0 && (
+          <div class="space-y-4">
+            {gruppiert.map((g) => (
+              <div class="bg-off-white border border-vintage-gold/20 rounded p-4" style="background: #FAF6EE;">
+                <div class="text-xs uppercase tracking-widest text-warmes-braun mb-3">{g.formatted}</div>
+                <div class="flex flex-wrap gap-2">
+                  {g.entries.map((v) => (
+                    <span
+                      class="inline-flex items-center gap-2 text-sm text-creme px-3 py-2 rounded"
+                      style={`background: ${v.format === "3D" ? "#4A2A5A" : "#6B1818"};`}
+                    >
+                      <span class="font-medium">{v.uhrzeit}</span>
+                      {v.saal?.name && (
+                        <>
+                          <span class="opacity-40">·</span>
+                          <span class="opacity-85">Saal {v.saal.name}</span>
+                        </>
+                      )}
+                      {v.format === "3D" && (
+                        <>
+                          <span class="opacity-40">·</span>
+                          <span class="text-[10px] uppercase tracking-widest opacity-85">3D +3 €</span>
+                        </>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+
+    <section class="bg-off-white px-6 py-12 border-t border-vintage-gold/20" style="background: #FAF6EE;">
+      <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B1818" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            <h3 class="font-display text-base text-tiefschwarz">Reservierungen</h3>
+          </div>
+          <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+            Telefonisch unter <a href="tel:0620162155" class="text-kino-rot font-medium">06201 · 62155</a> oder direkt an der Kinokasse.
+          </p>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B1818" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/>
+              <path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/>
+            </svg>
+            <h3 class="font-display text-base text-tiefschwarz">Preise</h3>
+          </div>
+          <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+            Erwachsene 11 € · Ermäßigt 9 € · Kinder 6 € · <span class="text-kino-rot font-medium">Kinotag Di & Starttag Do: 7 €</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-tiefschwarz text-creme px-6 py-10 text-center" style="background: #1A1310;">
+      <a
+        href="/programm"
+        class="inline-flex items-center gap-2 text-vintage-gold hover:text-creme transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        <span class="tracking-wider">Alle Filme dieser Woche</span>
+      </a>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>
