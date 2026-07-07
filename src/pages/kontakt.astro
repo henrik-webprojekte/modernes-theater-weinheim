@@ -19,14 +19,17 @@ const zuschlaege = [
 ]
 ---
 
-<Layout title="Kontakt — Modernes Theater Weinheim">
+<Layout
+  title="Kontakt — Modernes Theater Weinheim"
+  description="Kontakt zum Modernen Theater Weinheim: Adresse, Telefon, Anfahrt, Preise und Newsletter. Reservierungen unter 06201 · 62155."
+>
   <Header />
 
-  <main>
+  <main id="hauptinhalt">
 
     <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
       <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
-      <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+      <div class="max-w-4xl mx-auto px-6 py-20 md:py-24 text-center">
         <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
           Erreichbar & vor Ort
         </p>
@@ -50,7 +53,7 @@ const zuschlaege = [
             <h2 class="font-display text-lg text-tiefschwarz">Anrufen & reservieren</h2>
           </div>
           <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-2">
-            Kartenreservierung telefonisch oder direkt an der Kinokasse.
+            <strong>Kartenreservierungen nehmen wir kostenlos entgegen</strong> — telefonisch während der Öffnungszeiten oder direkt an der Kinokasse.
           </p>
           <p class="text-sm text-tiefschwarz/85 leading-relaxed">
             Tel. <a href="tel:0620162155" class="text-kino-rot font-medium">06201 · 62155</a><br />
@@ -76,27 +79,78 @@ const zuschlaege = [
       </div>
     </section>
 
+    <section class="bg-off-white px-6 py-12" style="background: #FAF6EE;">
+      <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B1818" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <h2 class="font-display text-lg text-tiefschwarz">Öffnungszeiten</h2>
+          </div>
+          <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-2">
+            Unsere Kasse öffnet in der Regel <strong>30 Minuten vor der ersten Vorstellung</strong> und schließt kurz nach Beginn des letzten Films.
+          </p>
+          <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+            An Tagen ohne Vorstellungen sind wir per Anrufbeantworter und E-Mail erreichbar. Die exakten Vorstellungszeiten finden Sie im <a href="/programm" class="text-kino-rot font-medium">aktuellen Programm</a>.
+          </p>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B1818" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <h2 class="font-display text-lg text-tiefschwarz">Für Gruppen: Sondervorstellungen</h2>
+          </div>
+          <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-2">
+            Schulklassen, Betriebsausflüge, Vereine, private Runden: Wir organisieren gerne <strong>Sondervorstellungen einzelner Filme</strong> — auch außerhalb der regulären Zeiten.
+          </p>
+          <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+            Anfrage einfach telefonisch unter <a href="tel:0620162155" class="text-kino-rot font-medium">06201 · 62155</a> oder per E-Mail an <a href="mailto:zentrale@kinoweinheim.de" class="text-kino-rot font-medium">zentrale@kinoweinheim.de</a>.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
     <section id="anfahrt" class="bg-off-white px-6 py-12" style="background: #FAF6EE;">
       <div class="max-w-4xl mx-auto">
         <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3">Anfahrt</p>
         <h2 class="font-display text-2xl text-tiefschwarz mb-6">So finden Sie uns</h2>
 
-        <div class="aspect-[16/8] rounded border overflow-hidden relative" style="border-color: #C9A55C; background: #E5D8C0;">
-          <div class="absolute inset-0" style="background: repeating-linear-gradient(45deg, #E5D8C0 0 12px, #DACDB4 12px 24px); opacity: 0.5;"></div>
-          <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6B1818" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
-            <p class="text-xs uppercase tracking-widest text-warmes-braun mt-2">Karte — Einbindung folgt</p>
-            <a
-              href="https://www.openstreetmap.org/?mlat=49.5495&mlon=8.6698#map=18/49.5495/8.6698"
-              target="_blank"
-              rel="noopener"
-              class="text-xs text-kino-rot mt-1 underline"
-            >Auf OpenStreetMap ansehen ↗</a>
-          </div>
+        <div class="rounded border overflow-hidden" style="border-color: #C9A55C;">
+          <iframe
+            src="https://www.openstreetmap.org/export/embed.html?bbox=8.6689,49.5475,8.6759,49.5515&amp;layer=mapnik&amp;marker=49.5494671,8.6723736"
+            width="100%"
+            height="380"
+            style="border: 0; display: block;"
+            loading="lazy"
+            title="Karte: Modernes Theater, Hauptstraße 61, 69469 Weinheim (OpenStreetMap)"
+          >
+            <p class="p-6 text-sm text-tiefschwarz">
+              Ihr Browser zeigt keine Karten. Bitte öffnen Sie den Standort direkt bei
+              <a
+                href="https://www.openstreetmap.org/?mlat=49.5494671&amp;mlon=8.6723736#map=18/49.5494671/8.6723736"
+                class="text-kino-rot underline"
+              >OpenStreetMap</a>.
+            </p>
+          </iframe>
         </div>
+        <p class="text-xs text-warmes-braun mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span>Kartendaten © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" class="text-kino-rot underline">OpenStreetMap</a>-Mitwirkende</span>
+          <a
+            href="https://www.openstreetmap.org/?mlat=49.5494671&mlon=8.6723736#map=18/49.5494671/8.6723736"
+            target="_blank"
+            rel="noopener"
+            class="text-kino-rot underline"
+          >Größere Karte öffnen ↗</a>
+        </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 text-sm text-tiefschwarz/85 leading-relaxed">
           <div>
@@ -134,11 +188,15 @@ const zuschlaege = [
         <ul class="text-sm text-tiefschwarz/85 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
           {zuschlaege.map((z) => (
             <li class="flex items-start gap-2">
-              <span class="text-vintage-gold mt-1">·</span>
+              <span class="text-warmes-braun mt-1" aria-hidden="true">·</span>
               <span>{z}</span>
             </li>
           ))}
         </ul>
+
+        <p class="text-xs text-warmes-braun italic mt-6 text-center">
+          Alle Preise verstehen sich als Endpreise inklusive der gesetzlichen Umsatzsteuer.
+        </p>
       </div>
     </section>
 
@@ -150,25 +208,126 @@ const zuschlaege = [
           Wir informieren Sie über neue Filme, Sonderreihen und Events — ca. einmal pro Woche, jederzeit abbestellbar.
         </p>
 
-        <form class="flex flex-col md:flex-row gap-2 max-w-lg mx-auto">
+        <form id="newsletter-form" class="flex flex-col md:flex-row gap-2 max-w-lg mx-auto" novalidate>
+          <label for="newsletter-email" class="sr-only">Ihre E-Mail-Adresse für den Newsletter</label>
           <input
+            id="newsletter-email"
+            name="email"
             type="email"
             required
+            autocomplete="email"
             placeholder="Ihre E-Mail-Adresse"
-            class="flex-1 border border-vintage-gold/40 rounded px-4 py-2.5 text-sm text-tiefschwarz focus:outline-none focus:border-kino-rot"
+            class="flex-1 border border-vintage-gold/40 rounded px-4 py-2.5 text-sm text-tiefschwarz focus:border-kino-rot"
             style="background: #F5EDE0;"
           />
           <button
+            id="newsletter-submit"
             type="submit"
-            class="bg-kino-rot text-creme px-6 py-2.5 rounded font-medium tracking-wider hover:bg-tiefschwarz transition-colors"
+            class="bg-kino-rot text-creme px-6 py-2.5 rounded font-medium tracking-wider hover:bg-tiefschwarz transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Anmelden
+            <span data-idle>Anmelden</span>
+            <span data-loading class="hidden">Wird gesendet …</span>
           </button>
         </form>
 
-        <p class="text-xs text-warmes-braun/70 mt-3">
+        <div
+          id="newsletter-status"
+          role="status"
+          aria-live="polite"
+          class="mt-4 text-sm hidden max-w-lg mx-auto"
+        ></div>
+
+        <p id="newsletter-hint" class="text-xs text-warmes-braun mt-3">
           Die Anmeldung erfolgt über einen Bestätigungslink (Double-Opt-In). Details in der <a href="/datenschutz" class="text-kino-rot underline">Datenschutzerklärung</a>.
         </p>
+
+        <script>
+          const form = document.getElementById("newsletter-form") as HTMLFormElement | null
+          const input = document.getElementById("newsletter-email") as HTMLInputElement | null
+          const btn = document.getElementById("newsletter-submit") as HTMLButtonElement | null
+          const idleLabel = btn?.querySelector<HTMLElement>("[data-idle]") ?? null
+          const loadingLabel = btn?.querySelector<HTMLElement>("[data-loading]") ?? null
+          const status = document.getElementById("newsletter-status")
+          const hint = document.getElementById("newsletter-hint")
+
+          function setLoading(loading: boolean) {
+            if (!btn || !idleLabel || !loadingLabel) return
+            btn.disabled = loading
+            idleLabel.classList.toggle("hidden", loading)
+            loadingLabel.classList.toggle("hidden", !loading)
+          }
+
+          function zeigeStatus(nachricht: string, art: "success" | "error") {
+            if (!status) return
+            status.classList.remove("hidden")
+            status.className = `mt-4 text-sm max-w-lg mx-auto rounded border px-4 py-3 ${
+              art === "success"
+                ? "text-tiefschwarz border-vintage-gold/60"
+                : "text-tiefschwarz border-kino-rot/50"
+            }`
+            status.style.background = art === "success" ? "#F5EDE0" : "#FAF0E8"
+            status.innerHTML = nachricht
+          }
+
+          const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+          form?.addEventListener("submit", async (event) => {
+            event.preventDefault()
+            const wert = input?.value.trim() ?? ""
+            if (!input || !wert) {
+              zeigeStatus(
+                "Bitte geben Sie eine E-Mail-Adresse an.",
+                "error"
+              )
+              input?.focus()
+              return
+            }
+            if (!EMAIL_REGEX.test(wert)) {
+              zeigeStatus(
+                "Die E-Mail-Adresse sieht nicht korrekt aus.",
+                "error"
+              )
+              input.focus()
+              return
+            }
+            setLoading(true)
+            zeigeStatus("", "success")
+            if (status) status.classList.add("hidden")
+
+            try {
+              const res = await fetch("/api/newsletter", {
+                method: "POST",
+                headers: {"content-type": "application/json"},
+                body: JSON.stringify({email: input.value.trim()}),
+              })
+              const data = await res.json().catch(() => ({ok: false, message: "Ungültige Antwort vom Server."}))
+
+              if (res.ok && data.ok) {
+                form.classList.add("hidden")
+                hint?.classList.add("hidden")
+                zeigeStatus(
+                  "Fast geschafft! Wir haben Ihnen einen Bestätigungslink an <strong>" +
+                    input.value.trim().replace(/[<>&"']/g, "") +
+                    "</strong> geschickt. Bitte klicken Sie ihn, um Ihre Anmeldung abzuschließen.",
+                  "success"
+                )
+              } else {
+                zeigeStatus(
+                  (data.message ?? "Etwas ist schiefgelaufen.") +
+                    " Alternativ per Mail an <a href=\"mailto:zentrale@kinoweinheim.de\" class=\"text-kino-rot underline\">zentrale@kinoweinheim.de</a>.",
+                  "error"
+                )
+              }
+            } catch (e) {
+              zeigeStatus(
+                "Verbindung zum Server fehlgeschlagen. Bitte später erneut versuchen oder per Mail an <a href=\"mailto:zentrale@kinoweinheim.de\" class=\"text-kino-rot underline\">zentrale@kinoweinheim.de</a>.",
+                "error"
+              )
+            } finally {
+              setLoading(false)
+            }
+          })
+        </script>
       </div>
     </section>
 

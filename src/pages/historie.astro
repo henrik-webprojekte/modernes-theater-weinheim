@@ -2,39 +2,74 @@
 import Layout from "../layouts/Layout.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
+import {Image} from "astro:assets"
+import publikum1930 from "../assets/historie/publikum-1930.jpg"
+import premierenacht from "../assets/historie/premierenacht-1930er.jpg"
+import kinofassade1937 from "../assets/historie/kinofassade-1937.jpg"
+import marquee1947 from "../assets/historie/marquee-1947.jpg"
+
+const archivbilder = [
+  {src: publikum1930, alt: "Kinopublikum in einem historischen Saal, 1930", jahr: "1930"},
+  {src: premierenacht, alt: "Kinopremiere bei Nacht mit Scheinwerferstrahlen, 1930er", jahr: "1930er"},
+  {src: kinofassade1937, alt: "Kinofassade der 1930er Jahre mit Filmplakaten", jahr: "1937"},
+  {src: marquee1947, alt: "Kino mit Leuchtreklame und Marquee, 1947", jahr: "1947"},
+]
 
 const meilensteine = [
   {
+    jahr: "1904",
+    titel: "Die ersten Filme in Weinheim",
+    text: 'Die Bergstraßen-Stadt sieht ihre ersten laufenden Bilder — in Sälen, Gaststätten und Wanderkinos, lange bevor es ein festes Lichtspielhaus gibt. Der spätere Kinounternehmer Franz Ade wird über diese Anfänge Zeit seines Lebens gerne erzählen.',
+  },
+  {
     jahr: "1924",
     titel: "Die Luvo-Lichtspiele öffnen",
-    text: 'Am 23. Dezember eröffnet der Konditormeister Ludwig Vogel das erste Kino in der Weinheimer Innenstadt — im Hinterhaus seines Café Vogel. Ein kleiner Saal, große Ambitionen: der Name „Luvo-Lichtspiele" ist eine Verkürzung seines eigenen Namens.',
+    text: 'Am 23. Dezember eröffnet der Konditormeister Ludwig Vogel das erste feste Kino der Weinheimer Innenstadt — im Hinterhaus seines Café Vogel, zwischen dem Textilhaus Isaak Heil und der Apotheke Eichhorn. Der Name „Luvo-Lichtspiele" ist eine Verkürzung seines eigenen Namens. Weinheim hat in diesem Jahr gleich drei Kinos gleichzeitig, darunter auch die Odeon-Lichtspiele.',
   },
   {
     jahr: "1925",
     titel: "Aus Luvo wird das Moderne Theater",
-    text: 'Nur drei Monate nach der Eröffnung übernimmt Franz Ade den Betrieb und gibt ihm den Namen, der ihn bis heute begleitet: „Modernes Theater". Der Beginn einer Institution im Weinheimer Kulturleben.',
+    text: 'Nur drei Monate nach der Eröffnung übernimmt Franz Ade den Betrieb und gibt ihm den Namen, der ihn bis heute begleitet: „Modernes Theater". Ade wird später „der große alte Mann des Kinos in Weinheim" genannt — er betreibt zeitweise auch das Apollo und das Capitol in der Stadt.',
+  },
+  {
+    jahr: "Nachkriegszeit",
+    titel: "Karl Babelotzky übernimmt",
+    text: 'Nach den Wirren des Zweiten Weltkriegs wird Karl Babelotzky neuer Besitzer des Modernen Theaters. Das Kino wird zum Sehnsuchtsort einer ganzen Generation: Filmpremieren, Wochenschau-Bilder und Hollywood-Traumfabrik füllen den Saal in einer Zeit, in der Weinheim langsam wieder Boden fasst.',
+  },
+  {
+    jahr: "1986",
+    titel: "Alfred Speiser übernimmt das Haus",
+    text: 'Mit Alfred Speiser beginnt die bis heute andauernde Ära der Familie Speiser. Über die Jahrzehnte modernisiert das Haus schrittweise Technik, Bestuhlung und Programm — bleibt aber, was es immer war: ein familiengeführtes Innenstadt-Kino mit Handschrift.',
   },
   {
     jahr: "2015",
     titel: "Cherie eröffnet",
-    text: 'Im Dezember 2015 kommt ein neuer Saal hinzu: „Cherie" — kleiner, exklusiver, mit Lounge-Sesseln, eigenem Foyer und einem handgemalten Wandbild der beiden Weinheimer Burgen. Modernste 3D-Projektion trifft auf Wohnzimmer-Atmosphäre.',
+    text: 'Im Dezember kommt ein neuer Saal hinzu: „Cherie" — kleiner, exklusiver, mit Lounge-Sesseln, eigenem Foyer und einem handgemalten Wandbild der beiden Weinheimer Burgen von Ulrich Allgeier. Modernste 3D-Projektion trifft auf Wohnzimmer-Atmosphäre.',
+  },
+  {
+    jahr: "2024",
+    titel: "100 Jahre Modernes Theater",
+    text: 'Am 23. Dezember feiert das Modernes Theater sein hundertjähriges Bestehen — als eines der wenigen deutschen Kinos, die seit ihrer Gründung ununterbrochen unter demselben Namen und in denselben Mauern spielen.',
   },
   {
     jahr: "Heute",
     titel: "Drei Säle, ein Kinogarten, ein Programm für alle",
-    text: "Chic, Cherie, Charme und der Kinogarten unter freiem Himmel — das Moderne Theater bleibt, was es seit über 100 Jahren ist: ein Ort, an dem Weinheim gemeinsam ins Licht schaut.",
+    text: "Chic, Cherie, Charme und der Kinogarten unter freiem Himmel — das Moderne Theater bleibt, was es seit hundert Jahren ist: ein Ort, an dem Weinheim gemeinsam ins Licht schaut.",
   },
 ]
 ---
 
-<Layout title="Historie — Modernes Theater Weinheim">
+<Layout
+  title="Historie — Modernes Theater Weinheim"
+  description="Seit 1924 Kino in Weinheim. Von den „Luvo-Lichtspielen“ zum Modernen Theater: über 100 Jahre Filmgeschichte an der Bergstraße."
+>
   <Header />
 
-  <main>
+  <main id="hauptinhalt">
 
     <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
       <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
-      <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+      <div class="max-w-4xl mx-auto px-6 py-20 md:py-24 text-center">
         <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
           Über 100 Jahre Kino in Weinheim
         </p>
@@ -47,8 +82,26 @@ const meilensteine = [
       </div>
     </section>
 
+    <section class="bg-off-white px-6 py-16" style="background: #FAF6EE;">
+      <div class="max-w-2xl mx-auto">
+        <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-3 text-center">Wo alles spielt</p>
+        <h2 class="font-display text-2xl md:text-3xl text-tiefschwarz text-center mb-6 leading-tight">Weinheim: die Stadt zwischen zwei Burgen</h2>
+        <p class="text-sm md:text-base text-tiefschwarz/85 leading-relaxed mb-4">
+          Weinheim liegt an der Bergstraße, auf halber Strecke zwischen Darmstadt und Heidelberg. Ihren Namen verdankt die Stadt einem fränkischen Stammesfürsten namens <em>Wino</em>, dessen Siedlung <em>Winnenheim</em> im 7. Jahrhundert entstand. Erstmals urkundlich erwähnt wird der Ort <strong>755</strong> im Lorscher Codex — damit ist Weinheim älter als die meisten europäischen Hauptstädte.
+        </p>
+        <p class="text-sm md:text-base text-tiefschwarz/85 leading-relaxed mb-4">
+          Über der Innenstadt thronen zwei Burgen: die <strong>Windeck</strong>, um 1110 zum Schutz des Klosters Lorsch errichtet und 1674 im Pfälzischen Erbfolgekrieg zerstört, sowie die <strong>Wachenburg</strong>, zwischen 1907 und 1928 als jüngste Burg der Bergstraße gebaut. Beide Silhouetten grüßen die Stadt — und begegnen Ihnen im Wandgemälde des Foyers unseres Saals <em>Cherie</em>.
+        </p>
+        <p class="text-sm md:text-base text-tiefschwarz/85 leading-relaxed">
+          In dieser Kulisse spielt die Geschichte des Modernen Theaters — als kleines Innenstadt-Kino, das sich seit einem Jahrhundert seinen Platz im Rhythmus einer Stadt bewahrt hat.
+        </p>
+      </div>
+    </section>
+
     <section class="bg-creme px-6 py-16" style="background: #F5EDE0;">
       <div class="max-w-2xl mx-auto">
+        <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-3 text-center">Meilensteine</p>
+        <h2 class="font-display text-2xl md:text-3xl text-tiefschwarz text-center mb-10 leading-tight">Von 1904 bis heute</h2>
         <div class="relative pl-8">
           <div class="absolute left-[7px] top-3 bottom-3 w-[1px]" style="background: #C9A55C;"></div>
 
@@ -61,7 +114,7 @@ const meilensteine = [
                   : "background: #6B1818; border: 2px solid #C9A55C;"}
               ></div>
               <div class="font-display text-3xl text-kino-rot mb-1">{m.jahr}</div>
-              <h2 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{m.titel}</h2>
+              <h3 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{m.titel}</h3>
               <p class="text-sm md:text-base text-tiefschwarz/85 leading-relaxed">{m.text}</p>
             </div>
           ))}
@@ -74,15 +127,26 @@ const meilensteine = [
         <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3 text-center">Bilder aus dem Archiv</p>
         <h2 class="font-display text-2xl text-tiefschwarz text-center mb-8">Ein Blick in vergangene Zeiten</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[1, 2, 3, 4].map(() => (
-            <div class="aspect-[4/3] rounded overflow-hidden border relative" style="border-color: #C9A55C; filter: grayscale(1) sepia(0.15);">
-              <div class="absolute inset-0" style="background: radial-gradient(ellipse at 50% 40%, #6A6A65 0%, #2A2A28 90%);"></div>
-              <div class="absolute bottom-2 left-0 right-0 text-center text-[9px] uppercase tracking-widest text-creme/85">Archivbild</div>
+          {archivbilder.map((bild) => (
+            <div class="aspect-[4/3] rounded overflow-hidden border relative" style="border-color: #C9A55C;">
+              <Image
+                src={bild.src}
+                alt={bild.alt}
+                widths={[300, 500, 800]}
+                sizes="(max-width: 768px) 50vw, 25vw"
+                class="w-full h-full object-cover"
+                style="filter: grayscale(1) sepia(0.2);"
+                loading="lazy"
+              />
+              <div class="absolute bottom-0 left-0 right-0 text-center text-[9px] uppercase tracking-widest text-creme py-1" style="background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);">
+                Kinowelt {bild.jahr}
+              </div>
             </div>
           ))}
         </div>
-        <p class="text-xs italic text-warmes-braun/80 text-center mt-6">
-          Historische Aufnahmen folgen — das Weinheimer Stadtmuseum hat uns Zusammenarbeit zugesagt.
+        <p class="text-xs italic text-warmes-braun text-center mt-6">
+          Stimmungsbilder aus der Kinowelt der 1930er/40er. Aufnahmen aus dem Modernen Theater folgen —
+          das Weinheimer Stadtmuseum hat uns Zusammenarbeit zugesagt.
         </p>
       </div>
     </section>

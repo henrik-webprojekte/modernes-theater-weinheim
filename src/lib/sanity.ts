@@ -1,4 +1,6 @@
 ﻿import {createClient} from "@sanity/client"
+import imageUrlBuilder from "@sanity/image-url"
+import type {SanityImageSource} from "@sanity/image-url/lib/types/types"
 
 const projectId = import.meta.env.SANITY_PROJECT_ID
 const dataset = import.meta.env.SANITY_DATASET
@@ -15,6 +17,12 @@ export const sanity = createClient({
   apiVersion: "2024-01-01",
   useCdn: true,
 })
+
+const imageBuilder = imageUrlBuilder(sanity)
+
+export function urlFor(source: SanityImageSource) {
+  return imageBuilder.image(source).auto("format")
+}
 
 export type Saal = {
   _id: string
@@ -54,6 +62,8 @@ export type Film = {
   slug: {current: string}
   plakat?: {
     asset: {_ref: string; _type: string}
+    hotspot?: {x: number; y: number; height: number; width: number}
+    crop?: {top: number; bottom: number; left: number; right: number}
   }
   laenge: number
   fsk: number
@@ -150,4 +160,43 @@ export async function getAktiveFilme(): Promise<Film[]> {
       }
     }`
   )
+}
+
+function heuteIsoDate(): string {
+  return new Date().toISOString().slice(0, 10)
+}
+
+export async function getFilmeMitBevorstehendenVorstellungen(limit = 4): Promise<Film[]> {
+  const alle = await getAktiveFilme()
+  const heute = heuteIsoDate()
+  const withNext = alle
+    .map((f) => {
+      const kommende = (f.vorstellungen ?? [])
+        .filter((v) => v.datum && v.datum >= heute)
+        .sort((a, b) =>
+          (a.datum ?? "").localeCompare(b.datum ?? "") ||
+          (a.uhrzeit ?? "").localeCompare(b.uhrzeit ?? "")
+        )
+      return {film: f, naechste: kommende[0]}
+    })
+    .filter((x) => x.naechste !== undefined)
+    .sort((a, b) =>
+      (a.naechste!.datum ?? "").localeCompare(b.naechste!.datum ?? "") ||
+      (a.naechste!.uhrzeit ?? "").localeCompare(b.naechste!.uhrzeit ?? "")
+    )
+    .slice(0, limit)
+  return withNext.map((x) => x.film)
+}
+
+export async function getKommendeEvents(limit = 3): Promise<Event[]> {
+  const alle = await getEvents()
+  const heute = heuteIsoDate()
+  return alle
+    .filter((e) => !e.startDatum || (e.endDatum ?? e.startDatum) >= heute)
+    .sort((a, b) => {
+      const aDate = a.startDatum ?? "9999-12-31"
+      const bDate = b.startDatum ?? "9999-12-31"
+      return aDate.localeCompare(bDate)
+    })
+    .slice(0, limit)
 }

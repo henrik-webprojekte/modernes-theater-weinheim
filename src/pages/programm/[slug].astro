@@ -2,7 +2,7 @@
 import Layout from "../../layouts/Layout.astro"
 import Header from "../../components/Header.astro"
 import Footer from "../../components/Footer.astro"
-import {getFilmSlugs, getFilmBySlug, type Vorstellung} from "../../lib/sanity"
+import {getFilmSlugs, getFilmBySlug, urlFor, type Vorstellung} from "../../lib/sanity"
 
 export async function getStaticPaths() {
   const slugs = await getFilmSlugs()
@@ -54,10 +54,10 @@ for (const g of gruppiert) {
 }
 
 const fskFarben: Record<number, string> = {
-  0: "#4A8055",
-  6: "#4A8055",
-  12: "#B88955",
-  16: "#B88955",
+  0: "#3A7048",
+  6: "#3A7048",
+  12: "#8A5F2A",
+  16: "#8A5F2A",
   18: "#6B1818",
 }
 ---
@@ -65,7 +65,7 @@ const fskFarben: Record<number, string> = {
 <Layout title={`${film.titel} — Modernes Theater Weinheim`} description={film.kurzbeschreibung}>
   <Header />
 
-  <main>
+  <main id="hauptinhalt">
 
     <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
       <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
@@ -84,10 +84,26 @@ const fskFarben: Record<number, string> = {
 
         <div class="mx-auto md:mx-0 shrink-0">
           <div
-            class="rounded overflow-hidden border border-vintage-gold/60 relative flex items-center justify-center text-vintage-gold/80 text-xs uppercase tracking-widest text-center"
+            class="rounded overflow-hidden border border-vintage-gold/60 relative"
             style="width: 200px; height: 300px; background: linear-gradient(135deg, #4A1414 0%, #2A0808 100%);"
           >
-            {film.plakat ? "Plakat folgt" : "Kein Plakat"}
+            {film.plakat ? (
+              <img
+                src={urlFor(film.plakat).width(400).height(600).fit("crop").url()}
+                srcset={`${urlFor(film.plakat).width(400).height(600).fit("crop").url()} 400w, ${urlFor(film.plakat).width(600).height(900).fit("crop").url()} 600w`}
+                sizes="200px"
+                alt={`Filmplakat: ${film.titel}`}
+                width="200"
+                height="300"
+                loading="eager"
+                fetchpriority="high"
+                class="w-full h-full object-cover"
+              />
+            ) : (
+              <div class="w-full h-full flex items-center justify-center text-vintage-gold/80 text-xs uppercase tracking-widest text-center">
+                Kein Plakat
+              </div>
+            )}
           </div>
         </div>
 
@@ -112,7 +128,7 @@ const fskFarben: Record<number, string> = {
           <div class="flex flex-wrap items-center gap-3 text-xs text-creme/80 uppercase tracking-widest mb-6">
             <span>{film.laenge} Minuten</span>
             <span class="text-creme/40">·</span>
-            <span class="px-2 py-0.5 rounded font-medium" style={`background: ${fskFarben[film.fsk] ?? "#8A6B3D"}; color: white;`}>FSK {film.fsk}</span>
+            <span class="px-2 py-0.5 rounded font-medium" style={`background: ${fskFarben[film.fsk] ?? "#6B4E1F"}; color: white;`}>FSK {film.fsk}</span>
             {film.genre && (
               <>
                 <span class="text-creme/40">·</span>
@@ -220,7 +236,7 @@ const fskFarben: Record<number, string> = {
             <h3 class="font-display text-base text-tiefschwarz">Preise</h3>
           </div>
           <p class="text-sm text-tiefschwarz/85 leading-relaxed">
-            Erwachsene 11 € · Ermäßigt 9 € · Kinder 6 € · <span class="text-kino-rot font-medium">Kinotag Di & Starttag Do: 7 €</span>
+            Erwachsene 11 € · Ermäßigt 9 € · Kinder 6 € · <span class="text-kino-rot font-medium">Kinotag Di & Starttag Do: 7 €</span><br /><span class="text-xs italic text-warmes-braun">Alle Preise inkl. gesetzl. USt.</span>
           </p>
         </div>
       </div>

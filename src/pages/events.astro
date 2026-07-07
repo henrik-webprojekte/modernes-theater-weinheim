@@ -20,7 +20,7 @@ const fallbackEvents: StaticEvent[] = [
     kategorie: "kaffee-tee-kino",
     wiederkehrend: "Jeden 1. Mittwoch im Monat",
     kurzbeschreibung: "Ein besonderer Film am Nachmittag — mit Kaffee, Tee und Kuchen zum Kinoticket. Einlass 14:00, Beginn 15:00.",
-    farbe: "#C9A55C",
+    farbe: "#8A6B2E",
   },
   {
     titel: "Enzo-Day",
@@ -30,45 +30,80 @@ const fallbackEvents: StaticEvent[] = [
     farbe: "#6B1818",
   },
   {
-    titel: "Open-Air-Sommer",
+    titel: "Kino Open-Air am Fels",
     kategorie: "open-air",
-    wiederkehrend: "30. Juli – 06. September 2026",
-    kurzbeschreibung: "Sechs Locations zwischen Weinheim, Hemsbach und Hockenheim — Open-Air-Kino in Kooperation mit lokalen Partnern.",
-    farbe: "#9BC988",
+    wiederkehrend: "30.07. – 02.08.2026",
+    kurzbeschreibung: "In Kooperation mit der DAV Sektion Weinheim. Filme: FREE SOLO · EXTRAWURST · MISSION: IMPOSSIBLE – THE FINAL RECKONING · DIE ÄLTERN. Tickets im Kino, am DAV-Kletterzentrum und im Shop.",
+    farbe: "#4A7038",
+  },
+  {
+    titel: "Open-Air Unter-Absteinach",
+    kategorie: "open-air",
+    wiederkehrend: "08.08.2026",
+    kurzbeschreibung: "Backhaus Unter-Absteinach in Kooperation mit der Dorfwerkstatt Abtsteinach e. V. Film: DAS KANU DES MANITU.",
+    farbe: "#4A7038",
+  },
+  {
+    titel: "Filmfestival Bensheim-Auerbach",
+    kategorie: "open-air",
+    wiederkehrend: "10.08. – 15.08.2026",
+    kurzbeschreibung: "Im Kronepark. Filme: EPIC · DAS KANU DES MANITU · KONKLAVE · 22 BAHNEN · EXTRAWURST · EIN FAST PERFEKTER ANTRAG. Tickets bei Weinhandel Frihmess.",
+    farbe: "#4A7038",
+  },
+  {
+    titel: "Wiesensee Hemsbach",
+    kategorie: "open-air",
+    wiederkehrend: "17.08. – 23.08.2026",
+    kurzbeschreibung: "Sieben Filme in sieben Nächten: EXTRAWURST · AMRUM · GANZER HALBER BRUDER · DER SALZPFAD · DANN PASSIERT DAS LEBEN · CHERI, ICH KOMME! · ACH, DIESE LÜCKE, DIESE ENTSETZLICHE LÜCKE.",
+    farbe: "#4A7038",
+  },
+  {
+    titel: "Open-Air Hockenheim",
+    kategorie: "open-air",
+    wiederkehrend: "28. + 29.08.2026",
+    kurzbeschreibung: "Im Alten Fahrerlager. Programm folgt.",
+    farbe: "#4A7038",
+  },
+  {
+    titel: "Kulinarisches Open-Air im Woinemer Schlosspark",
+    kategorie: "open-air",
+    wiederkehrend: "03.09. – 09.09.2026",
+    kurzbeschreibung: "In Zusammenarbeit mit dem Schlosspark Restaurant. Filme und Ticketverkauf folgen.",
+    farbe: "#4A7038",
   },
   {
     titel: "Zauberer Schmittini",
     kategorie: "schmittini",
     wiederkehrend: "01.11.2026 & 13.12.2026",
     kurzbeschreibung: "Unser Lieblingszauberer kehrt zurück auf die Bühne im Chic. Ein Abend voller Illusion und Charme.",
-    farbe: "#B88955",
+    farbe: "#8A5F2A",
   },
   {
     titel: "Sneak Preview",
     kategorie: "sondervorstellung",
     wiederkehrend: "Wechselnd",
     kurzbeschreibung: "Der Film wird erst nach dem Trailer verraten — für 5 € ein Überraschungsabend im Kinosessel.",
-    farbe: "#9A7DC9",
+    farbe: "#5A3F7F",
   },
   {
     titel: "Sondervorstellungen",
     kategorie: "sondervorstellung",
     wiederkehrend: "Nach Ankündigung",
     kurzbeschreibung: "Klassiker der Filmgeschichte, Themenabende und ausgewählte Sonderreihen — folgen Sie unserem Newsletter für aktuelle Termine.",
-    farbe: "#8A6B3D",
+    farbe: "#6B4E1F",
   },
 ]
 
 function farbeFuerKategorie(kategorie: string): string {
   const farben: Record<string, string> = {
-    "kaffee-tee-kino": "#C9A55C",
+    "kaffee-tee-kino": "#8A6B2E",
     "enzo-day": "#6B1818",
-    "open-air": "#9BC988",
-    "schmittini": "#B88955",
-    "sondervorstellung": "#9A7DC9",
-    "sonstiges": "#8A6B3D",
+    "open-air": "#4A7038",
+    "schmittini": "#8A5F2A",
+    "sondervorstellung": "#5A3F7F",
+    "sonstiges": "#6B4E1F",
   }
-  return farben[kategorie] ?? "#C9A55C"
+  return farben[kategorie] ?? "#8A6B2E"
 }
 
 function formatDatum(startDatum: string, endDatum?: string): string {
@@ -82,14 +117,17 @@ function formatDatum(startDatum: string, endDatum?: string): string {
 const zeigeSanity = sanityEvents.length > 0
 ---
 
-<Layout title="Events — Modernes Theater Weinheim">
+<Layout
+  title="Events — Modernes Theater Weinheim"
+  description="Sonderreihen und Events im Modernen Theater Weinheim: Kaffee-Tee-Kino, Enzo-Day, Sneak Preview, Zauberer Schmittini und Open-Air-Sommer."
+>
   <Header />
 
-  <main>
+  <main id="hauptinhalt">
 
     <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
       <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
-      <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+      <div class="max-w-4xl mx-auto px-6 py-20 md:py-24 text-center">
         <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
           Neben dem Kinoprogramm
         </p>

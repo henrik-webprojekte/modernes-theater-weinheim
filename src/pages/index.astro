@@ -1,27 +1,101 @@
-﻿---
+---
 import Layout from "../layouts/Layout.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
-import {getSaele} from "../lib/sanity"
+import {Image} from "astro:assets"
+import {
+  getSaele,
+  getFilmeMitBevorstehendenVorstellungen,
+  getKommendeEvents,
+  urlFor,
+  type Film,
+  type Event,
+} from "../lib/sanity"
+import heroSaal from "../assets/hero/dunkler-saal.jpg"
 
 const saele = await getSaele()
+const dieseWocheFilme = await getFilmeMitBevorstehendenVorstellungen(4)
+const kommendeEvents = await getKommendeEvents(3)
+
+const wochentage = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+
+function formatNaechsteVorstellung(film: Film): string {
+  const heute = new Date().toISOString().slice(0, 10)
+  const kommende = (film.vorstellungen ?? [])
+    .filter((v) => v.datum && v.datum >= heute)
+    .sort((a, b) =>
+      (a.datum ?? "").localeCompare(b.datum ?? "") ||
+      (a.uhrzeit ?? "").localeCompare(b.uhrzeit ?? "")
+    )
+  const v = kommende[0]
+  if (!v || !v.datum) return ""
+  const wochentag = wochentage[new Date(v.datum).getDay()]
+  return `${wochentag} ${v.uhrzeit ?? ""}`.trim()
+}
+
+type FallbackFilm = {titel: string; kurzbeschreibung: string; naechste: string; badge: string}
+const fallbackFilme: FallbackFilm[] = [
+  {titel: "Programm folgt", kurzbeschreibung: "Sobald das aktuelle Programm im Sanity-Studio angelegt ist, erscheinen hier die nächsten Filme mit Vorstellungen.", naechste: "", badge: "Vorschau"},
+]
+
+type FallbackHighlight = {kicker: string; titel: string; text: string; farbe: string; kategorie: string}
+const fallbackHighlights: FallbackHighlight[] = [
+  {kicker: "Jeden 1. Mittwoch im Monat", titel: "Kaffee-Tee-Kino", text: "Ein besonderer Film am Nachmittag — mit Kaffee, Tee und Kuchen zum Kinoticket. Einlass 14:00, Beginn 15:00.", farbe: "#8A6B2E", kategorie: "kaffee-tee-kino"},
+  {kicker: "30.07. – 06.09.2026", titel: "Open-Air-Sommer", text: "Sechs Standorte zwischen Weinheim, Hemsbach und Hockenheim — Kino unter freiem Himmel in Kooperation mit lokalen Partnern.", farbe: "#4A7038", kategorie: "open-air"},
+  {kicker: "01.11. & 13.12.2026", titel: "Zauberer Schmittini", text: "Unser Lieblingszauberer kehrt zurück auf die Bühne im Chic. Ein Abend voller Illusion und Charme.", farbe: "#8A5F2A", kategorie: "schmittini"},
+]
+
+const highlightsZuAnzeigen = kommendeEvents.length > 0 ? kommendeEvents : null
+
+const eventFarben: Record<string, string> = {
+  "kaffee-tee-kino": "#8A6B2E",
+  "enzo-day": "#6B1818",
+  "open-air": "#4A7038",
+  "schmittini": "#8A5F2A",
+  "sondervorstellung": "#5A3F7F",
+  "sonstiges": "#6B4E1F",
+}
+
+function formatEventDatum(event: Event): string {
+  if (event.wiederkehrend) return event.wiederkehrend
+  if (!event.startDatum) return ""
+  const opt: Intl.DateTimeFormatOptions = {day: "2-digit", month: "2-digit", year: "numeric"}
+  const start = new Date(event.startDatum).toLocaleDateString("de-DE", opt)
+  if (!event.endDatum) return start
+  const ende = new Date(event.endDatum).toLocaleDateString("de-DE", opt)
+  return `${start} – ${ende}`
+}
 ---
 
-<Layout title="Modernes Theater Weinheim — Kino, Eventlocation und mehr">
+<Layout
+  title="Modernes Theater Weinheim — Kino, Eventlocation und mehr"
+  description="Traditionsreiches Kino in Weinheim, seit 1924. Drei Säle, Kinogarten, aktuelles Filmprogramm und Räume für Firmenevents, Geburtstage und Feiern."
+>
   <Header />
 
-  <main>
+  <main id="hauptinhalt">
 
-    <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
-      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
-      <div class="max-w-4xl mx-auto px-6 py-24 text-center">
+    {/* 1. Hero */}
+    <section class="text-creme relative overflow-hidden" style="background: #1A1310;">
+      <Image
+        src={heroSaal}
+        alt=""
+        widths={[800, 1200, 1600, 2000]}
+        sizes="100vw"
+        class="absolute inset-0 w-full h-full object-cover"
+        loading="eager"
+        style="opacity: 0.35;"
+      />
+      <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(26,19,16,0.55) 0%, rgba(26,19,16,0.75) 60%, rgba(26,19,16,0.95) 100%);"></div>
+      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.6;"></div>
+      <div class="relative max-w-4xl mx-auto px-6 py-28 md:py-32 text-center">
         <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-4">
           Seit 1924 in Weinheim
         </p>
-        <h1 class="font-display text-5xl md:text-7xl leading-tight text-creme mb-6">
+        <h1 class="font-display text-5xl md:text-7xl leading-tight text-creme mb-6" style="text-shadow: 0 2px 20px rgba(0,0,0,0.6);">
           Modernes Theater
         </h1>
-        <p class="text-lg text-creme/80 max-w-2xl mx-auto leading-relaxed mb-8">
+        <p class="text-lg text-creme/90 max-w-2xl mx-auto leading-relaxed mb-8" style="text-shadow: 0 1px 8px rgba(0,0,0,0.5);">
           Drei Säle, jeder mit eigenem Charakter. Ein Kinogarten für die warme Jahreszeit.
           Und ein Programm, das die ganze Familie bewegt.
         </p>
@@ -42,73 +116,284 @@ const saele = await getSaele()
       </div>
     </section>
 
-    <section class="bg-creme px-6 py-20" style="background: #F5EDE0;">
+    {/* 2. Diese Woche im Programm */}
+    <section class="bg-off-white px-6 py-16 md:py-20" style="background: #FAF6EE;">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-10">
+          <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-3">Aktuelles Programm</p>
+          <h2 class="font-display text-3xl md:text-4xl leading-tight text-tiefschwarz mb-3">Diese Woche im Kino</h2>
+          <p class="text-sm text-tiefschwarz/85 max-w-xl mx-auto">Die nächsten Vorstellungen — direkt aus unserem laufenden Programm.</p>
+        </div>
+
+        {dieseWocheFilme.length > 0 && (
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-8">
+            {dieseWocheFilme.map((film) => (
+              <a href={`/programm/${film.slug.current}`} class="group block">
+                <div class="aspect-[2/3] rounded overflow-hidden border border-vintage-gold/40 bg-tiefschwarz mb-3 relative" style="background: #1A1310;">
+                  {film.plakat ? (
+                    <img
+                      src={urlFor(film.plakat).width(300).height(450).fit("crop").url()}
+                      srcset={`${urlFor(film.plakat).width(300).height(450).fit("crop").url()} 300w, ${urlFor(film.plakat).width(500).height(750).fit("crop").url()} 500w`}
+                      sizes="(max-width: 768px) 45vw, 22vw"
+                      alt={`Filmplakat: ${film.titel}`}
+                      width="300"
+                      height="450"
+                      loading="lazy"
+                      class="w-full h-full object-cover transition-transform group-hover:scale-[1.02]"
+                    />
+                  ) : (
+                    <div class="w-full h-full flex items-center justify-center text-vintage-gold/80 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</div>
+                  )}
+                  {film.badges?.includes("neu") && (
+                    <span class="absolute top-2 left-2 bg-kino-rot text-creme text-[10px] uppercase tracking-widest px-2 py-0.5 rounded">Neu</span>
+                  )}
+                </div>
+                <h3 class="font-display text-base md:text-lg text-tiefschwarz leading-tight mb-1 group-hover:text-kino-rot transition-colors">{film.titel}</h3>
+                <p class="text-xs uppercase tracking-widest text-warmes-braun">
+                  {formatNaechsteVorstellung(film)}
+                </p>
+              </a>
+            ))}
+          </div>
+        )}
+
+        {dieseWocheFilme.length === 0 && (
+          <div class="bg-creme border border-vintage-gold/40 rounded p-8 text-center max-w-lg mx-auto mb-8" style="background: #F5EDE0;">
+            <p class="text-sm text-warmes-braun italic">
+              {fallbackFilme[0].kurzbeschreibung}
+            </p>
+          </div>
+        )}
+
+        <div class="text-center">
+          <a href="/programm" class="inline-flex items-center gap-2 text-sm text-kino-rot border-b border-vintage-gold/60 pb-0.5 hover:text-tiefschwarz transition-colors">
+            <span>Alle Filme dieser Woche ansehen</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {/* 3. Reservierungs-Zeile */}
+    <section class="bg-kino-rot text-creme px-6 py-8 md:py-10" style="background: #6B1818;">
+      <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+        <div class="flex items-center gap-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 text-vintage-gold">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <div>
+            <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-1">Karten reservieren</p>
+            <p class="font-display text-2xl md:text-3xl leading-tight">Kostenlos während der Öffnungszeiten</p>
+            <p class="text-sm text-creme/90 mt-1">Telefonisch oder direkt an unserer Kinokasse.</p>
+          </div>
+        </div>
+        <a
+          href="tel:0620162155"
+          class="bg-vintage-gold text-tiefschwarz px-6 py-3 rounded font-display text-lg tracking-wider hover:bg-creme transition-colors whitespace-nowrap"
+        >
+          06201 · 62155
+        </a>
+      </div>
+    </section>
+
+    {/* 3.5 Spar-Tage der Woche */}
+    <section class="bg-off-white px-6 py-10 md:py-12" style="background: #FAF6EE;">
+      <div class="max-w-4xl mx-auto">
+        <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-5 text-center">Regelmäßige Spar-Tage</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+          <div class="bg-creme border rounded p-4 md:p-5 flex items-center gap-4" style="background: #F5EDE0; border-color: #E5D8C0; border-top: 2px solid #C9A55C;">
+            <div class="font-display text-3xl md:text-4xl text-kino-rot leading-none shrink-0">7 €</div>
+            <div>
+              <p class="font-display text-lg md:text-xl text-tiefschwarz leading-tight">Kinotag</p>
+              <p class="text-xs uppercase tracking-widest text-warmes-braun mt-1">Jeden Dienstag</p>
+            </div>
+          </div>
+          <div class="bg-creme border rounded p-4 md:p-5 flex items-center gap-4" style="background: #F5EDE0; border-color: #E5D8C0; border-top: 2px solid #C9A55C;">
+            <div class="font-display text-3xl md:text-4xl text-kino-rot leading-none shrink-0">7 €</div>
+            <div>
+              <p class="font-display text-lg md:text-xl text-tiefschwarz leading-tight">Starttag</p>
+              <p class="text-xs uppercase tracking-widest text-warmes-braun mt-1">Jeden Donnerstag</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* 4. Nächste Höhepunkte */}
+    <section class="bg-creme px-6 py-16 md:py-20" style="background: #F5EDE0;">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-10">
+          <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-3">Neben dem Kinoprogramm</p>
+          <h2 class="font-display text-3xl md:text-4xl leading-tight text-tiefschwarz mb-3">Nächste Höhepunkte</h2>
+          <p class="text-sm text-tiefschwarz/85 max-w-xl mx-auto">Sonderreihen, Events und Termine, auf die man sich freuen darf.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          {highlightsZuAnzeigen && highlightsZuAnzeigen.map((event) => {
+            const farbe = eventFarben[event.kategorie] ?? "#6B4E1F"
+            return (
+              <article class="bg-off-white border border-vintage-gold/20 rounded p-5" style={`background: #FAF6EE; border-top: 3px solid ${farbe};`}>
+                <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style={`color: ${farbe};`}>{formatEventDatum(event)}</p>
+                <h3 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{event.titel}</h3>
+                {event.kurzbeschreibung && (
+                  <p class="text-sm text-tiefschwarz/85 leading-relaxed">{event.kurzbeschreibung}</p>
+                )}
+              </article>
+            )
+          })}
+          {!highlightsZuAnzeigen && fallbackHighlights.map((h) => (
+            <article class="bg-off-white border border-vintage-gold/20 rounded p-5" style={`background: #FAF6EE; border-top: 3px solid ${h.farbe};`}>
+              <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style={`color: ${h.farbe};`}>{h.kicker}</p>
+              <h3 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{h.titel}</h3>
+              <p class="text-sm text-tiefschwarz/85 leading-relaxed">{h.text}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="text-center">
+          <a href="/events" class="inline-flex items-center gap-2 text-sm text-kino-rot border-b border-vintage-gold/60 pb-0.5 hover:text-tiefschwarz transition-colors">
+            <span>Alle Sonderreihen und Events</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {/* 5. Säle */}
+    <section class="bg-off-white px-6 py-16 md:py-20" style="background: #FAF6EE;">
       <div class="max-w-5xl mx-auto text-center">
-        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
+        <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-3">
           Drei Häuser unter einem Dach
         </p>
-        <h2 class="font-display text-4xl md:text-5xl leading-tight text-tiefschwarz mb-4">
+        <h2 class="font-display text-3xl md:text-4xl leading-tight text-tiefschwarz mb-3">
           Unsere Säle
         </h2>
-        <p class="text-base text-tiefschwarz/75 max-w-2xl mx-auto leading-relaxed mb-12">
+        <p class="text-sm text-tiefschwarz/85 max-w-2xl mx-auto leading-relaxed mb-10">
           Jeder Saal hat seinen eigenen Charakter — vom klassischen Vorhang bis zur
           Premium-Lounge.
         </p>
 
         {saele.length === 0 && (
-          <div class="bg-off-white border border-vintage-gold/50 rounded p-8 max-w-lg mx-auto">
-            <p class="text-warmes-braun italic">
-              Noch keine Säle in Sanity angelegt. Öffne das Studio auf
-              <a href="http://localhost:3333" class="text-kino-rot underline mx-1">localhost:3333</a>
-              und lege welche an — dann erscheinen sie hier automatisch.
+          <div class="bg-creme border border-vintage-gold/50 rounded p-8 max-w-lg mx-auto" style="background: #F5EDE0;">
+            <p class="text-warmes-braun italic text-sm">
+              Noch keine Säle in Sanity angelegt.
             </p>
           </div>
         )}
 
         {saele.length > 0 && (
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {saele.map((saal) => (
-              <article
-                class="bg-tiefschwarz text-creme p-6 rounded text-left border-t-2"
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            {saele.slice(0, 3).map((saal) => (
+              <a
+                href={`/saele#${saal.slug.current}`}
+                class="bg-tiefschwarz text-creme p-6 rounded text-left border-t-2 hover:opacity-90 transition-opacity"
                 style={`background: #1A1310; border-top-color: ${saal.farbakzent ?? "#C9A55C"};`}
               >
-                <h3 class="font-display text-3xl mb-2">{saal.name}</h3>
+                <h3 class="font-display text-2xl md:text-3xl mb-2">{saal.name}</h3>
                 <p
-                  class="text-xs uppercase tracking-widest mb-4"
+                  class="text-xs uppercase tracking-widest mb-3"
                   style={`color: ${saal.farbakzent ?? "#C9A55C"};`}
                 >
                   {saal.plaetze} Plätze
                 </p>
                 {saal.kurzbeschreibung && (
-                  <p class="text-sm text-creme/70 leading-relaxed">
+                  <p class="text-sm text-creme/80 leading-relaxed">
                     {saal.kurzbeschreibung}
                   </p>
                 )}
-              </article>
+              </a>
             ))}
           </div>
         )}
+
+        <a href="/saele" class="inline-flex items-center gap-2 text-sm text-kino-rot border-b border-vintage-gold/60 pb-0.5 hover:text-tiefschwarz transition-colors">
+          <span>Alle Säle im Detail</span>
+          <span aria-hidden="true">→</span>
+        </a>
       </div>
     </section>
 
-    <section class="bg-kino-rot text-creme px-6 py-16 text-center" style="background: #6B1818;">
-      <div class="max-w-3xl mx-auto">
-        <p class="text-xs uppercase tracking-[0.3em] text-creme/70 mb-3">
-          Ihr Anlass, unser Ort
-        </p>
-        <h2 class="font-display text-3xl md:text-4xl leading-tight mb-4">
-          Feiern Sie bei uns
-        </h2>
-        <p class="text-base text-creme/85 max-w-xl mx-auto leading-relaxed mb-6">
-          Firmenevents, Geburtstage, Vereinsfeiern — mit eigenem Kinogarten
-          und Blick auf die Windeck.
-        </p>
-        <a
-          href="/vermietung"
-          class="inline-block border border-vintage-gold text-creme px-6 py-3 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
-        >
-          Zur Vermietung
-        </a>
+    {/* 6. Für besondere Anlässe */}
+    <section class="bg-creme px-6 py-16 md:py-20" style="background: #F5EDE0;">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-10">
+          <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-3">Ihr Anlass, unser Ort</p>
+          <h2 class="font-display text-3xl md:text-4xl leading-tight text-tiefschwarz mb-3">Für besondere Anlässe</h2>
+          <p class="text-sm text-tiefschwarz/85 max-w-2xl mx-auto leading-relaxed">
+            Ob eigenes Fest mit Filmvorführung oder Gruppen-Besuch im laufenden Programm — wir richten uns nach Ihrem Anlass.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <article class="bg-off-white border border-vintage-gold/20 rounded p-6" style="background: #FAF6EE; border-top: 3px solid #6B1818;">
+            <p class="text-[10px] uppercase tracking-[0.2em] mb-2 text-kino-rot">Ganzer Saal exklusiv</p>
+            <h3 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">Vermietung</h3>
+            <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-3">Firmenevents, Geburtstage, Vereinsfeiern — mit Catering, Kinogarten und Blick auf die Windeck.</p>
+            <a href="/vermietung" class="text-xs text-kino-rot border-b border-vintage-gold/60 pb-0.5 hover:text-tiefschwarz transition-colors">Anfrage senden →</a>
+          </article>
+
+          <article class="bg-off-white border border-vintage-gold/20 rounded p-6" style="background: #FAF6EE; border-top: 3px solid #6B4E1F;">
+            <p class="text-[10px] uppercase tracking-[0.2em] mb-2 text-warmes-braun">Für Gruppen im Programm</p>
+            <h3 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">Sondervorstellungen</h3>
+            <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-3">Schulklassen, Betriebsausflüge, private Runden: flexible Vorstellungen einzelner Filme — auch außerhalb der regulären Zeiten.</p>
+            <a href="tel:0620162155" class="text-xs text-kino-rot border-b border-vintage-gold/60 pb-0.5 hover:text-tiefschwarz transition-colors">Anrufen: 06201 · 62155 →</a>
+          </article>
+
+          <article class="bg-off-white border border-vintage-gold/20 rounded p-6" style="background: #FAF6EE; border-top: 3px solid #4A7038;">
+            <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style="color: #4A7038;">Von Frühling bis Herbst</p>
+            <h3 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">Kinogarten</h3>
+            <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-3">Achtzig Quadratmeter unter freiem Himmel, mit Bühne und Bar — für private Veranstaltungen oder als Zusatz zum Saal.</p>
+            <a href="/saele#kinogarten" class="text-xs text-kino-rot border-b border-vintage-gold/60 pb-0.5 hover:text-tiefschwarz transition-colors">Zum Kinogarten →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    {/* 7. Newsletter + Social */}
+    <section class="bg-tiefschwarz text-creme px-6 py-14 md:py-16" style="background: #1A1310;">
+      <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
+
+        <div>
+          <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">Kein Filmstart mehr verpassen</p>
+          <h2 class="font-display text-2xl md:text-3xl leading-tight text-creme mb-3">Unser Newsletter</h2>
+          <p class="text-sm text-creme/85 leading-relaxed mb-5">
+            Ca. einmal pro Woche neue Filme, Sonderreihen und Events direkt ins Postfach — jederzeit abbestellbar.
+          </p>
+          <a
+            href="/kontakt#newsletter"
+            class="inline-block bg-kino-rot text-creme px-5 py-2.5 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
+          >
+            Zum Newsletter
+          </a>
+        </div>
+
+        <div>
+          <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">Folgen Sie uns</p>
+          <h2 class="font-display text-2xl md:text-3xl leading-tight text-creme mb-3">Immer im Bild</h2>
+          <p class="text-sm text-creme/85 leading-relaxed mb-5">
+            Trailer, Blicke hinter die Kulissen und kurze Einladungen zu besonderen Abenden — auf Instagram, TikTok und Facebook.
+          </p>
+          <div class="flex gap-3">
+            <a href="https://www.instagram.com/kinoweinheim/" aria-label="Instagram" class="inline-flex items-center justify-center w-11 h-11 border border-vintage-gold/60 rounded text-vintage-gold hover:bg-vintage-gold/10 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            </a>
+            <a href="https://www.tiktok.com/@kinoweinheim" aria-label="TikTok" class="inline-flex items-center justify-center w-11 h-11 border border-vintage-gold/60 rounded text-vintage-gold hover:bg-vintage-gold/10 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.13z"/>
+              </svg>
+            </a>
+            <a href="https://www.facebook.com/kinoweinheim" aria-label="Facebook" class="inline-flex items-center justify-center w-11 h-11 border border-vintage-gold/60 rounded text-vintage-gold hover:bg-vintage-gold/10 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
       </div>
     </section>
 

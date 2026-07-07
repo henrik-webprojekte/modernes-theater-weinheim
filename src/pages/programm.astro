@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
-import {getAktiveFilme, type Film, type Vorstellung} from "../lib/sanity"
+import {getAktiveFilme, urlFor, type Film, type Vorstellung} from "../lib/sanity"
 
 const filme = await getAktiveFilme()
 
@@ -13,6 +13,32 @@ function formatVorstellung(v: Vorstellung): string {
   const d = new Date(v.datum)
   const wochentag = wochentage[d.getDay()]
   return `${wochentag} ${v.uhrzeit}`
+}
+
+function formatDatumLabel(datum: string): string {
+  const d = new Date(datum)
+  const wochentag = wochentage[d.getDay()]
+  const opt: Intl.DateTimeFormatOptions = {day: "2-digit", month: "2-digit"}
+  return `${wochentag} ${d.toLocaleDateString("de-DE", opt)}`
+}
+
+type Datumsgruppe = {datum: string; formatted: string; entries: Vorstellung[]}
+
+function gruppiereVorstellungen(vorstellungen: Vorstellung[] | undefined): Datumsgruppe[] {
+  const map = new Map<string, Vorstellung[]>()
+  for (const v of vorstellungen ?? []) {
+    if (!v.datum) continue
+    const arr = map.get(v.datum) ?? []
+    arr.push(v)
+    map.set(v.datum, arr)
+  }
+  return Array.from(map.entries())
+    .map(([datum, entries]) => ({
+      datum,
+      formatted: formatDatumLabel(datum),
+      entries: entries.sort((a, b) => (a.uhrzeit ?? "").localeCompare(b.uhrzeit ?? "")),
+    }))
+    .sort((a, b) => a.datum.localeCompare(b.datum))
 }
 
 function formatWoche(offset = 0): string {
@@ -33,40 +59,48 @@ const vorstellungsAnzahl = filme.reduce(
 )
 
 const fskFarben: Record<number, string> = {
-  0: "#4A8055",
-  6: "#4A8055",
-  12: "#B88955",
-  16: "#B88955",
+  0: "#3A7048",
+  6: "#3A7048",
+  12: "#8A5F2A",
+  16: "#8A5F2A",
   18: "#6B1818",
 }
 ---
 
-<Layout title="Programm — Modernes Theater Weinheim">
+<Layout
+  title="Programm — Modernes Theater Weinheim"
+  description="Aktuelles Kinoprogramm im Modernen Theater Weinheim. Filme dieser Woche mit Vorstellungen in unseren drei Sälen Chic, Cherie und Charme."
+>
   <Header />
 
-  <main>
+  <main id="hauptinhalt">
 
     <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
       <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
-      <div class="max-w-4xl mx-auto px-6 py-16 text-center">
-        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
-          Aktuelle Woche
+      <div class="max-w-4xl mx-auto px-6 py-20 md:py-24 text-center">
+        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3" id="woche-label">
+          Diese Woche
         </p>
         <h1 class="font-display text-4xl md:text-6xl leading-tight text-creme mb-6">
           Programm
         </h1>
         <div class="flex items-center justify-center gap-4 text-creme/85">
           <button
-            class="border border-vintage-gold/60 text-vintage-gold w-9 h-9 rounded flex items-center justify-center hover:bg-vintage-gold/10 transition-colors"
+            id="woche-prev"
+            type="button"
+            class="woche-nav border border-vintage-gold/60 text-vintage-gold w-9 h-9 rounded flex items-center justify-center hover:bg-vintage-gold/10 transition-colors"
             aria-label="Vorherige Woche"
+            disabled
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </button>
-          <span class="text-sm tracking-wider">{formatWoche(0)}</span>
+          <span class="text-sm tracking-wider" id="woche-datum" aria-live="polite">{formatWoche(0)}</span>
           <button
-            class="border border-vintage-gold/60 text-vintage-gold w-9 h-9 rounded flex items-center justify-center hover:bg-vintage-gold/10 transition-colors"
+            id="woche-next"
+            type="button"
+            class="woche-nav border border-vintage-gold/60 text-vintage-gold w-9 h-9 rounded flex items-center justify-center hover:bg-vintage-gold/10 transition-colors"
             aria-label="Nächste Woche"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -78,15 +112,15 @@ const fskFarben: Record<number, string> = {
     </section>
 
     <section class="bg-off-white border-b border-vintage-gold/20 px-6 py-4" style="background: #FAF6EE;">
-      <div class="max-w-5xl mx-auto flex flex-wrap items-center gap-2">
+      <div class="max-w-5xl mx-auto flex flex-wrap items-center gap-2" role="group" aria-label="Filme filtern">
         <span class="text-xs uppercase tracking-[0.2em] text-warmes-braun mr-2">Filter</span>
-        <span class="bg-kino-rot text-creme text-xs px-3 py-1.5 rounded-full font-medium">Alle Filme</span>
-        <span class="text-warmes-braun text-xs px-3 py-1.5 rounded-full border border-vintage-gold/60">Familie</span>
-        <span class="text-warmes-braun text-xs px-3 py-1.5 rounded-full border border-vintage-gold/60">3D</span>
-        <span class="text-warmes-braun text-xs px-3 py-1.5 rounded-full border border-vintage-gold/60">Sneak Preview</span>
-        <span class="text-warmes-braun text-xs px-3 py-1.5 rounded-full border border-vintage-gold/60">Kaffee-Tee-Kino</span>
-        <span class="ml-auto text-xs text-warmes-braun">
-          {vorstellungsAnzahl} {vorstellungsAnzahl === 1 ? "Vorstellung" : "Vorstellungen"} · {filme.length} {filme.length === 1 ? "Film" : "Filme"}
+        <button type="button" data-filter="all" aria-pressed="true" class="filter-chip">Alle Filme</button>
+        <button type="button" data-filter="familie" aria-pressed="false" class="filter-chip">Familie</button>
+        <button type="button" data-filter="3d" aria-pressed="false" class="filter-chip">3D</button>
+        <button type="button" data-filter="sneak" aria-pressed="false" class="filter-chip">Sneak Preview</button>
+        <button type="button" data-filter="kaffee-tee-kino" aria-pressed="false" class="filter-chip">Kaffee-Tee-Kino</button>
+        <span class="ml-auto text-xs text-warmes-braun" aria-live="polite">
+          <span id="programm-count-vorstellungen">{vorstellungsAnzahl}</span> <span id="programm-count-vorstellungen-label">{vorstellungsAnzahl === 1 ? "Vorstellung" : "Vorstellungen"}</span> · <span id="programm-count-filme">{filme.length}</span> <span id="programm-count-filme-label">{filme.length === 1 ? "Film" : "Filme"}</span>
         </span>
       </div>
     </section>
@@ -99,7 +133,7 @@ const fskFarben: Record<number, string> = {
             <p class="text-warmes-braun italic mb-2">
               Noch keine aktiven Filme im Programm.
             </p>
-            <p class="text-warmes-braun/80 text-sm">
+            <p class="text-warmes-braun text-sm">
               Öffne das Studio auf
               <a href="http://localhost:3333" class="text-kino-rot underline mx-1">localhost:3333</a>
               und lege einen Film an — dann erscheint er hier automatisch.
@@ -107,16 +141,47 @@ const fskFarben: Record<number, string> = {
           </div>
         )}
 
-        {filme.length > 0 && (
-          <div class="flex flex-col gap-3">
-            {filme.map((film: Film) => (
-              <article class="bg-off-white border border-vintage-gold/20 rounded p-5 flex gap-5" style="background: #FAF6EE;">
+        <div
+          id="programm-empty"
+          class="bg-off-white border border-vintage-gold/50 rounded p-8 text-center"
+          style="background: #FAF6EE; display: none;"
+        >
+          <p class="text-warmes-braun italic mb-1">Keine Filme passen zu diesem Filter.</p>
+          <p class="text-warmes-braun text-xs">
+            Wählen Sie „Alle Filme", um wieder alles zu sehen.
+          </p>
+        </div>
 
-                <div class="w-[100px] md:w-[140px] shrink-0 aspect-[2/3] rounded overflow-hidden border border-vintage-gold/40 flex items-center justify-center" style="background: linear-gradient(135deg, #4A1414 0%, #2A0808 100%);">
+        {filme.length > 0 && (
+          <div class="flex flex-col gap-3" id="programm-liste">
+            {filme.map((film: Film) => (
+              <article
+                class="programm-item bg-off-white border border-vintage-gold/20 rounded p-5 flex gap-5"
+                style="background: #FAF6EE;"
+                data-fsk={film.fsk}
+                data-genre={film.genre ?? ""}
+                data-3d={film.istIn3dVerfuegbar ? "1" : "0"}
+                data-sneak={film.istSneak ? "1" : "0"}
+                data-badges={(film.badges ?? []).join(",")}
+                data-vorstellungen={film.vorstellungen?.length ?? 0}
+              >
+
+                <div class="w-[100px] md:w-[140px] shrink-0 aspect-[2/3] rounded overflow-hidden border border-vintage-gold/40" style="background: linear-gradient(135deg, #4A1414 0%, #2A0808 100%);">
                   {film.plakat ? (
-                    <span class="text-vintage-gold text-[10px] uppercase tracking-widest">Plakat</span>
+                    <img
+                      src={urlFor(film.plakat).width(280).height(420).fit("crop").url()}
+                      srcset={`${urlFor(film.plakat).width(200).height(300).fit("crop").url()} 200w, ${urlFor(film.plakat).width(280).height(420).fit("crop").url()} 280w, ${urlFor(film.plakat).width(400).height(600).fit("crop").url()} 400w`}
+                      sizes="(max-width: 768px) 100px, 140px"
+                      alt={`Filmplakat: ${film.titel}`}
+                      width="140"
+                      height="210"
+                      loading="lazy"
+                      class="w-full h-full object-cover"
+                    />
                   ) : (
-                    <span class="text-vintage-gold/70 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</span>
+                    <div class="w-full h-full flex items-center justify-center">
+                      <span class="text-vintage-gold/70 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</span>
+                    </div>
                   )}
                 </div>
 
@@ -139,7 +204,7 @@ const fskFarben: Record<number, string> = {
                   <div class="flex flex-wrap items-center gap-2 text-xs text-warmes-braun uppercase tracking-widest mb-3">
                     <span>{film.laenge} Min</span>
                     <span class="text-warmes-braun/40">·</span>
-                    <span class="px-1.5 py-0.5 rounded font-medium" style={`background: ${fskFarben[film.fsk] ?? "#8A6B3D"}; color: white;`}>FSK {film.fsk}</span>
+                    <span class="px-1.5 py-0.5 rounded font-medium" style={`background: ${fskFarben[film.fsk] ?? "#6B4E1F"}; color: white;`}>FSK {film.fsk}</span>
                     {film.genre && (
                       <>
                         <span class="text-warmes-braun/40">·</span>
@@ -148,32 +213,42 @@ const fskFarben: Record<number, string> = {
                     )}
                   </div>
 
-                  {film.kurzbeschreibung && (
-                    <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-4 max-w-2xl">
-                      {film.kurzbeschreibung}
-                    </p>
-                  )}
-
                   {film.vorstellungen && film.vorstellungen.length > 0 && (
-                    <div>
+                    <div class="mt-1">
                       <p class="text-[10px] uppercase tracking-widest text-warmes-braun mb-2">Vorstellungen</p>
-                      <div class="flex flex-wrap gap-1.5">
-                        {film.vorstellungen.map((v) => (
-                          <span
-                            class="text-xs text-creme px-2.5 py-1 rounded font-medium"
-                            style={`background: ${v.format === "3D" ? "#4A2A5A" : "#6B1818"};`}
-                            title={v.saal?.name ? `Saal ${v.saal.name}` : ""}
+                      <div class="vorstellungen-tabelle divide-y divide-vintage-gold/20 border-y border-vintage-gold/20">
+                        {gruppiereVorstellungen(film.vorstellungen).map((gruppe) => (
+                          <div
+                            class="vorstellungen-zeile flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 py-2"
+                            data-datum-tag={gruppe.datum}
                           >
-                            {formatVorstellung(v)}
-                            {v.saal?.name && <span class="text-creme/70 ml-1">· {v.saal.name}</span>}
-                          </span>
+                            <div class="w-full sm:w-20 shrink-0 font-display text-sm text-kino-rot leading-tight">
+                              {gruppe.formatted}
+                            </div>
+                            <div class="flex flex-wrap gap-1.5">
+                              {gruppe.entries.map((v) => (
+                                <span
+                                  class="vorstellung-chip inline-flex items-center gap-1.5 text-xs text-creme px-2 py-1 rounded font-medium"
+                                  style={`background: ${v.format === "3D" ? "#4A2A5A" : "#6B1818"};`}
+                                  data-datum={v.datum ?? ""}
+                                  data-format={v.format ?? "2D"}
+                                >
+                                  <span class="tabular-nums font-semibold">{v.uhrzeit}</span>
+                                  {v.saal?.name && <span class="opacity-90">· {v.saal.name}</span>}
+                                  {v.format === "3D" && (
+                                    <span class="text-[9px] font-bold px-1 rounded" style="background: rgba(255,255,255,0.18);">3D</span>
+                                  )}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </div>
                   )}
 
                   {(!film.vorstellungen || film.vorstellungen.length === 0) && (
-                    <p class="text-xs italic text-warmes-braun/70">Keine Vorstellungen geplant.</p>
+                    <p class="text-xs italic text-warmes-braun mt-2">Keine Vorstellungen geplant.</p>
                   )}
                 </div>
 
@@ -215,7 +290,7 @@ const fskFarben: Record<number, string> = {
             <h3 class="font-display text-base text-tiefschwarz">Preise diese Woche</h3>
           </div>
           <p class="text-sm text-tiefschwarz/85 leading-relaxed">
-            Erwachsene 11 € · Ermäßigt 9 € · Kinder 6 € · <span class="text-kino-rot font-medium">Kinotag Di & Starttag Do: 7 €</span>
+            Erwachsene 11 € · Ermäßigt 9 € · Kinder 6 € · <span class="text-kino-rot font-medium">Kinotag Di & Starttag Do: 7 €</span><br /><span class="text-xs italic text-warmes-braun">Alle Preise inkl. gesetzl. USt.</span>
           </p>
         </div>
       </div>
@@ -225,3 +300,160 @@ const fskFarben: Record<number, string> = {
 
   <Footer />
 </Layout>
+
+<style>
+  .filter-chip {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(201, 165, 92, 0.6);
+    color: #6B4E1F;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+  }
+  .filter-chip:hover {
+    background: rgba(201, 165, 92, 0.12);
+  }
+  .filter-chip:focus-visible {
+    outline: 2px solid #6B1818;
+    outline-offset: 2px;
+  }
+  .filter-chip[aria-pressed="true"] {
+    background: #6B1818;
+    color: #F5EDE0;
+    border-color: transparent;
+    font-weight: 500;
+  }
+  .filter-chip[aria-pressed="true"]:hover {
+    background: #7A1D1D;
+  }
+  .woche-nav:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .woche-nav:disabled:hover {
+    background: transparent;
+  }
+</style>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>(".filter-chip[data-filter]")
+  const items = document.querySelectorAll<HTMLElement>(".programm-item")
+  const empty = document.getElementById("programm-empty")
+  const countFilme = document.getElementById("programm-count-filme")
+  const countFilmeLabel = document.getElementById("programm-count-filme-label")
+  const countVorst = document.getElementById("programm-count-vorstellungen")
+  const countVorstLabel = document.getElementById("programm-count-vorstellungen-label")
+  const wochePrev = document.getElementById("woche-prev") as HTMLButtonElement | null
+  const wocheNext = document.getElementById("woche-next") as HTMLButtonElement | null
+  const wocheLabel = document.getElementById("woche-label")
+  const wocheDatum = document.getElementById("woche-datum")
+
+  let aktuellerFilter = "all"
+  let wochenOffset = 0
+
+  function passtKategorie(item: HTMLElement, filter: string): boolean {
+    if (filter === "all") return true
+    if (filter === "familie") return item.dataset.genre === "Familie" || Number(item.dataset.fsk) <= 6
+    if (filter === "3d") return item.dataset["3d"] === "1"
+    if (filter === "sneak") return item.dataset.sneak === "1"
+    if (filter === "kaffee-tee-kino") {
+      const badges = (item.dataset.badges ?? "").split(",")
+      return badges.includes("kaffee-tee-kino")
+    }
+    return true
+  }
+
+  function wochenGrenzen(offset: number): {von: Date; bis: Date} {
+    const heute = new Date()
+    heute.setHours(0, 0, 0, 0)
+    const tag = heute.getDay()
+    const diffZuMontag = tag === 0 ? -6 : 1 - tag
+    const montag = new Date(heute)
+    montag.setDate(heute.getDate() + diffZuMontag + offset * 7)
+    const naechsterMontag = new Date(montag)
+    naechsterMontag.setDate(montag.getDate() + 7)
+    return {von: montag, bis: naechsterMontag}
+  }
+
+  function formatDatumRange(von: Date, bis: Date): string {
+    const opt: Intl.DateTimeFormatOptions = {day: "2-digit", month: "2-digit", year: "numeric"}
+    const sonntag = new Date(bis)
+    sonntag.setDate(bis.getDate() - 1)
+    return `${von.toLocaleDateString("de-DE", opt)} – ${sonntag.toLocaleDateString("de-DE", opt)}`
+  }
+
+  function wochenLabelText(offset: number): string {
+    if (offset === 0) return "Diese Woche"
+    if (offset === 1) return "Nächste Woche"
+    return `In ${offset} Wochen`
+  }
+
+  function anwenden() {
+    const {von, bis} = wochenGrenzen(wochenOffset)
+
+    if (wocheDatum) wocheDatum.textContent = formatDatumRange(von, bis)
+    if (wocheLabel) wocheLabel.textContent = wochenLabelText(wochenOffset)
+    if (wochePrev) wochePrev.disabled = wochenOffset <= 0
+
+    let sichtbareFilme = 0
+    let sichtbareVorstellungen = 0
+
+    items.forEach((item) => {
+      const kategorieOk = passtKategorie(item, aktuellerFilter)
+      const total = Number(item.dataset.vorstellungen ?? "0")
+
+      const zeilen = item.querySelectorAll<HTMLElement>(".vorstellungen-zeile")
+      let inWoche = 0
+      zeilen.forEach((zeile) => {
+        const datumStr = zeile.dataset.datumTag ?? ""
+        if (!datumStr) {
+          zeile.style.display = "none"
+          return
+        }
+        const datum = new Date(datumStr)
+        const passt = datum >= von && datum < bis
+        zeile.style.display = passt ? "" : "none"
+        if (passt) {
+          inWoche += zeile.querySelectorAll(".vorstellung-chip").length
+        }
+      })
+
+      const filmZeigt = kategorieOk && (total === 0 || inWoche > 0)
+      item.style.display = filmZeigt ? "" : "none"
+      if (filmZeigt) {
+        sichtbareFilme++
+        sichtbareVorstellungen += inWoche
+      }
+    })
+
+    if (empty) empty.style.display = sichtbareFilme === 0 ? "" : "none"
+    if (countFilme) countFilme.textContent = String(sichtbareFilme)
+    if (countFilmeLabel) countFilmeLabel.textContent = sichtbareFilme === 1 ? "Film" : "Filme"
+    if (countVorst) countVorst.textContent = String(sichtbareVorstellungen)
+    if (countVorstLabel) countVorstLabel.textContent = sichtbareVorstellungen === 1 ? "Vorstellung" : "Vorstellungen"
+  }
+
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      aktuellerFilter = chip.dataset.filter ?? "all"
+      chips.forEach((c) => c.setAttribute("aria-pressed", c === chip ? "true" : "false"))
+      anwenden()
+    })
+  })
+
+  wochePrev?.addEventListener("click", () => {
+    if (wochenOffset > 0) {
+      wochenOffset--
+      anwenden()
+    }
+  })
+
+  wocheNext?.addEventListener("click", () => {
+    wochenOffset++
+    anwenden()
+  })
+
+  anwenden()
+</script>
