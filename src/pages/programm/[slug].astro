@@ -85,22 +85,20 @@ const fskFarben: Record<number, string> = {
         <div class="mx-auto md:mx-0 shrink-0">
           <div
             class="rounded overflow-hidden border border-vintage-gold/60 relative"
-            style="width: 200px; height: 300px; background: linear-gradient(135deg, #4A1414 0%, #2A0808 100%);"
+            style="width: 200px;"
           >
             {film.plakat ? (
               <img
-                src={urlFor(film.plakat).width(400).height(600).fit("crop").url()}
-                srcset={`${urlFor(film.plakat).width(400).height(600).fit("crop").url()} 400w, ${urlFor(film.plakat).width(600).height(900).fit("crop").url()} 600w`}
+                src={urlFor(film.plakat).width(400).url()}
+                srcset={`${urlFor(film.plakat).width(400).url()} 400w, ${urlFor(film.plakat).width(600).url()} 600w`}
                 sizes="200px"
                 alt={`Filmplakat: ${film.titel}`}
-                width="200"
-                height="300"
                 loading="eager"
                 fetchpriority="high"
-                class="w-full h-full object-cover"
+                class="block w-full h-auto"
               />
             ) : (
-              <div class="w-full h-full flex items-center justify-center text-vintage-gold/80 text-xs uppercase tracking-widest text-center">
+              <div class="w-full aspect-[2/3] flex items-center justify-center text-vintage-gold/80 text-xs uppercase tracking-widest text-center" style="background: linear-gradient(135deg, #4A1414 0%, #2A0808 100%);">
                 Kein Plakat
               </div>
             )}

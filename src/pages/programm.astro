@@ -166,24 +166,22 @@ const fskFarben: Record<number, string> = {
                 data-vorstellungen={film.vorstellungen?.length ?? 0}
               >
 
-                <div class="w-[100px] md:w-[140px] shrink-0 aspect-[2/3] rounded overflow-hidden border border-vintage-gold/40" style="background: linear-gradient(135deg, #4A1414 0%, #2A0808 100%);">
-                  {film.plakat ? (
+                {film.plakat ? (
+                  <div class="w-[100px] md:w-[140px] shrink-0 self-start rounded overflow-hidden border border-vintage-gold/40">
                     <img
-                      src={urlFor(film.plakat).width(280).height(420).fit("crop").url()}
-                      srcset={`${urlFor(film.plakat).width(200).height(300).fit("crop").url()} 200w, ${urlFor(film.plakat).width(280).height(420).fit("crop").url()} 280w, ${urlFor(film.plakat).width(400).height(600).fit("crop").url()} 400w`}
+                      src={urlFor(film.plakat).width(280).url()}
+                      srcset={`${urlFor(film.plakat).width(200).url()} 200w, ${urlFor(film.plakat).width(280).url()} 280w, ${urlFor(film.plakat).width(400).url()} 400w`}
                       sizes="(max-width: 768px) 100px, 140px"
                       alt={`Filmplakat: ${film.titel}`}
-                      width="140"
-                      height="210"
                       loading="lazy"
-                      class="w-full h-full object-cover"
+                      class="block w-full h-auto"
                     />
-                  ) : (
-                    <div class="w-full h-full flex items-center justify-center">
-                      <span class="text-vintage-gold/70 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</span>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <div class="w-[100px] md:w-[140px] shrink-0 self-start aspect-[2/3] rounded overflow-hidden border border-vintage-gold/40 flex items-center justify-center" style="background: linear-gradient(135deg, #4A1414 0%, #2A0808 100%);">
+                    <span class="text-vintage-gold/70 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</span>
+                  </div>
+                )}
 
                 <div class="flex-1 min-w-0">
                   <div class="flex flex-wrap items-baseline gap-2 mb-1">
