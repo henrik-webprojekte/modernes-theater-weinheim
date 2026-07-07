@@ -1,16 +1,54 @@
-﻿---
+---
 import "../styles/global.css";
-import CookieBanner from "../components/CookieBanner.astro";
 
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  ogType?: "website" | "article";
 }
 
 const {
   title = "Modernes Theater Weinheim",
-  description = "Kino, Eventlocation und mehr — seit 1924 in der Weinheimer Innenstadt."
+  description = "Kino, Eventlocation und mehr — seit 1924 in der Weinheimer Innenstadt.",
+  ogImage = "/og-default.jpg",
+  ogType = "website"
 } = Astro.props;
+
+const site = Astro.site ?? new URL("https://modernes-theater-weinheim.vercel.app");
+const canonical = new URL(Astro.url.pathname, site).toString();
+const ogImageUrl = new URL(ogImage, site).toString();
+
+const movieTheaterSchema = {
+  "@context": "https://schema.org",
+  "@type": "MovieTheater",
+  "name": "Modernes Theater",
+  "alternateName": "WoinemerKino",
+  "url": site.toString(),
+  "logo": new URL("/logos/modernes-theater-logo.png", site).toString(),
+  "image": ogImageUrl,
+  "telephone": "+49 6201 62155",
+  "email": "zentrale@kinoweinheim.de",
+  "foundingDate": "1924-12-23",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Hauptstraße 61",
+    "addressLocality": "Weinheim",
+    "postalCode": "69469",
+    "addressRegion": "BW",
+    "addressCountry": "DE"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 49.5494671,
+    "longitude": 8.6723736
+  },
+  "sameAs": [
+    "https://www.instagram.com/kinoweinheim/",
+    "https://www.tiktok.com/@kinoweinheim",
+    "https://www.facebook.com/kinoweinheim"
+  ]
+};
 ---
 
 <!doctype html>
@@ -20,11 +58,31 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#1A1310" />
+    <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <title>{title}</title>
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Modernes Theater Weinheim" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(movieTheaterSchema)} />
   </head>
   <body class="bg-creme text-tiefschwarz font-sans antialiased">
+    <a href="#hauptinhalt" class="skip-link">Zum Hauptinhalt springen</a>
     <slot />
-    <CookieBanner />
   </body>
 </html>
