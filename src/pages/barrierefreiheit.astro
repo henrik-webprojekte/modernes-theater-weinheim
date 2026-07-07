@@ -1,0 +1,151 @@
+---
+import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+---
+
+<Layout
+  title="Erklärung zur Barrierefreiheit — Modernes Theater Weinheim"
+  description="Erklärung zur Barrierefreiheit der Website des Modernen Theaters Weinheim: Konformitätsstatus, bekannte Einschränkungen und Kontakt für Rückmeldungen."
+>
+  <Header />
+
+  <main id="hauptinhalt" class="bg-creme py-16 px-6" style="background: #F5EDE0;">
+    <div class="max-w-2xl mx-auto">
+
+      <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-3">Rechtliche Angaben</p>
+      <h1 class="font-display text-4xl md:text-5xl text-tiefschwarz mb-4 leading-tight">Erklärung zur Barrierefreiheit</h1>
+      <p class="text-xs text-warmes-braun italic mb-10">Stand: Juli 2026</p>
+
+      <section class="mb-8">
+        <h2 class="font-display text-lg text-kino-rot mb-2">1. Unser Bemühen um Barrierefreiheit</h2>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+          Das <strong>Modernes Theater Weinheim</strong> setzt sich dafür ein, dass seine Website
+          für alle Menschen zugänglich ist — unabhängig von Behinderungen, technischen Voraussetzungen
+          oder Nutzungsgewohnheiten. Wir orientieren uns bei Gestaltung und Umsetzung an den
+          <em>Web Content Accessibility Guidelines (WCAG) 2.2 auf Konformitätsstufe AA</em>.
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+          Diese Erklärung geben wir freiwillig ab. Da wir aktuell keine Tickets oder sonstige
+          Waren online verkaufen (Reservierungen erfolgen telefonisch oder vor Ort), ist unsere
+          Website nach unserer Einschätzung nicht direkt vom Barrierefreiheitsstärkungsgesetz (BFSG)
+          erfasst. Dennoch wollen wir mit dieser Erklärung transparent machen, welchen Stand die
+          Barrierefreiheit hat und wo Sie uns Rückmeldung geben können.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="font-display text-lg text-kino-rot mb-2">2. Konformitätsstatus</h2>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+          Diese Website ist mit den <strong>WCAG 2.2 AA</strong> nach unserer Einschätzung
+          <strong>weitgehend konform</strong>. „Weitgehend konform" bedeutet, dass in einigen
+          wenigen Punkten Abweichungen bestehen, die im nächsten Abschnitt aufgeführt sind.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="font-display text-lg text-kino-rot mb-2">3. Bekannte nicht vollständig barrierefreie Inhalte</h2>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-3">
+          Folgende Inhalte und Funktionen sind uns bekannt und werden bei Ressourcen-Verfügbarkeit
+          verbessert:
+        </p>
+        <ul class="text-sm text-tiefschwarz/85 leading-relaxed space-y-2 pl-4">
+          <li>
+            <strong>· Eingebettete Karte auf der Kontakt-Seite:</strong>
+            Die Karte wird von OpenStreetMap als eingebetteter Rahmen (iframe) bereitgestellt.
+            Die Interaktion innerhalb der Karte (Zoomen, Verschieben) ist mit Screenreadern und
+            reiner Tastatursteuerung nur eingeschränkt möglich. Die Anschrift und ein Textlink
+            zu OpenStreetMap für die vollständige Kartenansicht stehen direkt daneben zur Verfügung.
+          </li>
+          <li>
+            <strong>· Bildmaterial:</strong>
+            Die Innenaufnahmen der Säle sowie historische Aufnahmen sind zurzeit noch als
+            „Stimmungsbild" gekennzeichnete Platzhalter — es handelt sich um lizenzfreie Fotos
+            fremder Kinos, die vor der finalen Live-Schaltung durch echte Aufnahmen aus dem
+            Modernen Theater ersetzt werden. Alle Bilder verfügen bereits über beschreibende
+            Alternativtexte für Screenreader.
+          </li>
+          <li>
+            <strong>· Screenreader-Test:</strong>
+            Ein vollständiger Test mit einem Screenreader (NVDA / VoiceOver / TalkBack) durch einen
+            geübten Nutzer steht noch aus. Grundlegende Prüfungen zur Struktur und Semantik wurden
+            durchgeführt.
+          </li>
+          <li>
+            <strong>· Fachaudit:</strong>
+            Die Website wurde bisher nicht durch eine unabhängige, zertifizierte Prüfstelle
+            auditiert.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="font-display text-lg text-kino-rot mb-2">4. Erstellung dieser Erklärung</h2>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+          Diese Erklärung wurde am <strong>6. Juli 2026</strong> erstellt.
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+          Grundlage der Bewertung ist eine <strong>Selbstbewertung</strong> durch den Entwickler
+          der Website. Verwendet wurden:
+        </p>
+        <ul class="text-sm text-tiefschwarz/85 leading-relaxed space-y-1 pl-4 mt-2">
+          <li>· Automatisierte Prüfung mit <em>axe DevTools</em> (Deque Systems)</li>
+          <li>· Manuelle Prüfung auf Tastaturbedienbarkeit und sichtbaren Fokus</li>
+          <li>· Prüfung auf ausreichenden Farbkontrast (WCAG 1.4.3 und 1.4.11)</li>
+          <li>· Test auf Zoomfähigkeit bis 200 % und Reflow auf 320 px Breite</li>
+          <li>· Simulation von Farbfehlsichtigkeiten (Deuteranopie, Protanopie, Tritanopie)</li>
+          <li>· Prüfung der Berücksichtigung von <em>prefers-reduced-motion</em></li>
+          <li>· Prüfung von Formular-Beschriftungen, Fehlermeldungen und ARIA-Attributen</li>
+        </ul>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="font-display text-lg text-kino-rot mb-2">5. Feedback und Kontakt</h2>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+          Sie haben etwas gefunden, das für Sie nicht barrierefrei zugänglich ist? Wir freuen uns
+          über Ihre Rückmeldung, damit wir es korrigieren können. Bitte teilen Sie uns mit, welche
+          Seite betroffen ist, welche technischen Hilfsmittel Sie verwenden und wo das Problem
+          liegt.
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-3">
+          <strong>Kontakt:</strong><br />
+          WoinemerKino GmbH & Co. KG<br />
+          Hauptstraße 61, 69469 Weinheim<br />
+          Tel. <a href="tel:0620162155" class="text-kino-rot">06201 · 62155</a><br />
+          E-Mail <a href="mailto:zentrale@kinoweinheim.de" class="text-kino-rot">zentrale@kinoweinheim.de</a>
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-3">
+          Wir bemühen uns, auf Ihre Rückmeldung innerhalb von <strong>zwei Wochen</strong> zu
+          antworten.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="font-display text-lg text-kino-rot mb-2">6. Durchsetzungsverfahren</h2>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+          Sollten Sie mit unseren Antworten nicht zufrieden sein, können Sie sich an folgende
+          Stellen wenden:
+        </p>
+        <ul class="text-sm text-tiefschwarz/85 leading-relaxed space-y-2 pl-4 mt-3">
+          <li>
+            <strong>· Landesbeauftragter für die Belange von Menschen mit Behinderungen
+            Baden-Württemberg:</strong><br />
+            <a href="https://sozialministerium.baden-wuerttemberg.de/de/soziales/menschen-mit-behinderungen/landes-behindertenbeauftragter/" target="_blank" rel="noopener" class="text-kino-rot underline break-words">
+              sozialministerium.baden-wuerttemberg.de → Menschen mit Behinderungen → Landes-Behindertenbeauftragter
+            </a>
+          </li>
+          <li>
+            <strong>· Schlichtungsstelle nach dem Behindertengleichstellungsgesetz (BGG)</strong>
+            beim Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen:<br />
+            <a href="https://www.schlichtungsstelle-bgg.de/" target="_blank" rel="noopener" class="text-kino-rot underline">schlichtungsstelle-bgg.de</a>
+            (zuständig primär für Bundesbehörden, berät aber auch bei Fragen zur Barrierefreiheit
+            im privaten Bereich)
+          </li>
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

@@ -4,15 +4,18 @@ import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
 ---
 
-<Layout title="Datenschutz — Modernes Theater Weinheim">
+<Layout
+  title="Datenschutz — Modernes Theater Weinheim"
+  description="Datenschutzerklärung des Modernen Theaters Weinheim: Wie wir mit Ihren Daten umgehen — verständlich und DSGVO-konform."
+>
   <Header />
 
-  <main class="bg-creme py-16 px-6" style="background: #F5EDE0;">
+  <main id="hauptinhalt" class="bg-creme py-16 px-6" style="background: #F5EDE0;">
     <div class="max-w-2xl mx-auto">
 
-      <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">Rechtliche Angaben</p>
+      <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-3">Rechtliche Angaben</p>
       <h1 class="font-display text-4xl md:text-5xl text-tiefschwarz mb-4 leading-tight">Datenschutzerklärung</h1>
-      <p class="text-xs text-warmes-braun italic mb-10">Stand: Juli 2026 · Diese Fassung ist ein Entwurf und muss vor Live-Schaltung von einem Datenschutzexperten geprüft werden.</p>
+      <p class="text-xs text-warmes-braun italic mb-10">Stand: Juli 2026. Vor Live-Schaltung wird eine anwaltliche Prüfung empfohlen.</p>
 
       <section class="mb-8">
         <h2 class="font-display text-lg text-kino-rot mb-2">1. Verantwortlicher</h2>
@@ -20,7 +23,7 @@ import Footer from "../components/Footer.astro"
           Verantwortlich für die Verarbeitung personenbezogener Daten auf dieser Website ist:
         </p>
         <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
-          Woinemer Kino GmbH & Co. KG<br />
+          WoinemerKino GmbH & Co. KG<br />
           Hauptstraße 61, 69469 Weinheim<br />
           Tel. <a href="tel:0620162155" class="text-kino-rot">06201 · 62155</a><br />
           E-Mail <a href="mailto:zentrale@kinoweinheim.de" class="text-kino-rot">zentrale@kinoweinheim.de</a>
@@ -30,56 +33,107 @@ import Footer from "../components/Footer.astro"
       <section class="mb-8">
         <h2 class="font-display text-lg text-kino-rot mb-2">2. Allgemeines zur Datenverarbeitung</h2>
         <p class="text-sm text-tiefschwarz/85 leading-relaxed">
-          Wir verarbeiten personenbezogene Daten unserer Nutzer grundsätzlich nur, soweit dies zur Bereitstellung einer funktionsfähigen Website sowie unserer Inhalte und Leistungen erforderlich ist. Die Verarbeitung personenbezogener Daten erfolgt regelmäßig nur nach Einwilligung des Nutzers.
+          Wir verarbeiten personenbezogene Daten unserer Nutzer grundsätzlich nur, soweit dies zur Bereitstellung einer funktionsfähigen Website sowie unserer Inhalte und Leistungen erforderlich ist oder eine ausdrückliche Einwilligung vorliegt. Sofern eine Verarbeitung auf mehreren Rechtsgrundlagen beruht, benennen wir die jeweils einschlägigen Vorschriften der DSGVO in den folgenden Abschnitten.
         </p>
       </section>
 
       <section class="mb-8">
-        <h2 class="font-display text-lg text-kino-rot mb-2">3. Bereitstellung der Website und Erstellung von Logfiles</h2>
+        <h2 class="font-display text-lg text-kino-rot mb-2">3. Bereitstellung der Website und Server-Logfiles</h2>
         <p class="text-sm text-tiefschwarz/85 leading-relaxed">
-          Bei jedem Aufruf unserer Internetseite erfasst unser Hosting-Provider automatisiert Daten und Informationen vom Computersystem des aufrufenden Rechners. Folgende Daten werden hierbei erhoben: IP-Adresse, Datum und Uhrzeit des Zugriffs, aufgerufene Seite, verwendeter Browser. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO.
+          Diese Website wird bei der <strong>Vercel Inc.</strong> (440 N Barranca Ave #4133, Covina, CA 91723, USA) gehostet. Beim Aufruf unserer Seiten werden von Vercel automatisch technische Zugriffsdaten in Server-Logfiles gespeichert:
+        </p>
+        <ul class="text-sm text-tiefschwarz/85 leading-relaxed space-y-1 pl-4 mt-2">
+          <li>· IP-Adresse (gekürzt bzw. anonymisiert nach Verarbeitung)</li>
+          <li>· Datum und Uhrzeit des Zugriffs</li>
+          <li>· aufgerufene URL</li>
+          <li>· übertragene Datenmenge, HTTP-Statuscode</li>
+          <li>· Browser und Betriebssystem (User-Agent)</li>
+        </ul>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+          Diese Daten sind für den Betrieb der Website technisch erforderlich und werden nur so lange gespeichert, wie es für Sicherheits- und Betriebszwecke nötig ist (in der Regel 14 Tage). Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an sicherem Betrieb).
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+          Vercel überträgt Daten teilweise in die USA. Grundlage der Übermittlung ist das <strong>EU-US Data Privacy Framework</strong> (Angemessenheitsbeschluss der EU-Kommission vom 10. Juli 2023). Vercel-Datenschutzhinweise: <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener" class="text-kino-rot underline">vercel.com/legal/privacy-policy</a>.
         </p>
       </section>
 
       <section class="mb-8">
-        <h2 class="font-display text-lg text-kino-rot mb-2">4. Cookies</h2>
+        <h2 class="font-display text-lg text-kino-rot mb-2">4. Cookies und lokaler Speicher</h2>
         <p class="text-sm text-tiefschwarz/85 leading-relaxed">
-          Unsere Website verwendet technisch notwendige Cookies, um die Grundfunktionen bereitzustellen. Nicht notwendige Cookies (z. B. für Statistik) werden nur nach Ihrer ausdrücklichen Einwilligung gesetzt, die Sie im Cookie-Banner erteilen und jederzeit widerrufen können.
+          Diese Website setzt <strong>keine Tracking- oder Analyse-Cookies</strong>. Es werden keine Nutzungsstatistiken erhoben, keine Werbe-Cookies gesetzt und kein Nutzerverhalten seitenübergreifend verfolgt. Auch der lokale Speicher (localStorage) Ihres Browsers wird von uns nicht für Marketingzwecke verwendet.
         </p>
       </section>
 
       <section class="mb-8">
-        <h2 class="font-display text-lg text-kino-rot mb-2">5. Kontaktformular und E-Mail-Kontakt</h2>
+        <h2 class="font-display text-lg text-kino-rot mb-2">5. Vermietungs-Anfrage per Kontaktformular</h2>
         <p class="text-sm text-tiefschwarz/85 leading-relaxed">
-          Bei einer Kontaktaufnahme per Formular oder E-Mail werden die von Ihnen mitgeteilten Daten (Name, E-Mail-Adresse, Nachricht) zur Bearbeitung Ihrer Anfrage bei uns gespeichert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Die Daten werden gelöscht, sobald sie für die Zweckerreichung nicht mehr erforderlich sind.
+          Wenn Sie über das Formular auf <a href="/vermietung" class="text-kino-rot">unserer Vermietungs-Seite</a> eine Anfrage senden, verarbeiten wir die von Ihnen mitgeteilten Daten (Name, E-Mail-Adresse, gewünschtes Datum, gewünschter Raum, Nachricht) zur Beantwortung Ihrer Anfrage. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen).
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+          Für den technischen Versand der Anfrage-Mail nutzen wir den E-Mail-Dienst <strong>Brevo (Sendinblue SAS)</strong>, 106 Boulevard Haussmann, 75008 Paris, Frankreich. Brevo verarbeitet Ihre Angaben in unserem Auftrag (Art. 28 DSGVO) und leitet sie an unser Anfragen-Postfach weiter. Die Server von Brevo stehen in der Europäischen Union. Weitere Informationen: <a href="https://www.brevo.com/de/legal/privacypolicy/" target="_blank" rel="noopener" class="text-kino-rot underline">brevo.com/de/legal/privacypolicy</a>.
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+          Ihre Angaben speichern wir bis zur vollständigen Bearbeitung der Anfrage sowie darüber hinaus für die Dauer der geltenden Verjährungsfristen (in der Regel drei Jahre nach Ende des Kontakts, falls kein Vertragsschluss erfolgt).
         </p>
       </section>
 
       <section class="mb-8">
         <h2 class="font-display text-lg text-kino-rot mb-2">6. Newsletter</h2>
         <p class="text-sm text-tiefschwarz/85 leading-relaxed">
-          Für den Newsletter verwenden wir das Double-Opt-In-Verfahren: Nach Ihrer Anmeldung erhalten Sie eine E-Mail mit einem Bestätigungslink. Ihre Einwilligung können Sie jederzeit widerrufen — der Widerruf ist in jeder Newsletter-E-Mail per Link möglich.
+          Für unseren Newsletter verwenden wir das <strong>Double-Opt-In-Verfahren</strong>: Nach Ihrer Anmeldung auf der Kontakt-Seite erhalten Sie eine E-Mail mit einem Bestätigungslink. Erst wenn Sie diesen klicken, wird Ihre Adresse in den Verteiler aufgenommen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. a DSGVO (Einwilligung).
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+          Wir verwenden für Versand und Verwaltung ebenfalls <strong>Brevo (Sendinblue SAS)</strong>, 106 Boulevard Haussmann, 75008 Paris, Frankreich. Brevo protokolliert im Rahmen der Anmeldung Ihre E-Mail-Adresse, Anmeldedatum und IP-Adresse (Nachweispflicht der Einwilligung).
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+          Sie können Ihre Einwilligung jederzeit widerrufen. In jeder Newsletter-E-Mail befindet sich dafür ein Abmelde-Link. Alternativ genügt eine formlose E-Mail an <a href="mailto:zentrale@kinoweinheim.de" class="text-kino-rot">zentrale@kinoweinheim.de</a>. Nach dem Widerruf werden Ihre Daten aus dem Verteiler gelöscht.
         </p>
       </section>
 
       <section class="mb-8">
-        <h2 class="font-display text-lg text-kino-rot mb-2">7. Ihre Rechte</h2>
-        <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-2">Sie haben das Recht:</p>
-        <ul class="text-sm text-tiefschwarz/85 leading-relaxed space-y-1 pl-4">
-          <li>· auf Auskunft über Ihre gespeicherten Daten (Art. 15 DSGVO)</li>
-          <li>· auf Berichtigung (Art. 16 DSGVO)</li>
-          <li>· auf Löschung (Art. 17 DSGVO)</li>
-          <li>· auf Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
-          <li>· auf Datenübertragbarkeit (Art. 20 DSGVO)</li>
-          <li>· auf Widerspruch (Art. 21 DSGVO)</li>
-          <li>· auf Beschwerde bei einer Aufsichtsbehörde</li>
-        </ul>
+        <h2 class="font-display text-lg text-kino-rot mb-2">7. Bildauslieferung über Sanity (CDN)</h2>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+          Bilder auf dieser Website (u. a. Filmplakate, Innenaufnahmen der Säle) werden über das Content-Delivery-Netzwerk der <strong>Sanity.io (Sanity AS)</strong>, Trondheimsveien 137, 0570 Oslo, Norwegen, ausgeliefert. Beim Aufruf einer Seite fordert Ihr Browser die jeweiligen Bilder direkt vom Sanity-CDN (cdn.sanity.io) an. Dabei wird Ihre IP-Adresse an den CDN-Anbieter übertragen. Sanity setzt beim Bildabruf keine Tracking-Cookies.
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer performanten Bildauslieferung ohne eigene Infrastruktur). Norwegen ist als EWR-Staat datenschutzrechtlich der EU gleichgestellt. Details: <a href="https://www.sanity.io/legal/privacy" target="_blank" rel="noopener" class="text-kino-rot underline">sanity.io/legal/privacy</a>.
+        </p>
       </section>
 
       <section class="mb-8">
-        <h2 class="font-display text-lg text-kino-rot mb-2">8. Externe Links</h2>
+        <h2 class="font-display text-lg text-kino-rot mb-2">8. Karten-Einbettung (OpenStreetMap)</h2>
         <p class="text-sm text-tiefschwarz/85 leading-relaxed">
-          Unsere Website enthält Links zu Diensten Dritter (Social Media, Karten-Dienste, Shop). Beim Anklicken dieser Links werden Sie zu den jeweiligen Anbietern weitergeleitet. Auf deren Datenverarbeitung haben wir keinen Einfluss — es gelten die Datenschutzbestimmungen der jeweiligen Anbieter.
+          Auf der Kontakt-Seite binden wir eine Karte über die <strong>OpenStreetMap Foundation</strong> ein (St John's Innovation Centre, Cowley Road, Cambridge, CB4 0WS, Großbritannien). Beim Aufruf der Seite wird Ihre IP-Adresse an OpenStreetMap übertragen, damit die Kartenkacheln geladen werden können. OpenStreetMap setzt für den Kartenaufruf keine Tracking-Cookies. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer verständlichen Anfahrtsdarstellung).
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+          Großbritannien verfügt über einen Angemessenheitsbeschluss der EU-Kommission (28. Juni 2021). Weitere Informationen: <a href="https://osmfoundation.org/wiki/Privacy_Policy" target="_blank" rel="noopener" class="text-kino-rot underline">osmfoundation.org/wiki/Privacy_Policy</a>.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="font-display text-lg text-kino-rot mb-2">9. Ihre Rechte als betroffene Person</h2>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-2">Bezüglich der Verarbeitung Ihrer personenbezogenen Daten stehen Ihnen folgende Rechte zu:</p>
+        <ul class="text-sm text-tiefschwarz/85 leading-relaxed space-y-1 pl-4">
+          <li>· Recht auf Auskunft (Art. 15 DSGVO)</li>
+          <li>· Recht auf Berichtigung (Art. 16 DSGVO)</li>
+          <li>· Recht auf Löschung (Art. 17 DSGVO)</li>
+          <li>· Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+          <li>· Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</li>
+          <li>· Recht auf Widerspruch (Art. 21 DSGVO)</li>
+          <li>· Recht auf Widerruf einer Einwilligung mit Wirkung für die Zukunft (Art. 7 Abs. 3 DSGVO)</li>
+        </ul>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-3">
+          Zur Ausübung dieser Rechte genügt eine formlose Nachricht an <a href="mailto:zentrale@kinoweinheim.de" class="text-kino-rot">zentrale@kinoweinheim.de</a>.
+        </p>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-3">
+          Unabhängig davon haben Sie das Recht, sich bei einer <strong>Aufsichtsbehörde</strong> zu beschweren. In Baden-Württemberg ist dies der Landesbeauftragte für den Datenschutz und die Informationsfreiheit (LfDI) — <a href="https://www.baden-wuerttemberg.datenschutz.de/" target="_blank" rel="noopener" class="text-kino-rot underline">baden-wuerttemberg.datenschutz.de</a>.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="font-display text-lg text-kino-rot mb-2">10. Externe Links</h2>
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+          Unsere Website enthält Links zu Diensten Dritter (Social Media, Shop, externe Anbieter). Beim Anklicken dieser Links werden Sie zu den jeweiligen Anbietern weitergeleitet. Auf deren Datenverarbeitung haben wir keinen Einfluss — es gelten die Datenschutzbestimmungen des jeweiligen Anbieters.
         </p>
       </section>
 

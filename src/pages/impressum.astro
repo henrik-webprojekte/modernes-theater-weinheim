@@ -4,19 +4,22 @@ import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
 ---
 
-<Layout title="Impressum — Modernes Theater Weinheim">
+<Layout
+  title="Impressum — Modernes Theater Weinheim"
+  description="Impressum und rechtliche Angaben zum Modernen Theater Weinheim, Betreiber: WoinemerKino GmbH & Co. KG."
+>
   <Header />
 
-  <main class="bg-creme py-16 px-6" style="background: #F5EDE0;">
+  <main id="hauptinhalt" class="bg-creme py-16 px-6" style="background: #F5EDE0;">
     <div class="max-w-2xl mx-auto">
 
-      <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">Rechtliche Angaben</p>
+      <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-3">Rechtliche Angaben</p>
       <h1 class="font-display text-4xl md:text-5xl text-tiefschwarz mb-10 leading-tight">Impressum</h1>
 
       <section class="mb-8">
         <h2 class="font-display text-lg text-kino-rot mb-2">Betreiber</h2>
         <p class="text-sm text-tiefschwarz/85 leading-relaxed">
-          Woinemer Kino GmbH & Co. KG<br />
+          WoinemerKino GmbH & Co. KG<br />
           Hauptstraße 61<br />
           69469 Weinheim<br />
           Baden-Württemberg, Deutschland
@@ -47,7 +50,7 @@ import Footer from "../components/Footer.astro"
       </section>
 
       <section class="mb-8">
-        <h2 class="font-display text-lg text-kino-rot mb-2">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+        <h2 class="font-display text-lg text-kino-rot mb-2">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
         <p class="text-sm text-tiefschwarz/85 leading-relaxed">
           Alfred Speiser<br />
           Anschrift wie oben
