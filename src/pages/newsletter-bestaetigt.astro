@@ -1,0 +1,55 @@
+---
+import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+---
+
+<Layout
+  title="Newsletter bestätigt — Modernes Theater Weinheim"
+  description="Ihre Newsletter-Anmeldung für das Modernes Theater Weinheim ist bestätigt. Ab jetzt erhalten Sie unsere aktuellen Filminfos."
+>
+  <Header />
+
+  <main id="hauptinhalt">
+
+    <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
+      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
+      <div class="max-w-3xl mx-auto px-6 py-20 md:py-24 text-center">
+        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
+          Danke, das war's
+        </p>
+        <h1 class="font-display text-4xl md:text-5xl leading-tight text-creme mb-4">
+          Newsletter bestätigt
+        </h1>
+        <p class="text-base text-creme/85 max-w-xl mx-auto leading-relaxed">
+          Sie erhalten ab jetzt unsere Filminfos — ca. einmal pro Woche, jederzeit abbestellbar über den Link am Ende jeder E-Mail.
+        </p>
+      </div>
+    </section>
+
+    <section class="bg-creme px-6 py-16" style="background: #F5EDE0;">
+      <div class="max-w-2xl mx-auto text-center">
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-8">
+          Wollen Sie schon einmal reinschauen, was gerade läuft?
+        </p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a
+            href="/programm"
+            class="bg-kino-rot text-creme px-6 py-3 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
+          >
+            Zum Programm
+          </a>
+          <a
+            href="/"
+            class="border border-vintage-gold text-warmes-braun px-6 py-3 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
+          >
+            Startseite
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>
