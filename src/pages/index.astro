@@ -33,20 +33,6 @@ function formatNaechsteVorstellung(film: Film): string {
   return `${wochentag} ${v.uhrzeit ?? ""}`.trim()
 }
 
-type FallbackFilm = {titel: string; kurzbeschreibung: string; naechste: string; badge: string}
-const fallbackFilme: FallbackFilm[] = [
-  {titel: "Programm folgt", kurzbeschreibung: "Sobald das aktuelle Programm im Sanity-Studio angelegt ist, erscheinen hier die nächsten Filme mit Vorstellungen.", naechste: "", badge: "Vorschau"},
-]
-
-type FallbackHighlight = {kicker: string; titel: string; text: string; farbe: string; kategorie: string}
-const fallbackHighlights: FallbackHighlight[] = [
-  {kicker: "Jeden 1. Mittwoch im Monat", titel: "Kaffee-Tee-Kino", text: "Ein besonderer Film am Nachmittag — mit Kaffee, Tee und Kuchen zum Kinoticket. Einlass 14:00, Beginn 15:00.", farbe: "#8A6B2E", kategorie: "kaffee-tee-kino"},
-  {kicker: "30.07. – 06.09.2026", titel: "Open-Air-Sommer", text: "Sechs Standorte zwischen Weinheim, Hemsbach und Hockenheim — Kino unter freiem Himmel in Kooperation mit lokalen Partnern.", farbe: "#4A7038", kategorie: "open-air"},
-  {kicker: "01.11. & 13.12.2026", titel: "Zauberer Schmittini", text: "Unser Lieblingszauberer kehrt zurück auf die Bühne im Chic. Ein Abend voller Illusion und Charme.", farbe: "#8A5F2A", kategorie: "schmittini"},
-]
-
-const highlightsZuAnzeigen = kommendeEvents.length > 0 ? kommendeEvents : null
-
 const eventFarben: Record<string, string> = {
   "kaffee-tee-kino": "#8A6B2E",
   "enzo-day": "#6B1818",
@@ -158,7 +144,7 @@ function formatEventDatum(event: Event): string {
         {dieseWocheFilme.length === 0 && (
           <div class="bg-creme border border-vintage-gold/40 rounded p-8 text-center max-w-lg mx-auto mb-8" style="background: #F5EDE0;">
             <p class="text-sm text-warmes-braun italic">
-              {fallbackFilme[0].kurzbeschreibung}
+              Sobald das aktuelle Programm im Sanity-Studio angelegt ist, erscheinen hier die nächsten Filme mit Vorstellungen.
             </p>
           </div>
         )}
@@ -217,45 +203,39 @@ function formatEventDatum(event: Event): string {
       </div>
     </section>
 
-    {/* 4. Nächste Höhepunkte */}
-    <section class="bg-creme px-6 py-16 md:py-20" style="background: #F5EDE0;">
-      <div class="max-w-5xl mx-auto">
-        <div class="text-center mb-10">
-          <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-3">Neben dem Kinoprogramm</p>
-          <h2 class="font-display text-3xl md:text-4xl leading-tight text-tiefschwarz mb-3">Nächste Höhepunkte</h2>
-          <p class="text-sm text-tiefschwarz/85 max-w-xl mx-auto">Sonderreihen, Events und Termine, auf die man sich freuen darf.</p>
-        </div>
+    {kommendeEvents.length > 0 && (
+      <section class="bg-creme px-6 py-16 md:py-20" style="background: #F5EDE0;">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-center mb-10">
+            <p class="text-xs uppercase tracking-[0.3em] text-warmes-braun mb-3">Neben dem Kinoprogramm</p>
+            <h2 class="font-display text-3xl md:text-4xl leading-tight text-tiefschwarz mb-3">Nächste Höhepunkte</h2>
+            <p class="text-sm text-tiefschwarz/85 max-w-xl mx-auto">Sonderreihen, Events und Termine, auf die man sich freuen darf.</p>
+          </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          {highlightsZuAnzeigen && highlightsZuAnzeigen.map((event) => {
-            const farbe = eventFarben[event.kategorie] ?? "#6B4E1F"
-            return (
-              <article class="bg-off-white border border-vintage-gold/20 rounded p-5" style={`background: #FAF6EE; border-top: 3px solid ${farbe};`}>
-                <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style={`color: ${farbe};`}>{formatEventDatum(event)}</p>
-                <h3 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{event.titel}</h3>
-                {event.kurzbeschreibung && (
-                  <p class="text-sm text-tiefschwarz/85 leading-relaxed">{event.kurzbeschreibung}</p>
-                )}
-              </article>
-            )
-          })}
-          {!highlightsZuAnzeigen && fallbackHighlights.map((h) => (
-            <article class="bg-off-white border border-vintage-gold/20 rounded p-5" style={`background: #FAF6EE; border-top: 3px solid ${h.farbe};`}>
-              <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style={`color: ${h.farbe};`}>{h.kicker}</p>
-              <h3 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{h.titel}</h3>
-              <p class="text-sm text-tiefschwarz/85 leading-relaxed">{h.text}</p>
-            </article>
-          ))}
-        </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            {kommendeEvents.map((event) => {
+              const farbe = eventFarben[event.kategorie] ?? "#6B4E1F"
+              return (
+                <article class="bg-off-white border border-vintage-gold/20 rounded p-5" style={`background: #FAF6EE; border-top: 3px solid ${farbe};`}>
+                  <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style={`color: ${farbe};`}>{formatEventDatum(event)}</p>
+                  <h3 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{event.titel}</h3>
+                  {event.kurzbeschreibung && (
+                    <p class="text-sm text-tiefschwarz/85 leading-relaxed">{event.kurzbeschreibung}</p>
+                  )}
+                </article>
+              )
+            })}
+          </div>
 
-        <div class="text-center">
-          <a href="/events" class="inline-flex items-center gap-2 text-sm text-kino-rot border-b border-vintage-gold/60 pb-0.5 hover:text-tiefschwarz transition-colors">
-            <span>Alle Sonderreihen und Events</span>
-            <span aria-hidden="true">→</span>
-          </a>
+          <div class="text-center">
+            <a href="/events" class="inline-flex items-center gap-2 text-sm text-kino-rot border-b border-vintage-gold/60 pb-0.5 hover:text-tiefschwarz transition-colors">
+              <span>Alle Sonderreihen und Events</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    )}
 
     {/* 5. Säle */}
     <section class="bg-off-white px-6 py-16 md:py-20" style="background: #FAF6EE;">

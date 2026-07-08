@@ -4,95 +4,7 @@ import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
 import {getEvents, type Event} from "../lib/sanity"
 
-const sanityEvents = await getEvents()
-
-type StaticEvent = {
-  titel: string
-  kategorie: string
-  wiederkehrend: string
-  kurzbeschreibung: string
-  farbe: string
-}
-
-const fallbackEvents: StaticEvent[] = [
-  {
-    titel: "Kaffee-Tee-Kino",
-    kategorie: "kaffee-tee-kino",
-    wiederkehrend: "Jeden 1. Mittwoch im Monat",
-    kurzbeschreibung: "Ein besonderer Film am Nachmittag — mit Kaffee, Tee und Kuchen zum Kinoticket. Einlass 14:00, Beginn 15:00.",
-    farbe: "#8A6B2E",
-  },
-  {
-    titel: "Enzo-Day",
-    kategorie: "enzo-day",
-    wiederkehrend: "Jeden Montag und Freitag ab 16:00",
-    kurzbeschreibung: "Kaffee, Prosecco und mehr — unser Kino wird zur entspannten Café-Alternative im Zentrum von Weinheim.",
-    farbe: "#6B1818",
-  },
-  {
-    titel: "Kino Open-Air am Fels",
-    kategorie: "open-air",
-    wiederkehrend: "30.07. – 02.08.2026",
-    kurzbeschreibung: "In Kooperation mit der DAV Sektion Weinheim. Filme: FREE SOLO · EXTRAWURST · MISSION: IMPOSSIBLE – THE FINAL RECKONING · DIE ÄLTERN. Tickets im Kino, am DAV-Kletterzentrum und im Shop.",
-    farbe: "#4A7038",
-  },
-  {
-    titel: "Open-Air Unter-Absteinach",
-    kategorie: "open-air",
-    wiederkehrend: "08.08.2026",
-    kurzbeschreibung: "Backhaus Unter-Absteinach in Kooperation mit der Dorfwerkstatt Abtsteinach e. V. Film: DAS KANU DES MANITU.",
-    farbe: "#4A7038",
-  },
-  {
-    titel: "Filmfestival Bensheim-Auerbach",
-    kategorie: "open-air",
-    wiederkehrend: "10.08. – 15.08.2026",
-    kurzbeschreibung: "Im Kronepark. Filme: EPIC · DAS KANU DES MANITU · KONKLAVE · 22 BAHNEN · EXTRAWURST · EIN FAST PERFEKTER ANTRAG. Tickets bei Weinhandel Frihmess.",
-    farbe: "#4A7038",
-  },
-  {
-    titel: "Wiesensee Hemsbach",
-    kategorie: "open-air",
-    wiederkehrend: "17.08. – 23.08.2026",
-    kurzbeschreibung: "Sieben Filme in sieben Nächten: EXTRAWURST · AMRUM · GANZER HALBER BRUDER · DER SALZPFAD · DANN PASSIERT DAS LEBEN · CHERI, ICH KOMME! · ACH, DIESE LÜCKE, DIESE ENTSETZLICHE LÜCKE.",
-    farbe: "#4A7038",
-  },
-  {
-    titel: "Open-Air Hockenheim",
-    kategorie: "open-air",
-    wiederkehrend: "28. + 29.08.2026",
-    kurzbeschreibung: "Im Alten Fahrerlager. Programm folgt.",
-    farbe: "#4A7038",
-  },
-  {
-    titel: "Kulinarisches Open-Air im Woinemer Schlosspark",
-    kategorie: "open-air",
-    wiederkehrend: "03.09. – 09.09.2026",
-    kurzbeschreibung: "In Zusammenarbeit mit dem Schlosspark Restaurant. Filme und Ticketverkauf folgen.",
-    farbe: "#4A7038",
-  },
-  {
-    titel: "Zauberer Schmittini",
-    kategorie: "schmittini",
-    wiederkehrend: "01.11.2026 & 13.12.2026",
-    kurzbeschreibung: "Unser Lieblingszauberer kehrt zurück auf die Bühne im Chic. Ein Abend voller Illusion und Charme.",
-    farbe: "#8A5F2A",
-  },
-  {
-    titel: "Sneak Preview",
-    kategorie: "sondervorstellung",
-    wiederkehrend: "Wechselnd",
-    kurzbeschreibung: "Der Film wird erst nach dem Trailer verraten — für 5 € ein Überraschungsabend im Kinosessel.",
-    farbe: "#5A3F7F",
-  },
-  {
-    titel: "Sondervorstellungen",
-    kategorie: "sondervorstellung",
-    wiederkehrend: "Nach Ankündigung",
-    kurzbeschreibung: "Klassiker der Filmgeschichte, Themenabende und ausgewählte Sonderreihen — folgen Sie unserem Newsletter für aktuelle Termine.",
-    farbe: "#6B4E1F",
-  },
-]
+const events = await getEvents()
 
 function farbeFuerKategorie(kategorie: string): string {
   const farben: Record<string, string> = {
@@ -113,8 +25,6 @@ function formatDatum(startDatum: string, endDatum?: string): string {
   const ende = new Date(endDatum).toLocaleDateString("de-DE", opt)
   return `${start} – ${ende}`
 }
-
-const zeigeSanity = sanityEvents.length > 0
 ---
 
 <Layout
@@ -135,16 +45,16 @@ const zeigeSanity = sanityEvents.length > 0
           Sonderreihen & Events
         </h1>
         <p class="text-base text-creme/80 max-w-2xl mx-auto leading-relaxed">
-          Sechs regelmäßige Reihen und wechselnde Sondervorstellungen — für alle, die mehr als Blockbuster suchen.
+          Sonderreihen, Open-Air-Termine und Gastvorstellungen — für alle, die mehr als Blockbuster suchen.
         </p>
       </div>
     </section>
 
     <section class="bg-creme px-6 py-16" style="background: #F5EDE0;">
       <div class="max-w-5xl mx-auto">
-        {zeigeSanity ? (
+        {events.length > 0 ? (
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {sanityEvents.map((event: Event) => (
+            {events.map((event: Event) => (
               <article
                 class="bg-off-white border border-vintage-gold/20 rounded p-5"
                 style={`background: #FAF6EE; border-top: 3px solid ${farbeFuerKategorie(event.kategorie)};`}
@@ -163,26 +73,13 @@ const zeigeSanity = sanityEvents.length > 0
             ))}
           </div>
         ) : (
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {fallbackEvents.map((event) => (
-              <article
-                class="bg-off-white border border-vintage-gold/20 rounded p-5"
-                style={`background: #FAF6EE; border-top: 3px solid ${event.farbe};`}
-              >
-                <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style={`color: ${event.farbe};`}>
-                  {event.wiederkehrend}
-                </p>
-                <h2 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{event.titel}</h2>
-                <p class="text-sm text-tiefschwarz/85 leading-relaxed">{event.kurzbeschreibung}</p>
-              </article>
-            ))}
+          <div class="bg-off-white border border-vintage-gold/40 rounded p-10 max-w-2xl mx-auto text-center" style="background: #FAF6EE;">
+            <p class="font-display text-xl text-tiefschwarz mb-3">Aktuell keine Events geplant</p>
+            <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+              Sobald neue Sonderreihen, Open-Air-Termine oder Gastvorstellungen feststehen, erscheinen sie an dieser Stelle.
+              Für Vermietungen und Sondervorstellungen für Gruppen bleibt <a href="/kontakt" class="text-kino-rot border-b border-vintage-gold/60 hover:text-tiefschwarz transition-colors">unser Kontakt-Bereich</a> jederzeit offen.
+            </p>
           </div>
-        )}
-
-        {!zeigeSanity && (
-          <p class="text-xs text-warmes-braun italic text-center mt-8">
-            Standard-Programm angezeigt · Konkrete Termine pflegen Sie im Sanity-Studio unter „Event".
-          </p>
         )}
       </div>
     </section>
