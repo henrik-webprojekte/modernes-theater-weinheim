@@ -24,23 +24,39 @@ export function urlFor(source: SanityImageSource) {
   return imageBuilder.image(source).auto("format")
 }
 
+export type Fakt = {
+  wert: string
+  label: string
+}
+
 export type Saal = {
   _id: string
   name: string
   slug: {current: string}
+  reihenfolge?: number
   plaetze: number
   kurzbeschreibung?: string
+  beschreibungLang?: unknown[]
   farbakzent?: string
+  hintergrundFarbe?: string
+  dunklerHintergrund?: boolean
   kicker?: string
   charakterUntertitel?: string
   technik?: string
+  fakten?: Fakt[]
+  bild?: {
+    asset: {_ref: string; _type: string}
+    hotspot?: {x: number; y: number; height: number; width: number}
+    crop?: {top: number; bottom: number; left: number; right: number}
+  }
 }
 
 export async function getSaele(): Promise<Saal[]> {
   return sanity.fetch<Saal[]>(
-    `*[_type == "saal"] | order(plaetze desc) {
-      _id, name, slug, plaetze, kurzbeschreibung, farbakzent,
-      kicker, charakterUntertitel, technik
+    `*[_type == "saal"] | order(coalesce(reihenfolge, 999) asc, plaetze desc) {
+      _id, name, slug, reihenfolge, plaetze, kurzbeschreibung, beschreibungLang,
+      farbakzent, hintergrundFarbe, dunklerHintergrund,
+      kicker, charakterUntertitel, technik, fakten, bild
     }`
   )
 }
