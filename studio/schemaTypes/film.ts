@@ -100,6 +100,13 @@ export const filmType = defineType({
       initialValue: false,
     }),
     defineField({
+      name: "istKaffeeTeeKino",
+      title: "Kaffee-Tee-Kino",
+      type: "boolean",
+      description: "Anschalten, wenn dieser Film Teil der Kaffee-Tee-Kino-Reihe ist (jeder 1. Mittwoch im Monat, 15:00, 8 EUR inkl. Kaffee/Tee + Kuchen).",
+      initialValue: false,
+    }),
+    defineField({
       name: "badges",
       title: "Badges",
       type: "array",

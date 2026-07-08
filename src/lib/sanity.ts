@@ -73,6 +73,7 @@ export type Film = {
   istIn3dVerfuegbar: boolean
   istSneak: boolean
   istSonderreihe: boolean
+  istKaffeeTeeKino: boolean
   badges?: string[]
   vorstellungen?: Vorstellung[]
   status: "entwurf" | "aktiv" | "archiviert"
@@ -122,6 +123,7 @@ export async function getFilmBySlug(slug: string): Promise<Film | null> {
       istIn3dVerfuegbar,
       istSneak,
       istSonderreihe,
+      istKaffeeTeeKino,
       badges,
       status,
       vorstellungen[] {
@@ -150,6 +152,7 @@ export async function getAktiveFilme(): Promise<Film[]> {
       istIn3dVerfuegbar,
       istSneak,
       istSonderreihe,
+      istKaffeeTeeKino,
       badges,
       status,
       vorstellungen[] {
