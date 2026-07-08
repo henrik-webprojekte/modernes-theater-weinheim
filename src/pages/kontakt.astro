@@ -170,7 +170,7 @@ const zuschlaege = [
         <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3 text-center">Eintrittspreise</p>
         <h2 class="font-display text-2xl text-tiefschwarz text-center mb-8">Preise</h2>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
           {preise.map((p) => (
             <div
               class="bg-off-white border rounded p-4 text-center"
@@ -183,6 +183,10 @@ const zuschlaege = [
             </div>
           ))}
         </div>
+
+        <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-8 max-w-2xl mx-auto text-center">
+          <em class="not-italic font-medium">„Ermäßigt"</em> gilt für Schüler, Rentner und Menschen mit Behinderung gegen unaufgeforderte Vorlage eines entsprechenden Dokuments.
+        </p>
 
         <p class="text-xs uppercase tracking-widest text-warmes-braun mb-2">Zuschläge & Sonderpreise</p>
         <ul class="text-sm text-tiefschwarz/85 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
