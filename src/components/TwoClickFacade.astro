@@ -1,0 +1,97 @@
+---
+interface Props {
+  iframeSrc: string
+  iframeTitle: string
+  anbieter: string
+  hinweisText?: string
+  buttonLabel?: string
+  aspect?: string
+  posterBg?: string
+  kicker?: string
+  ueberschrift?: string
+  posterImageUrl?: string
+  posterImageAlt?: string
+  allow?: string
+}
+
+const {
+  iframeSrc,
+  iframeTitle,
+  anbieter,
+  hinweisText,
+  buttonLabel = "Inhalt laden",
+  aspect = "16 / 9",
+  posterBg = "#1A1310",
+  kicker,
+  ueberschrift,
+  posterImageUrl,
+  posterImageAlt,
+  allow,
+} = Astro.props
+
+const standardHinweis = `Beim Klick werden Inhalte von ${anbieter} nachgeladen. Dabei können personenbezogene Daten (u. a. IP-Adresse) an ${anbieter} übertragen werden. Details in unserer Datenschutzerklärung.`
+const finalerHinweis = hinweisText ?? standardHinweis
+---
+
+<div
+  class="two-click-facade relative rounded overflow-hidden border border-vintage-gold/40"
+  style={`aspect-ratio: ${aspect}; background: ${posterBg};`}
+  data-iframe-src={iframeSrc}
+  data-iframe-title={iframeTitle}
+  data-allow={allow ?? ""}
+>
+  {posterImageUrl && (
+    <img
+      src={posterImageUrl}
+      alt={posterImageAlt ?? ""}
+      class="absolute inset-0 w-full h-full object-cover"
+      style="opacity: 0.55;"
+      loading="lazy"
+      aria-hidden="true"
+    />
+  )}
+  <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(26,19,16,0.35) 0%, rgba(26,19,16,0.85) 100%);"></div>
+
+  <div class="relative h-full flex flex-col items-center justify-center text-center px-6 py-8">
+    {kicker && (
+      <p class="text-[10px] uppercase tracking-[0.3em] text-vintage-gold mb-3">{kicker}</p>
+    )}
+    {ueberschrift && (
+      <p class="font-display text-xl md:text-2xl text-creme mb-3 leading-tight max-w-xl">{ueberschrift}</p>
+    )}
+    <p class="text-xs md:text-sm text-creme/80 leading-relaxed max-w-lg mb-5">{finalerHinweis}</p>
+    <button
+      type="button"
+      class="two-click-facade__button inline-flex items-center gap-2 bg-kino-rot text-creme px-5 py-2.5 rounded font-medium tracking-wider hover:bg-tiefschwarz transition-colors"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
+      </svg>
+      <span>{buttonLabel}</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".two-click-facade").forEach((facade) => {
+    const button = facade.querySelector<HTMLButtonElement>(".two-click-facade__button")
+    if (!button) return
+    button.addEventListener("click", () => {
+      const src = facade.dataset.iframeSrc ?? ""
+      const title = facade.dataset.iframeTitle ?? ""
+      const allowAttr = facade.dataset.allow ?? ""
+      if (!src) return
+
+      const iframe = document.createElement("iframe")
+      iframe.src = src
+      iframe.title = title
+      iframe.setAttribute("loading", "lazy")
+      iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade")
+      iframe.className = "absolute inset-0 w-full h-full border-0"
+      if (allowAttr) iframe.setAttribute("allow", allowAttr)
+      iframe.setAttribute("allowfullscreen", "")
+
+      facade.replaceChildren(iframe)
+    })
+  })
+</script>

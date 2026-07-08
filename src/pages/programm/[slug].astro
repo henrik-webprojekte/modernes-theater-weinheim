@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro"
 import Header from "../../components/Header.astro"
 import Footer from "../../components/Footer.astro"
+import TwoClickFacade from "../../components/TwoClickFacade.astro"
 import {getFilmSlugs, getFilmBySlug, urlFor, type Vorstellung} from "../../lib/sanity"
 
 export async function getStaticPaths() {
@@ -15,6 +16,18 @@ const film = slug ? await getFilmBySlug(slug) : null
 if (!film) {
   return Astro.redirect("/programm")
 }
+
+function extractYouTubeId(url: string | undefined): string | null {
+  if (!url) return null
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([A-Za-z0-9_-]{11})/)
+  return match ? match[1] : null
+}
+
+const youtubeId = extractYouTubeId(film.trailerUrl)
+const trailerEmbedSrc = youtubeId
+  ? `https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0&modestbranding=1`
+  : null
+const trailerPosterUrl = film.plakat ? urlFor(film.plakat).width(1200).url() : undefined
 
 const wochentage = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"]
 
@@ -163,6 +176,25 @@ const fskFarben: Record<number, string> = {
         <div class="max-w-3xl mx-auto">
           <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3">Worum es geht</p>
           <p class="text-lg text-tiefschwarz/85 leading-relaxed">{film.kurzbeschreibung}</p>
+        </div>
+      </section>
+    )}
+
+    {trailerEmbedSrc && (
+      <section class="bg-tiefschwarz px-6 py-12" style="background: #1A1310;">
+        <div class="max-w-3xl mx-auto">
+          <p class="text-xs uppercase tracking-[0.2em] text-vintage-gold mb-3 text-center">Trailer</p>
+          <TwoClickFacade
+            iframeSrc={trailerEmbedSrc}
+            iframeTitle={`Trailer zu ${film.titel}`}
+            anbieter="YouTube (Google Ireland Ltd.)"
+            buttonLabel="Trailer abspielen"
+            kicker="YouTube-Video"
+            ueberschrift={`Trailer zu „${film.titel}"`}
+            posterImageUrl={trailerPosterUrl}
+            posterImageAlt=""
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+          />
         </div>
       </section>
     )}

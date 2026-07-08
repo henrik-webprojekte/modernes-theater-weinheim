@@ -2,6 +2,10 @@
 import Layout from "../layouts/Layout.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
+import TwoClickFacade from "../components/TwoClickFacade.astro"
+
+const googleMapsEmbedSrc = "https://maps.google.com/maps?q=Hauptstra%C3%9Fe%2061%2C%2069469%20Weinheim&z=17&ie=UTF8&output=embed"
+const googleMapsLink = "https://www.google.com/maps/search/?api=1&query=Hauptstra%C3%9Fe+61%2C+69469+Weinheim"
 
 const preise = [
   {label: "Erwachsene", wert: "11 €"},
@@ -124,33 +128,79 @@ const zuschlaege = [
         <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3">Anfahrt</p>
         <h2 class="font-display text-2xl text-tiefschwarz mb-6">So finden Sie uns</h2>
 
-        <div class="rounded border overflow-hidden" style="border-color: #C9A55C;">
-          <iframe
-            src="https://www.openstreetmap.org/export/embed.html?bbox=8.6689,49.5475,8.6759,49.5515&amp;layer=mapnik&amp;marker=49.5494671,8.6723736"
-            width="100%"
-            height="380"
-            style="border: 0; display: block;"
-            loading="lazy"
-            title="Karte: Modernes Theater, Hauptstraße 61, 69469 Weinheim (OpenStreetMap)"
-          >
-            <p class="p-6 text-sm text-tiefschwarz">
-              Ihr Browser zeigt keine Karten. Bitte öffnen Sie den Standort direkt bei
-              <a
-                href="https://www.openstreetmap.org/?mlat=49.5494671&amp;mlon=8.6723736#map=18/49.5494671/8.6723736"
-                class="text-kino-rot underline"
-              >OpenStreetMap</a>.
-            </p>
-          </iframe>
-        </div>
+        <TwoClickFacade
+          iframeSrc={googleMapsEmbedSrc}
+          iframeTitle="Google-Maps-Karte: Modernes Theater, Hauptstraße 61, 69469 Weinheim"
+          anbieter="Google Maps (Google Ireland Ltd.)"
+          buttonLabel="Karte anzeigen"
+          kicker="Google Maps"
+          ueberschrift="Hauptstraße 61 · 69469 Weinheim"
+          aspect="16 / 9"
+        />
         <p class="text-xs text-warmes-braun mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <span>Kartendaten © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" class="text-kino-rot underline">OpenStreetMap</a>-Mitwirkende</span>
+          <span>Kartendaten © Google</span>
           <a
-            href="https://www.openstreetmap.org/?mlat=49.5494671&mlon=8.6723736#map=18/49.5494671/8.6723736"
+            href={googleMapsLink}
             target="_blank"
             rel="noopener"
             class="text-kino-rot underline"
-          >Größere Karte öffnen ↗</a>
+          >In Google Maps öffnen ↗</a>
         </p>
+
+        <div class="mt-8 rounded border border-vintage-gold/40 overflow-hidden">
+          <div class="bg-off-white px-5 py-4 border-b border-vintage-gold/20" style="background: #FAF6EE;">
+            <p class="text-[10px] uppercase tracking-[0.2em] text-warmes-braun mb-1">Öffentlicher Verkehr</p>
+            <h3 class="font-display text-lg text-tiefschwarz leading-tight">Anreise planen mit bwegt</h3>
+            <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+              Ziel ist die Haltestelle „Woinemer Kino". Sagen Sie uns Ihre Starthaltestelle und wir zeigen die Verbindung.
+            </p>
+          </div>
+          <form
+            action="https://www.bwegt.de/fahrplanauskunft/verbindungssuche"
+            method="get"
+            target="_blank"
+            rel="noopener"
+            class="bg-creme p-5 grid grid-cols-1 md:grid-cols-2 gap-4"
+            style="background: #F5EDE0;"
+          >
+            <div class="md:col-span-2">
+              <label class="block text-xs uppercase tracking-widest text-warmes-braun mb-1" for="bwegt-von">Von (Ihre Starthaltestelle)</label>
+              <input id="bwegt-von" name="itdLPxx_origin" type="text" required placeholder="z. B. Mannheim Hauptbahnhof" class="w-full bg-off-white border border-vintage-gold/40 rounded px-3 py-2 text-sm text-tiefschwarz focus:border-kino-rot" style="background: #FAF6EE;" autocomplete="off" />
+            </div>
+            <div>
+              <label class="block text-xs uppercase tracking-widest text-warmes-braun mb-1" for="bwegt-nach">Nach</label>
+              <input id="bwegt-nach" name="itdLPxx_destination" type="text" readonly value="Woinemer Kino, Weinheim" class="w-full bg-off-white border border-vintage-gold/40 rounded px-3 py-2 text-sm text-tiefschwarz" style="background: #FAF6EE;" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs uppercase tracking-widest text-warmes-braun mb-1" for="bwegt-datum">Datum</label>
+                <input id="bwegt-datum" name="itdDate" type="date" class="w-full bg-off-white border border-vintage-gold/40 rounded px-3 py-2 text-sm text-tiefschwarz focus:border-kino-rot" style="background: #FAF6EE;" />
+              </div>
+              <div>
+                <label class="block text-xs uppercase tracking-widest text-warmes-braun mb-1" for="bwegt-zeit">Uhrzeit</label>
+                <input id="bwegt-zeit" name="itdTime" type="time" class="w-full bg-off-white border border-vintage-gold/40 rounded px-3 py-2 text-sm text-tiefschwarz focus:border-kino-rot" style="background: #FAF6EE;" />
+              </div>
+            </div>
+            <div class="md:col-span-2 flex flex-col md:flex-row items-start md:items-center gap-3 pt-1">
+              <div class="flex items-center gap-4 text-sm text-tiefschwarz/85">
+                <label class="inline-flex items-center gap-1">
+                  <input type="radio" name="itdTripDateTimeDepArr" value="dep" checked class="accent-kino-rot" />
+                  <span>Abfahrt</span>
+                </label>
+                <label class="inline-flex items-center gap-1">
+                  <input type="radio" name="itdTripDateTimeDepArr" value="arr" class="accent-kino-rot" />
+                  <span>Ankunft</span>
+                </label>
+              </div>
+              <button type="submit" class="md:ml-auto bg-kino-rot text-creme px-5 py-2.5 rounded font-medium tracking-wider hover:bg-tiefschwarz transition-colors">
+                Verbindung suchen ↗
+              </button>
+            </div>
+            <p class="md:col-span-2 text-xs text-warmes-braun/90 italic leading-relaxed">
+              Öffnet die Fahrplanauskunft auf <a href="https://www.bwegt.de/" target="_blank" rel="noopener" class="text-kino-rot underline">bwegt.de</a> in einem neuen Fenster. Ihre Eingaben werden nur an bwegt übertragen, nicht bei uns gespeichert.
+            </p>
+          </form>
+        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 text-sm text-tiefschwarz/85 leading-relaxed">
           <div>
