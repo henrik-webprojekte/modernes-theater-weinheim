@@ -55,21 +55,25 @@ function formatDatum(startDatum: string, endDatum?: string): string {
         {events.length > 0 ? (
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {events.map((event: Event) => (
-              <article
-                class="bg-off-white border border-vintage-gold/20 rounded p-5"
+              <a
+                href={`/events/${event.slug.current}`}
+                class="group bg-off-white border border-vintage-gold/20 rounded p-5 flex flex-col hover:border-vintage-gold/60 hover:shadow-sm transition-all"
                 style={`background: #FAF6EE; border-top: 3px solid ${farbeFuerKategorie(event.kategorie)};`}
               >
                 <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style={`color: ${farbeFuerKategorie(event.kategorie)};`}>
                   {event.wiederkehrend ?? formatDatum(event.startDatum, event.endDatum)}
                 </p>
-                <h2 class="font-display text-xl text-tiefschwarz mb-2 leading-tight">{event.titel}</h2>
+                <h2 class="font-display text-xl text-tiefschwarz mb-2 leading-tight group-hover:text-kino-rot transition-colors">{event.titel}</h2>
                 {event.kurzbeschreibung && (
                   <p class="text-sm text-tiefschwarz/85 leading-relaxed">{event.kurzbeschreibung}</p>
                 )}
                 {event.ort && (
                   <p class="text-xs text-warmes-braun italic mt-3">Ort: {event.ort}</p>
                 )}
-              </article>
+                <span class="mt-4 pt-3 border-t border-vintage-gold/20 text-xs text-kino-rot inline-flex items-center gap-1">
+                  Details <span aria-hidden="true">→</span>
+                </span>
+              </a>
             ))}
           </div>
         ) : (

@@ -1,0 +1,208 @@
+---
+import Layout from "../../layouts/Layout.astro"
+import Header from "../../components/Header.astro"
+import Footer from "../../components/Footer.astro"
+import {getEventSlugs, getEventBySlug, urlFor} from "../../lib/sanity"
+import {toHTML} from "@portabletext/to-html"
+
+export async function getStaticPaths() {
+  const slugs = await getEventSlugs()
+  return slugs.map((slug) => ({params: {slug}}))
+}
+
+const {slug} = Astro.params
+const event = slug ? await getEventBySlug(slug) : null
+
+if (!event) {
+  return Astro.redirect("/events")
+}
+
+const kategorieFarbe: Record<string, string> = {
+  "kaffee-tee-kino": "#8A6B2E",
+  "enzo-day": "#6B1818",
+  "open-air": "#4A7038",
+  "schmittini": "#8A5F2A",
+  "sondervorstellung": "#5A3F7F",
+  "sonstiges": "#6B4E1F",
+}
+
+const kategorieLabel: Record<string, string> = {
+  "kaffee-tee-kino": "Kaffee-Tee-Kino",
+  "enzo-day": "Enzo-Day",
+  "open-air": "Open Air",
+  "schmittini": "Zauberer Schmittini",
+  "sondervorstellung": "Sondervorstellung",
+  "sonstiges": "Sonstiges",
+}
+
+const farbe = kategorieFarbe[event.kategorie] ?? "#6B4E1F"
+const kategorieLabelText = kategorieLabel[event.kategorie] ?? event.kategorie
+
+function formatDatum(startDatum: string, endDatum?: string): string {
+  const opt: Intl.DateTimeFormatOptions = {day: "2-digit", month: "2-digit", year: "numeric"}
+  const start = new Date(startDatum).toLocaleDateString("de-DE", opt)
+  if (!endDatum) return start
+  const ende = new Date(endDatum).toLocaleDateString("de-DE", opt)
+  return `${start} – ${ende}`
+}
+
+const beschreibungHtml = event.beschreibungLang
+  ? toHTML(event.beschreibungLang as never)
+  : ""
+
+const bildUrl = event.bild
+  ? urlFor(event.bild).width(1600).url()
+  : null
+---
+
+<Layout
+  title={`${event.titel} — Modernes Theater Weinheim`}
+  description={event.kurzbeschreibung ?? `${event.titel} im Modernen Theater Weinheim.`}
+>
+  <Header />
+
+  <main id="hauptinhalt">
+
+    <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
+      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
+
+      <div class="max-w-4xl mx-auto px-6 py-6">
+        <a href="/events" class="inline-flex items-center gap-2 text-xs text-vintage-gold hover:text-creme transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Zurück zu den Events
+        </a>
+      </div>
+
+      <div class="max-w-4xl mx-auto px-6 pb-16 md:pb-20">
+        <p class="text-[11px] uppercase tracking-[0.3em] mb-4" style={`color: ${farbe};`}>
+          {kategorieLabelText}
+        </p>
+        <h1 class="font-display text-4xl md:text-5xl leading-tight text-creme mb-4">
+          {event.titel}
+        </h1>
+        <p class="text-sm md:text-base uppercase tracking-widest text-vintage-gold">
+          {event.wiederkehrend ?? formatDatum(event.startDatum, event.endDatum)}
+        </p>
+        {event.ort && (
+          <p class="text-sm text-creme/75 mt-2">
+            {event.ort}
+          </p>
+        )}
+      </div>
+    </section>
+
+    <section class="bg-creme px-6 py-14 md:py-20" style="background: #F5EDE0;">
+      <div class="max-w-3xl mx-auto">
+
+        {bildUrl && (
+          <img
+            src={bildUrl}
+            alt={event.titel}
+            class="w-full h-auto rounded border border-vintage-gold/30 mb-10"
+            loading="lazy"
+          />
+        )}
+
+        {event.kurzbeschreibung && (
+          <p class="font-display text-lg md:text-xl text-tiefschwarz leading-relaxed mb-8" style={`border-left: 3px solid ${farbe}; padding-left: 1.25rem;`}>
+            {event.kurzbeschreibung}
+          </p>
+        )}
+
+        {beschreibungHtml && (
+          <div class="event-beschreibung text-tiefschwarz/90 leading-relaxed" set:html={beschreibungHtml}></div>
+        )}
+
+        {!beschreibungHtml && !event.kurzbeschreibung && (
+          <p class="text-sm italic text-warmes-braun">Weitere Informationen folgen.</p>
+        )}
+
+      </div>
+    </section>
+
+    <section class="bg-off-white border-t border-vintage-gold/20 px-6 py-10" style="background: #FAF6EE;">
+      <div class="max-w-3xl mx-auto text-center">
+        <p class="text-sm text-tiefschwarz/85 mb-3">
+          Fragen zu diesem Event? Reservierungen und Auskünfte gerne telefonisch.
+        </p>
+        <a href="tel:0620162155" class="inline-flex items-center gap-2 text-kino-rot font-medium hover:text-tiefschwarz transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          06201 · 62155
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .event-beschreibung :global(p) {
+    margin-bottom: 1rem;
+  }
+  .event-beschreibung :global(h2) {
+    font-family: "Limelight", serif;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: #1A1310;
+  }
+  .event-beschreibung :global(h3) {
+    font-family: "Limelight", serif;
+    font-size: 1.25rem;
+    line-height: 1.25;
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+    color: #1A1310;
+  }
+  .event-beschreibung :global(h4) {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #1A1310;
+  }
+  .event-beschreibung :global(a) {
+    color: #6B1818;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(201, 165, 92, 0.6);
+  }
+  .event-beschreibung :global(a:hover) {
+    color: #1A1310;
+  }
+  .event-beschreibung :global(strong) {
+    font-weight: 600;
+  }
+  .event-beschreibung :global(em) {
+    font-style: italic;
+  }
+  .event-beschreibung :global(ul),
+  .event-beschreibung :global(ol) {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+  .event-beschreibung :global(ul) {
+    list-style: disc;
+  }
+  .event-beschreibung :global(ol) {
+    list-style: decimal;
+  }
+  .event-beschreibung :global(li) {
+    margin-bottom: 0.35rem;
+  }
+  .event-beschreibung :global(blockquote) {
+    border-left: 3px solid #C9A55C;
+    padding-left: 1rem;
+    margin: 1.25rem 0;
+    font-style: italic;
+    color: #6B4E1F;
+  }
+</style>

@@ -87,10 +87,16 @@ export type Event = {
   slug: {current: string}
   kategorie: string
   kurzbeschreibung?: string
+  beschreibungLang?: unknown[]
   startDatum: string
   endDatum?: string
   wiederkehrend?: string
   ort?: string
+  bild?: {
+    asset: {_ref: string; _type: string}
+    hotspot?: {x: number; y: number; height: number; width: number}
+    crop?: {top: number; bottom: number; left: number; right: number}
+  }
   veroeffentlicht: boolean
 }
 
@@ -100,6 +106,23 @@ export async function getEvents(): Promise<Event[]> {
       _id, titel, slug, kategorie, kurzbeschreibung,
       startDatum, endDatum, wiederkehrend, ort, veroeffentlicht
     }`
+  )
+}
+
+export async function getEventSlugs(): Promise<string[]> {
+  const slugs = await sanity.fetch<{current: string}[]>(
+    `*[_type == "event" && veroeffentlicht == true && defined(slug.current)]{ "current": slug.current }`
+  )
+  return slugs.map((s) => s.current)
+}
+
+export async function getEventBySlug(slug: string): Promise<Event | null> {
+  return sanity.fetch<Event | null>(
+    `*[_type == "event" && slug.current == $slug][0]{
+      _id, titel, slug, kategorie, kurzbeschreibung, beschreibungLang,
+      startDatum, endDatum, wiederkehrend, ort, bild, veroeffentlicht
+    }`,
+    {slug}
   )
 }
 

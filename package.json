@@ -16,6 +16,7 @@
     "@astrojs/vercel": "^11.0.2",
     "@fontsource/limelight": "^5.2.7",
     "@fontsource/source-sans-3": "^5.2.9",
+    "@portabletext/to-html": "^5.0.2",
     "@sanity/client": "^7.23.0",
     "@sanity/image-url": "^2.1.1",
     "@tailwindcss/vite": "^4.3.2",
