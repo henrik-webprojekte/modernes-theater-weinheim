@@ -188,7 +188,7 @@ const fskFarben: Record<number, string> = {
                     <h2 class="font-display text-xl md:text-2xl text-tiefschwarz leading-tight">
                       {film.titel}
                     </h2>
-                    {film.badges?.includes("neu") && (
+                    {film.istNeu && (
                       <span class="bg-kino-rot text-creme text-[10px] uppercase tracking-widest px-2 py-0.5 rounded">Neu</span>
                     )}
                     {film.istIn3dVerfuegbar && (

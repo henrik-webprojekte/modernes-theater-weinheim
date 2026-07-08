@@ -107,7 +107,7 @@ const fskFarben: Record<number, string> = {
 
         <div class="flex-1 min-w-0">
           <div class="flex flex-wrap items-center gap-2 mb-3">
-            {film.badges?.includes("neu") && (
+            {film.istNeu && (
               <span class="bg-kino-rot text-creme text-[10px] uppercase tracking-widest px-2 py-1 rounded">Neu</span>
             )}
             {film.istIn3dVerfuegbar && (

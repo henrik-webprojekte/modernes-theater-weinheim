@@ -142,7 +142,7 @@ function formatEventDatum(event: Event): string {
                   ) : (
                     <div class="w-[160px] md:w-[280px] aspect-[2/3] flex items-center justify-center text-vintage-gold/80 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</div>
                   )}
-                  {film.badges?.includes("neu") && (
+                  {film.istNeu && (
                     <span class="absolute top-2 left-2 bg-kino-rot text-creme text-[10px] uppercase tracking-widest px-2 py-0.5 rounded">Neu</span>
                   )}
                 </div>

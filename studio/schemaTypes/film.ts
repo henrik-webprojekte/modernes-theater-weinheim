@@ -107,19 +107,25 @@ export const filmType = defineType({
       initialValue: false,
     }),
     defineField({
-      name: "badges",
-      title: "Badges",
-      type: "array",
-      of: [{type: "string"}],
-      options: {
-        list: [
-          {title: "Neu", value: "neu"},
-          {title: "Preview", value: "preview"},
-          {title: "Kaffee-Tee-Kino", value: "kaffee-tee-kino"},
-          {title: "OmU", value: "omu"},
-        ],
-        layout: "tags",
-      },
+      name: "istNeu",
+      title: "Neu",
+      type: "boolean",
+      description: "Anschalten in der Startwoche des Films — zeigt ein „Neu\"-Chip neben dem Titel auf Programm-Liste, Detail-Seite und Startseite.",
+      initialValue: false,
+    }),
+    defineField({
+      name: "istPreview",
+      title: "Preview",
+      type: "boolean",
+      description: "Anschalten bei Vorpremieren (Preview vor dem regulären Kinostart). Nicht identisch mit „Sneak Preview\" — Sneaks sind separat oben.",
+      initialValue: false,
+    }),
+    defineField({
+      name: "istOmU",
+      title: "OmU",
+      type: "boolean",
+      description: "Original mit Untertiteln — anschalten wenn der Film in Originalsprache mit deutschen Untertiteln läuft.",
+      initialValue: false,
     }),
     defineField({
       name: "vorstellungen",
