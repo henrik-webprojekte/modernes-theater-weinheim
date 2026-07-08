@@ -126,21 +126,21 @@ function formatEventDatum(event: Event): string {
         </div>
 
         {dieseWocheFilme.length > 0 && (
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-8">
+          <div class="flex flex-wrap justify-center gap-6 md:gap-8 mb-8">
             {dieseWocheFilme.map((film) => (
-              <a href={`/programm/${film.slug.current}`} class="group block">
+              <a href={`/programm/${film.slug.current}`} class="group flex flex-col w-fit">
                 <div class="rounded overflow-hidden border border-vintage-gold/40 bg-tiefschwarz mb-3 relative" style="background: #1A1310;">
                   {film.plakat ? (
                     <img
                       src={urlFor(film.plakat).width(500).url()}
                       srcset={`${urlFor(film.plakat).width(300).url()} 300w, ${urlFor(film.plakat).width(500).url()} 500w, ${urlFor(film.plakat).width(700).url()} 700w`}
-                      sizes="(max-width: 768px) 45vw, 22vw"
+                      sizes="(max-width: 768px) 40vw, 280px"
                       alt={`Filmplakat: ${film.titel}`}
                       loading="lazy"
-                      class="block w-full h-auto transition-transform group-hover:scale-[1.02]"
+                      class="block w-auto h-[240px] md:h-[420px] transition-transform group-hover:scale-[1.02]"
                     />
                   ) : (
-                    <div class="aspect-[2/3] w-full flex items-center justify-center text-vintage-gold/80 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</div>
+                    <div class="w-[160px] md:w-[280px] aspect-[2/3] flex items-center justify-center text-vintage-gold/80 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</div>
                   )}
                   {film.badges?.includes("neu") && (
                     <span class="absolute top-2 left-2 bg-kino-rot text-creme text-[10px] uppercase tracking-widest px-2 py-0.5 rounded">Neu</span>
