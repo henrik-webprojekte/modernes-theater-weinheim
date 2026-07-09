@@ -344,12 +344,83 @@ function formatEventDatum(event: Event): string {
           <p class="text-sm text-creme/85 leading-relaxed mb-5">
             Ca. einmal pro Woche neue Filme, Sonderreihen und Events direkt ins Postfach — jederzeit abbestellbar.
           </p>
-          <a
-            href="/kontakt#newsletter"
-            class="inline-block bg-kino-rot text-creme px-5 py-2.5 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
-          >
-            Zum Newsletter
-          </a>
+          <form id="home-newsletter-form" class="flex flex-col sm:flex-row gap-2" novalidate>
+            <label for="home-newsletter-email" class="sr-only">Ihre E-Mail-Adresse für den Newsletter</label>
+            <input
+              id="home-newsletter-email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+              placeholder="Ihre E-Mail-Adresse"
+              class="flex-1 min-w-0 border border-vintage-gold/40 rounded px-4 py-2.5 text-sm text-creme bg-transparent focus:border-vintage-gold placeholder:text-creme/50"
+            />
+            <button
+              id="home-newsletter-submit"
+              type="submit"
+              class="bg-kino-rot text-creme px-5 py-2.5 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors shrink-0"
+            >
+              <span data-idle>Anmelden</span>
+              <span data-loading class="hidden">Wird gesendet …</span>
+            </button>
+          </form>
+          <p id="home-newsletter-status" role="status" aria-live="polite" class="mt-3 text-xs text-creme/85"></p>
+          <p class="text-xs text-creme/60 italic mt-3">
+            Mit der Anmeldung stimmen Sie unserer <a href="/datenschutz" class="text-vintage-gold hover:text-creme underline">Datenschutzerklärung</a> zu. Doppel-Opt-In per Bestätigungsmail.
+          </p>
+
+          <script>
+            const form = document.getElementById("home-newsletter-form") as HTMLFormElement | null
+            const input = document.getElementById("home-newsletter-email") as HTMLInputElement | null
+            const btn = document.getElementById("home-newsletter-submit") as HTMLButtonElement | null
+            const status = document.getElementById("home-newsletter-status")
+            const idleLabel = btn?.querySelector<HTMLElement>("[data-idle]")
+            const loadingLabel = btn?.querySelector<HTMLElement>("[data-loading]")
+
+            function setLoading(loading: boolean) {
+              if (!btn || !idleLabel || !loadingLabel) return
+              btn.disabled = loading
+              idleLabel.classList.toggle("hidden", loading)
+              loadingLabel.classList.toggle("hidden", !loading)
+            }
+
+            function zeigeStatus(msg: string, err: boolean) {
+              if (!status) return
+              status.textContent = msg
+              status.classList.toggle("text-vintage-gold", err)
+              status.classList.toggle("text-creme/85", !err)
+            }
+
+            form?.addEventListener("submit", async (e) => {
+              e.preventDefault()
+              const email = (input?.value ?? "").trim()
+              if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                zeigeStatus("Bitte geben Sie eine gültige E-Mail-Adresse ein.", true)
+                input?.focus()
+                return
+              }
+              setLoading(true)
+              zeigeStatus("", false)
+              try {
+                const res = await fetch("/api/newsletter", {
+                  method: "POST",
+                  headers: {"content-type": "application/json"},
+                  body: JSON.stringify({email}),
+                })
+                const data = await res.json().catch(() => ({ok: false, message: "Unerwartete Antwort."}))
+                if (res.ok && data.ok) {
+                  form.classList.add("hidden")
+                  zeigeStatus("Fast geschafft! Wir haben Ihnen eine Bestätigungsmail geschickt. Bitte klicken Sie den Link darin.", false)
+                } else {
+                  zeigeStatus(data.message ?? "Etwas ist schiefgelaufen. Bitte später erneut versuchen.", true)
+                }
+              } catch {
+                zeigeStatus("Verbindung zum Server fehlgeschlagen. Bitte später erneut versuchen.", true)
+              } finally {
+                setLoading(false)
+              }
+            })
+          </script>
         </div>
 
         <div>

@@ -73,9 +73,51 @@ const fskFarben: Record<number, string> = {
   16: "#8A5F2A",
   18: "#6B1818",
 }
+
+const movieSchema = {
+  "@context": "https://schema.org",
+  "@type": "Movie",
+  "name": film.titel,
+  ...(film.kurzbeschreibung ? {"description": film.kurzbeschreibung} : {}),
+  ...(film.plakat ? {"image": urlFor(film.plakat).width(1000).url()} : {}),
+  ...(film.genre ? {"genre": film.genre} : {}),
+  ...(film.laenge ? {"duration": `PT${film.laenge}M`} : {}),
+  "contentRating": `FSK ${film.fsk}`,
+  ...(film.trailerUrl ? {"trailer": {"@type": "VideoObject", "name": `Trailer: ${film.titel}`, "url": film.trailerUrl}} : {}),
+}
+
+const screeningEvents = gruppiert.flatMap((g) =>
+  g.entries
+    .filter((v) => v.datum && v.uhrzeit)
+    .map((v) => ({
+      "@context": "https://schema.org",
+      "@type": "ScreeningEvent",
+      "name": `${film.titel} — Vorstellung`,
+      "workPresented": {"@type": "Movie", "name": film.titel},
+      "startDate": `${v.datum}T${v.uhrzeit}:00`,
+      "eventStatus": "https://schema.org/EventScheduled",
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "location": {
+        "@type": "MovieTheater",
+        "name": v.saal?.name ? `Modernes Theater · Saal ${v.saal.name}` : "Modernes Theater Weinheim",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Hauptstraße 61",
+          "addressLocality": "Weinheim",
+          "postalCode": "69469",
+          "addressCountry": "DE",
+        },
+      },
+      ...(v.format ? {"videoFormat": v.format} : {}),
+    }))
+)
 ---
 
 <Layout title={`${film.titel} — Modernes Theater Weinheim`} description={film.kurzbeschreibung}>
+  <script type="application/ld+json" set:html={JSON.stringify(movieSchema)} />
+  {screeningEvents.length > 0 && (
+    <script type="application/ld+json" set:html={JSON.stringify(screeningEvents)} />
+  )}
   <Header />
 
   <main id="hauptinhalt">

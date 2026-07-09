@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
+import ScrollToTop from "../components/ScrollToTop.astro"
 import {getAktiveFilme, urlFor, type Film, type Vorstellung} from "../lib/sanity"
 
 const filme = await getAktiveFilme()
@@ -119,6 +120,7 @@ const fskFarben: Record<number, string> = {
         <button type="button" data-filter="3d" aria-pressed="false" class="filter-chip">3D</button>
         <button type="button" data-filter="sneak" aria-pressed="false" class="filter-chip">Sneak Preview</button>
         <button type="button" data-filter="kaffee-tee-kino" aria-pressed="false" class="filter-chip">Kaffee-Tee-Kino</button>
+        <button type="button" data-filter="omu" aria-pressed="false" class="filter-chip">OmU</button>
         <span class="ml-auto text-xs text-warmes-braun" aria-live="polite">
           <span id="programm-count-vorstellungen">{vorstellungsAnzahl}</span> <span id="programm-count-vorstellungen-label">{vorstellungsAnzahl === 1 ? "Vorstellung" : "Vorstellungen"}</span> · <span id="programm-count-filme">{filme.length}</span> <span id="programm-count-filme-label">{filme.length === 1 ? "Film" : "Filme"}</span>
         </span>
@@ -129,14 +131,10 @@ const fskFarben: Record<number, string> = {
       <div class="max-w-5xl mx-auto">
 
         {filme.length === 0 && (
-          <div class="bg-off-white border border-vintage-gold/50 rounded p-8 text-center">
-            <p class="text-warmes-braun italic mb-2">
-              Noch keine aktiven Filme im Programm.
-            </p>
-            <p class="text-warmes-braun text-sm">
-              Öffne das Studio auf
-              <a href="http://localhost:3333" class="text-kino-rot underline mx-1">localhost:3333</a>
-              und lege einen Film an — dann erscheint er hier automatisch.
+          <div class="bg-off-white border border-vintage-gold/50 rounded p-8 text-center max-w-2xl mx-auto" style="background: #FAF6EE;">
+            <p class="font-display text-xl text-tiefschwarz mb-3">Aktuell keine Filme im Programm</p>
+            <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+              Das aktuelle Programm wird gerade eingepflegt und erscheint hier in Kürze. Für Rückfragen zu Filmen oder Reservierungen erreichen Sie uns telefonisch unter <a href="tel:0620162155" class="text-kino-rot font-medium">06201 · 62155</a>.
             </p>
           </div>
         )}
@@ -163,6 +161,7 @@ const fskFarben: Record<number, string> = {
                 data-3d={film.istIn3dVerfuegbar ? "1" : "0"}
                 data-sneak={film.istSneak ? "1" : "0"}
                 data-kaffee-tee-kino={film.istKaffeeTeeKino ? "1" : "0"}
+                data-omu={film.istOmU ? "1" : "0"}
                 data-vorstellungen={film.vorstellungen?.length ?? 0}
               >
 
@@ -297,6 +296,7 @@ const fskFarben: Record<number, string> = {
   </main>
 
   <Footer />
+  <ScrollToTop />
 </Layout>
 
 <style>
@@ -357,6 +357,7 @@ const fskFarben: Record<number, string> = {
     if (filter === "3d") return item.dataset["3d"] === "1"
     if (filter === "sneak") return item.dataset.sneak === "1"
     if (filter === "kaffee-tee-kino") return item.dataset.kaffeeTeeKino === "1"
+    if (filter === "omu") return item.dataset.omu === "1"
     return true
   }
 

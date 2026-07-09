@@ -1,0 +1,53 @@
+---
+import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+---
+
+<Layout
+  title="Seite nicht gefunden — Modernes Theater Weinheim"
+  description="Die angeforderte Seite existiert nicht. Zurück zum aktuellen Programm oder zur Startseite."
+>
+  <Header />
+
+  <main id="hauptinhalt">
+
+    <section class="bg-tiefschwarz text-creme relative min-h-[60vh] flex items-center" style="background: #1A1310;">
+      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
+      <div class="max-w-3xl mx-auto px-6 py-20 md:py-24 text-center">
+        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-4">
+          Fehler 404 — Vorstellung entfällt
+        </p>
+        <h1 class="font-display text-5xl md:text-7xl leading-tight text-creme mb-6" style="text-shadow: 0 2px 20px rgba(0,0,0,0.6);">
+          Filmriss.
+        </h1>
+        <p class="text-base md:text-lg text-creme/85 max-w-xl mx-auto leading-relaxed mb-8">
+          Die gesuchte Seite ist nicht auf dem Programm. Vielleicht ein alter Link, vielleicht ein Vertipper — auf jeden Fall keine Vorstellung, die wir hier zeigen können.
+        </p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a
+            href="/"
+            class="bg-kino-rot text-creme px-6 py-3 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
+          >
+            Zur Startseite
+          </a>
+          <a
+            href="/programm"
+            class="border border-vintage-gold text-vintage-gold px-6 py-3 rounded font-medium tracking-wider hover:bg-vintage-gold hover:text-tiefschwarz transition-colors"
+          >
+            Aktuelles Programm
+          </a>
+          <a
+            href="/kontakt"
+            class="border border-creme/40 text-creme px-6 py-3 rounded font-medium tracking-wider hover:bg-creme hover:text-tiefschwarz transition-colors"
+          >
+            Kontakt
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>

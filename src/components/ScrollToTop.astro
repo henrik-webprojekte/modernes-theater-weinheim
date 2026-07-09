@@ -1,0 +1,39 @@
+---
+---
+
+<button
+  id="scroll-to-top"
+  type="button"
+  aria-label="Zurück nach oben"
+  class="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-tiefschwarz/85 text-vintage-gold border border-vintage-gold/50 shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-opacity hover:bg-tiefschwarz hover:text-creme focus-visible:opacity-100"
+  style="background: rgba(26,19,16,0.85);"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+<script>
+  const btn = document.getElementById("scroll-to-top") as HTMLButtonElement | null
+  if (btn) {
+    const zeigenAb = 600
+    let sichtbar = false
+
+    function pruefe() {
+      const scroll = window.scrollY
+      const solltezeigen = scroll > zeigenAb
+      if (solltezeigen !== sichtbar) {
+        sichtbar = solltezeigen
+        btn!.style.opacity = solltezeigen ? "1" : "0"
+        btn!.style.pointerEvents = solltezeigen ? "auto" : "none"
+      }
+    }
+
+    window.addEventListener("scroll", pruefe, {passive: true})
+    pruefe()
+
+    btn.addEventListener("click", () => {
+      window.scrollTo({top: 0, behavior: "smooth"})
+    })
+  }
+</script>
