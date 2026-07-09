@@ -112,7 +112,18 @@ erledigt sein müssen. Wird laufend erweitert.
 - [ ] 🟡 👨‍💻 Kurzanleitung Sanity-Studio schreiben:
       Wie lege ich einen Film an? Wie plane ich Vorstellungen? Was heißt „Publish"?
 
-### 3.3 Analytics-Entscheidung
+### 3.3 Sanity → Vercel Rebuild-Automatik
+
+- [ ] 🔴 👨‍💻 **Sanity-Webhook auf Vercel-Deploy-Hook einrichten**: Die Seiten sind
+      statisch vorgerendert — Content-Änderungen in Sanity (neuer Film, Event)
+      erscheinen erst nach einem neuen Build. Ohne Webhook sieht der Kunde
+      seine Änderungen nie live. (Vercel: Settings → Git → Deploy Hooks;
+      Sanity: sanity.io/manage → API → Webhooks, URL des Deploy-Hooks eintragen)
+- [ ] 🟡 👨‍💻 Zusätzlich täglichen Rebuild einplanen (Vercel Cron oder externer
+      Ping auf den Deploy-Hook): „Diese Woche im Kino" auf der Startseite wird
+      zur Build-Zeit berechnet und veraltet sonst nach wenigen Tagen
+
+### 3.4 Analytics-Entscheidung
 
 - [ ] 🟡 🎬 Nutzungsstatistiken gewünscht? (Plausible/Umatomic, ~9–12 €/Monat, DSGVO-friendly)
 - [ ] 🟡 👨‍💻 Falls ja: Analytics einbinden + Cookie-Banner wieder aktivieren
@@ -148,7 +159,15 @@ erledigt sein müssen. Wird laufend erweitert.
 - [ ] 🟡 👨‍💻 Lighthouse-Score im Production-Build:
       Performance/A11y/Best-Practices/SEO jeweils ≥ 90
 - [ ] 🟡 👨‍💻 axe DevTools auf allen Seiten in Production: 0 kritische/ernste Verstöße
-- [ ] 🟡 👨‍💻 Custom 404-Seite mit Vintage-Design ergänzen (`src/pages/404.astro`)
+- [x] ✅ 👨‍💻 Custom 404-Seite mit Vintage-Design ergänzt (`src/pages/404.astro`)
+- [ ] 🟡 👨‍💻 npm-audit-Finding beobachten: `path-to-regexp` (High, transitiv über
+      `@astrojs/vercel`) — reine Build-Zeit-Abhängigkeit, kein Runtime-Risiko;
+      Fix erst wenn Adapter-Update ohne Downgrade verfügbar
+- [ ] 🟡 🎬 Sanity-Slug-Tippfehler korrigieren: `kaffee-tee_kino` → `kaffee-tee-kino`,
+      `wiesenee-hemsbach` → `wiesensee-hemsbach`
+- [ ] 🔴 🎬 Neue Saal-Felder in Sanity befüllen (Reihenfolge, Fakten-Kacheln,
+      Hintergrundfarbe, Dunkler-Hintergrund-Schalter, Hauptbild, ausführliche
+      Beschreibung) — Werte-Vorlage liegt im Chat-Verlauf vom 09.07.2026
 
 ---
 
@@ -197,4 +216,4 @@ Zur Übersicht kompakt, was schon fertig ist:
 
 ---
 
-*Zuletzt aktualisiert: 06.07.2026*
+*Zuletzt aktualisiert: 09.07.2026 (Final-Audit: Rebuild-Webhook, npm audit, Saal-Felder, Slug-Typos ergänzt; 404 erledigt)*
