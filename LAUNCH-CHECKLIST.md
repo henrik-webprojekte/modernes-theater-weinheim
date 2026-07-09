@@ -161,8 +161,9 @@ erledigt sein müssen. Wird laufend erweitert.
 - [x] ✅ 👨‍💻 **End-to-End Newsletter-Anmeldung** bestanden (09.07.2026, auf
       Production mit Test-Brevo): echte Mail + DOI-Klick + Redirect + Kontakt
       in Liste. Beim Konto-Umzug einmal wiederholen
-- [ ] 🔴 👨‍💻 **End-to-End Vermietungs-Formular**: Anfrage über /vermietung,
-      Empfang unter BREVO_VERMIETUNG_TO, Reply-To-Check (geht an Anfragenden)
+- [x] ✅ 👨‍💻 **End-to-End Vermietungs-Formular** bestanden (09.07.2026):
+      Anfrage über /vermietung → Empfang unter BREVO_VERMIETUNG_TO →
+      Reply-To geht korrekt an den Anfragenden. Beim Konto-Umzug wiederholen
 - [ ] 🟡 👨‍💻 Cross-Browser-Test auf echten Geräten:
       Chrome, Firefox, Safari macOS, Edge, Safari iOS, Chrome Android
 - [ ] 🟡 👨‍💻 Lighthouse-Score im Production-Build:

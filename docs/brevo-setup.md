@@ -10,7 +10,7 @@
 - **DOI-Template:** ID **6** — „Standard-Template für Double-Opt-in-Bestätigungen" (vom Formular-Assistenten erzeugt)
 - **Vercel-Env-Vars (Production):** `BREVO_API_KEY`, `BREVO_LIST_ID`, `BREVO_TEMPLATE_ID=6`, `BREVO_SENDER_EMAIL`, `BREVO_SENDER_NAME`, `BREVO_VERMIETUNG_TO` (→ Henris Adresse, damit Testanfragen NICHT ans Kino gehen)
 - **Newsletter-E2E-Test:** ✅ bestanden (Anmeldung → DOI-Mail → Bestätigung → Kontakt in Liste → Redirect auf /newsletter-bestaetigt)
-- **Vermietungs-E2E-Test:** siehe LAUNCH-CHECKLIST (Status dort)
+- **Vermietungs-E2E-Test:** ✅ bestanden (Anfrage → Mail an BREVO_VERMIETUNG_TO → Reply-To = Anfragender)
 
 ## ⚠️ Die DOI-Template-Falle (teuer gelernt am 09.07.2026)
 
