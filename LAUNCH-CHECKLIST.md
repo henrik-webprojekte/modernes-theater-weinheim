@@ -98,20 +98,17 @@ erledigt sein müssen. Wird laufend erweitert.
 
 ### 3.1 Brevo (E-Mail-Dienst)
 
+- [x] ✅ 👨‍💻 **Test-Setup komplett live** (09.07.2026): Test-Konto, Liste,
+      DOI-Template (ID 6 via Formular-Assistent!), alle 6 Env-Vars in Vercel.
+      Newsletter End-to-End bestanden. Setup-Doku + ⚠️ DOI-Template-Falle +
+      Umzugsplan: `docs/brevo-setup.md`
 - [ ] 🔴 🎬 Brevo-Konto klären: bestehendes von GTM Schubert übernehmen
-      oder neues Konto einrichten?
-- [ ] 🔴 🎬 Newsletter-Liste in Brevo anlegen (falls neu)
-- [ ] 🔴 🎬 Confirmation-Mail-Template mit Kino-Corporate-Design bauen
-      (Double-Opt-In-Vorlage, Impressum + Abmelde-Link Pflicht)
-- [ ] 🔴 🎬 Sender-Adresse im Brevo-Dashboard verifizieren
-      (z. B. noreply@kinoweinheim.de oder website@kinoweinheim.de)
-- [ ] 🔴 👨‍💻 Alle 6 Env-Vars in Vercel (Preview + Production) eintragen:
-    - `BREVO_API_KEY`
-    - `BREVO_LIST_ID`
-    - `BREVO_TEMPLATE_ID`
-    - `BREVO_SENDER_EMAIL`
-    - `BREVO_SENDER_NAME` (optional, Default „Modernes Theater Website")
-    - `BREVO_VERMIETUNG_TO` (optional, Default `veranstaltung@kinoweinheim.de`)
+      (Empfehlung — dort liegt die Alt-Abonnentenliste) oder neues Konto
+- [ ] 🔴 🎬 Domain-Absender im Zielkonto verifizieren (DKIM/SPF beim Hoster,
+      z. B. newsletter@kinoweinheim.de)
+- [ ] 🔴 👨‍💻 Beim Umzug aufs echte Konto: Env-Vars tauschen nach Plan in
+      `docs/brevo-setup.md` — **`BREVO_VERMIETUNG_TO` dabei löschen** (Default
+      greift dann: veranstaltung@kinoweinheim.de)
 
 ### 3.2 Sanity-Zugang
 
@@ -161,10 +158,11 @@ erledigt sein müssen. Wird laufend erweitert.
 
 - [ ] 🔴 👨‍💻 `npm run build` lokal ohne Fehler durchgelaufen
 - [ ] 🔴 👨‍💻 Sitemap `dist/sitemap-index.xml` + `dist/sitemap-0.xml` vorhanden
-- [ ] 🔴 👨‍💻 Auf Vercel Preview-Deploy: **End-to-End Newsletter-Anmeldung**
-      mit echter Email + Bestätigungslink-Klick + Redirect auf Landing
-- [ ] 🔴 👨‍💻 Auf Vercel Preview-Deploy: **End-to-End Vermietungs-Formular**
-      mit echter Anfrage + Empfang im Kino-Postfach + Reply-Test
+- [x] ✅ 👨‍💻 **End-to-End Newsletter-Anmeldung** bestanden (09.07.2026, auf
+      Production mit Test-Brevo): echte Mail + DOI-Klick + Redirect + Kontakt
+      in Liste. Beim Konto-Umzug einmal wiederholen
+- [ ] 🔴 👨‍💻 **End-to-End Vermietungs-Formular**: Anfrage über /vermietung,
+      Empfang unter BREVO_VERMIETUNG_TO, Reply-To-Check (geht an Anfragenden)
 - [ ] 🟡 👨‍💻 Cross-Browser-Test auf echten Geräten:
       Chrome, Firefox, Safari macOS, Edge, Safari iOS, Chrome Android
 - [ ] 🟡 👨‍💻 Lighthouse-Score im Production-Build:
