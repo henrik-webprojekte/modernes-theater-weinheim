@@ -19,13 +19,12 @@ const navRechts = nav.slice(4)
   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
 
     <a href="/" class="flex items-center shrink-0 group" aria-label="Modernes Theater — zur Startseite">
-      <span class="bg-creme rounded-sm px-2 py-1 inline-flex items-center transition-transform group-hover:scale-[1.03]">
-        <img
-          src="/logos/modernes-theater-logo.png"
-          alt="Modernes Theater 3D"
-          class="h-12 lg:h-14 w-auto"
-        />
-      </span>
+      <img
+        src="/logos/modernes-theater-logo.png"
+        alt="Modernes Theater 3D"
+        class="h-12 lg:h-14 w-auto transition-transform group-hover:scale-[1.03]"
+        style="filter: brightness(0) invert(1);"
+      />
     </a>
 
     <nav class="hidden md:flex flex-1 items-center justify-center gap-5 text-xs tracking-wider md:pl-10 lg:pl-20" aria-label="Hauptnavigation">
@@ -140,9 +139,12 @@ const navRechts = nav.slice(4)
   <div class="h-[3px] shrink-0" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.6;"></div>
 
   <div class="flex items-center justify-between px-4 py-3 border-b border-vintage-gold/30">
-    <span class="bg-creme rounded-sm px-2 py-1 inline-flex items-center">
-      <img src="/logos/modernes-theater-logo.png" alt="Modernes Theater 3D" class="h-10 w-auto" />
-    </span>
+    <img
+      src="/logos/modernes-theater-logo.png"
+      alt="Modernes Theater 3D"
+      class="h-10 w-auto"
+      style="filter: brightness(0) invert(1);"
+    />
 
     <button
       id="menu-close"
