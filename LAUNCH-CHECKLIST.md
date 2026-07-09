@@ -108,7 +108,11 @@ erledigt sein müssen. Wird laufend erweitert.
 
 ### 3.2 Sanity-Zugang
 
-- [ ] 🔴 👨‍💻 Kino-Mitarbeiter als Editor in Sanity-Projekt `mooch5bz` einladen
+- [ ] 🔴 👨‍💻 Kino-Mitarbeiter in Sanity-Projekt `mooch5bz` einladen.
+      **Hinweis Free-Plan** (greift nach Trial-Ende ~Aug 2026): nur 2 Rollen
+      (Administrator/Viewer) — Content-Pfleger müssen Administrator sein.
+      Historie nur 3 Tage, kein Scheduled Publishing. Webhooks (2) und
+      Limits reichen für den Live-Betrieb; Growth wäre 15 €/Seat/Monat.
 - [ ] 🟡 👨‍💻 Kurzanleitung Sanity-Studio schreiben:
       Wie lege ich einen Film an? Wie plane ich Vorstellungen? Was heißt „Publish"?
 
