@@ -18,6 +18,7 @@
   if (btn) {
     const zeigenAb = 600
     let sichtbar = false
+    btn.tabIndex = -1
 
     function pruefe() {
       const scroll = window.scrollY
@@ -26,6 +27,7 @@
         sichtbar = solltezeigen
         btn!.style.opacity = solltezeigen ? "1" : "0"
         btn!.style.pointerEvents = solltezeigen ? "auto" : "none"
+        btn!.tabIndex = solltezeigen ? 0 : -1
       }
     }
 
