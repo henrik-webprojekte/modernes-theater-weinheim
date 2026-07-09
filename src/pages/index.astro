@@ -74,16 +74,19 @@ function formatEventDatum(event: Event): string {
       />
       <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(26,19,16,0.55) 0%, rgba(26,19,16,0.75) 60%, rgba(26,19,16,0.95) 100%);"></div>
       <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.6;"></div>
-      <div class="relative max-w-4xl mx-auto px-6 py-28 md:py-32 text-center">
-        <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-4">
-          Seit 1924 in Weinheim
-        </p>
+      <div class="relative max-w-4xl mx-auto px-6 py-20 md:py-24 text-center">
+        <div class="flex items-center justify-center gap-3 md:gap-4 mb-5">
+          <span class="h-px w-8 md:w-14 bg-vintage-gold/70" aria-hidden="true"></span>
+          <p class="text-xs md:text-sm uppercase tracking-[0.3em] text-vintage-gold whitespace-nowrap">
+            Seit 1924 in Weinheim
+          </p>
+          <span class="h-px w-8 md:w-14 bg-vintage-gold/70" aria-hidden="true"></span>
+        </div>
         <h1 class="font-display text-5xl md:text-7xl leading-tight text-creme mb-6" style="text-shadow: 0 2px 20px rgba(0,0,0,0.6);">
           Modernes Theater
         </h1>
-        <p class="text-lg text-creme/90 max-w-2xl mx-auto leading-relaxed mb-8" style="text-shadow: 0 1px 8px rgba(0,0,0,0.5);">
-          Drei Säle, jeder mit eigenem Charakter. Ein Kinogarten für die warme Jahreszeit.
-          Und ein Programm, das die ganze Familie bewegt.
+        <p class="text-lg md:text-xl text-creme/90 max-w-2xl mx-auto leading-relaxed mb-8" style="text-shadow: 0 1px 8px rgba(0,0,0,0.5);">
+          Drei Säle, ein Kinogarten, ein Programm für alle.
         </p>
         <div class="flex flex-wrap gap-3 justify-center">
           <a
