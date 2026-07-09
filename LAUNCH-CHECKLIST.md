@@ -15,9 +15,14 @@ erledigt sein müssen. Wird laufend erweitert.
 
 ### 1.1 Impressum
 
-- [ ] 🔴 🎬 Geschäftsführung bestätigen — steht aktuell „Alfred Speiser". Noch aktuell?
-- [ ] 🔴 🎬 Verwaltungs-GmbH als Komplementärin ergänzen (bei GmbH & Co. KG üblich).
-      Falls vorhanden: HRB-Nummer der Verwaltungs-GmbH nachtragen
+- [ ] 🔴 🎬 Geschäftsführung bestätigen — **Registerfund 09.07.2026: seit
+      03.06.2024 ist Dominic Speiser GF** (vorher Alfred Hans Speiser).
+      Details + vorbereiteter Impressums-Baustein in `docs/rechtliches-vorbereitung.md`
+- [ ] 🔴 🎬 Komplementärin **recherchiert**: Woinemer Kinoverwaltungsgesellschaft mbH,
+      AG Mannheim **HRB 708 890** — per offiziellem Auszug bestätigen, dann ins
+      Impressum übernehmen
+- [ ] 🔴 🎬 Firmierungs-Schreibweise klären: Register sagt „Woinemer Kino GmbH & Co. KG"
+      (getrennt), altes Impressum „WoinemerKino" (zusammen) — registrierte Form gilt
 - [ ] 🔴 🎬 USt-ID `DE 270 149 413` auf bzst.de kurz verifizieren (noch aktiv?)
 - [ ] 🟡 ⚖️ Zuordnung nach § 18 Abs. 2 MStV vom Anwalt prüfen lassen
       (strittig ob für Info-Website ohne journalistisch-redaktionelle Inhalte anwendbar)
@@ -27,10 +32,12 @@ erledigt sein müssen. Wird laufend erweitert.
 - [ ] 🔴 ⚖️ Kanzlei mit DSGVO-Fokus prüft die 10 Sections
       (Speicherdauern, Auftragsverarbeiter-Aufzählung, Vollständigkeit).
       Kosten typisch 200–500 € einmalig
-- [ ] 🔴 🎬 **AVVs (Auftragsverarbeitungsverträge nach Art. 28 DSGVO)** schließen und archivieren mit:
-    - Vercel Inc — Standard-AVV auf vercel.com/legal/dpa
-    - Sanity AS — Standard-DPA auf sanity.io/legal/dpa
-    - Sendinblue/Brevo SAS — DPA im Brevo-Dashboard unter Compliance
+- [ ] 🔴 🎬 **AVVs (Auftragsverarbeitungsverträge nach Art. 28 DSGVO)** schließen und
+      archivieren — alle drei sind Self-Service, Links + Abschlusswege recherchiert
+      und dokumentiert in `docs/rechtliches-vorbereitung.md` (Vercel, Sanity, Brevo)
+- [ ] 🔴 👨‍💻 **Vercel auf Pro-Plan upgraden** (~20 $/Monat) vor dem Launch:
+      Hobby-Plan erlaubt keine kommerzielle Nutzung, und das Vercel-DPA gilt
+      erst ab Pro — beides für den Kino-Betrieb zwingend
 - [ ] 🟡 🎬 Prüfen ob externer Datenschutzbeauftragter nötig ist
       (bei ≥ 20 regelmäßigen Daten-Verarbeitern im Betrieb)
 - [ ] 🟡 🎬 Verzeichnis von Verarbeitungstätigkeiten (Art. 30 DSGVO) intern anlegen
@@ -113,8 +120,9 @@ erledigt sein müssen. Wird laufend erweitert.
       (Administrator/Viewer) — Content-Pfleger müssen Administrator sein.
       Historie nur 3 Tage, kein Scheduled Publishing. Webhooks (2) und
       Limits reichen für den Live-Betrieb; Growth wäre 15 €/Seat/Monat.
-- [ ] 🟡 👨‍💻 Kurzanleitung Sanity-Studio schreiben:
-      Wie lege ich einen Film an? Wie plane ich Vorstellungen? Was heißt „Publish"?
+- [x] ✅ 👨‍💻 Kurzanleitung Sanity-Studio geschrieben (09.07.2026):
+      `docs/sanity-anleitung.md` — Filme, Vorstellungen, Events, Säle, Publish-Konzept,
+      Bild-Tipps, häufige Probleme. Bei Übergabe ggf. als PDF exportieren
 
 ### 3.3 Sanity → Vercel Rebuild-Automatik
 
