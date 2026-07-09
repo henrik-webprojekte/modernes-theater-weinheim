@@ -118,14 +118,13 @@ erledigt sein müssen. Wird laufend erweitert.
 
 ### 3.3 Sanity → Vercel Rebuild-Automatik
 
-- [ ] 🔴 👨‍💻 **Sanity-Webhook auf Vercel-Deploy-Hook einrichten**: Die Seiten sind
-      statisch vorgerendert — Content-Änderungen in Sanity (neuer Film, Event)
-      erscheinen erst nach einem neuen Build. Ohne Webhook sieht der Kunde
-      seine Änderungen nie live. (Vercel: Settings → Git → Deploy Hooks;
-      Sanity: sanity.io/manage → API → Webhooks, URL des Deploy-Hooks eintragen)
-- [ ] 🟡 👨‍💻 Zusätzlich täglichen Rebuild einplanen (Vercel Cron oder externer
-      Ping auf den Deploy-Hook): „Diese Woche im Kino" auf der Startseite wird
-      zur Build-Zeit berechnet und veraltet sonst nach wenigen Tagen
+- [x] ✅ 👨‍💻 **Sanity-Webhook auf Vercel-Deploy-Hook eingerichtet** (09.07.2026).
+      Slug-Korrekturen als Live-Test bestanden — korrigierte Event-URLs sind
+      auf Production. Restcheck: im Vercel-Deployments-Tab einmal verifizieren,
+      dass ein Build mit Quelle „Deploy Hook: sanity-content" auftaucht
+- [x] ✅ 👨‍💻 Täglicher Rebuild via Vercel Cron (03:00 UTC auf `/api/rebuild`,
+      Env-Var `VERCEL_DEPLOY_HOOK_URL`; optional `CRON_SECRET` als Absicherung).
+      Nach dem ersten Cron-Lauf im Vercel-Log prüfen, ob 200 zurückkam
 
 ### 3.4 Analytics-Entscheidung
 
@@ -167,8 +166,8 @@ erledigt sein müssen. Wird laufend erweitert.
 - [ ] 🟡 👨‍💻 npm-audit-Finding beobachten: `path-to-regexp` (High, transitiv über
       `@astrojs/vercel`) — reine Build-Zeit-Abhängigkeit, kein Runtime-Risiko;
       Fix erst wenn Adapter-Update ohne Downgrade verfügbar
-- [ ] 🟡 🎬 Sanity-Slug-Tippfehler korrigieren: `kaffee-tee_kino` → `kaffee-tee-kino`,
-      `wiesenee-hemsbach` → `wiesensee-hemsbach`
+- [x] ✅ 🎬 Sanity-Slug-Tippfehler korrigiert (09.07.2026): `kaffee-tee-kino`,
+      `wiesensee-hemsbach` — auf Production verifiziert
 - [ ] 🔴 🎬 Neue Saal-Felder in Sanity befüllen (Reihenfolge, Fakten-Kacheln,
       Hintergrundfarbe, Dunkler-Hintergrund-Schalter, Hauptbild, ausführliche
       Beschreibung) — Werte-Vorlage liegt im Chat-Verlauf vom 09.07.2026
