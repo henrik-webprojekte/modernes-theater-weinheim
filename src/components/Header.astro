@@ -26,7 +26,7 @@ const navRechts = nav.slice(4)
       />
     </a>
 
-    <nav class="hidden md:flex flex-1 items-center justify-center gap-5 text-sm tracking-wider md:pl-10 lg:pl-20" aria-label="Hauptnavigation">
+    <nav class="hidden md:flex flex-1 items-center justify-center gap-5 text-sm lg:text-base tracking-wider md:pl-10 lg:pl-20" aria-label="Hauptnavigation">
       {navLinks.map((item) => (
         <a
           href={item.href}
@@ -45,7 +45,7 @@ const navRechts = nav.slice(4)
 
     <div class="hidden md:block w-36 lg:w-44 shrink-0" aria-hidden="true"></div>
 
-    <nav class="hidden md:flex flex-1 items-center justify-center gap-5 text-sm tracking-wider" aria-label="Weitere Navigation">
+    <nav class="hidden md:flex flex-1 items-center justify-center gap-5 text-sm lg:text-base tracking-wider" aria-label="Weitere Navigation">
       {navRechts.map((item) => (
         <a
           href={item.href}
