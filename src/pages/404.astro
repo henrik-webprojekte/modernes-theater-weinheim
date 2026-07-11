@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
+import HeroBg from "../components/HeroBg.astro"
 ---
 
 <Layout
@@ -12,9 +13,9 @@ import Footer from "../components/Footer.astro"
 
   <main id="hauptinhalt">
 
-    <section class="bg-tiefschwarz text-creme relative min-h-[60vh] flex items-center" style="background: #1A1310;">
-      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
-      <div class="max-w-3xl mx-auto px-6 py-20 md:py-24 text-center">
+    <section class="bg-tiefschwarz text-creme relative overflow-hidden min-h-[60vh] flex items-center" style="background: #1A1310;">
+      <HeroBg />
+      <div class="relative max-w-3xl mx-auto px-6 py-20 md:py-24 text-center">
         <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-4">
           Fehler 404 — Vorstellung entfällt
         </p>

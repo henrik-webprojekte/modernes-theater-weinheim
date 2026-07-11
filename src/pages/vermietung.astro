@@ -3,9 +3,8 @@ import Layout from "../layouts/Layout.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
 import ScrollToTop from "../components/ScrollToTop.astro"
-import {Image} from "astro:assets"
+import HeroBg from "../components/HeroBg.astro"
 import {getSaele} from "../lib/sanity"
-import heroFoyer from "../assets/hero/art-deco-foyer.jpg"
 
 const saele = await getSaele()
 const reihenfolge = ["chic", "cherie", "charme", "kinogarten"]
@@ -32,17 +31,7 @@ const schritte = [
   <main id="hauptinhalt">
 
     <section class="text-creme relative overflow-hidden" style="background: #1A1310;">
-      <Image
-        src={heroFoyer}
-        alt=""
-        widths={[800, 1200, 1600]}
-        sizes="100vw"
-        class="absolute inset-0 w-full h-full object-cover"
-        loading="eager"
-        style="opacity: 0.28;"
-      />
-      <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(26,19,16,0.55) 0%, rgba(26,19,16,0.8) 100%);"></div>
-      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.6;"></div>
+      <HeroBg />
       <div class="relative max-w-4xl mx-auto px-6 py-20 md:py-24 text-center">
         <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
           Ihr Anlass, unser Ort

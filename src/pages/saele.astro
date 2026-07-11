@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
+import HeroBg from "../components/HeroBg.astro"
 import ScrollToTop from "../components/ScrollToTop.astro"
 import {getSaele, urlFor, type Saal} from "../lib/sanity"
 import {toHTML} from "@portabletext/to-html"
@@ -28,9 +29,9 @@ function hexZuTextfarben(dunkel: boolean, accent: string) {
 
   <main id="hauptinhalt">
 
-    <section class="bg-tiefschwarz text-creme relative" style="background: #1A1310;">
-      <div class="absolute top-0 left-0 right-0 h-[3px]" style="background: repeating-linear-gradient(90deg, #C9A55C 0 6px, transparent 6px 12px); opacity: 0.5;"></div>
-      <div class="max-w-4xl mx-auto px-6 py-20 md:py-24 text-center">
+    <section class="bg-tiefschwarz text-creme relative overflow-hidden" style="background: #1A1310;">
+      <HeroBg />
+      <div class="relative max-w-4xl mx-auto px-6 py-20 md:py-24 text-center">
         <p class="text-xs uppercase tracking-[0.3em] text-vintage-gold mb-3">
           Drei Häuser unter einem Dach
         </p>
