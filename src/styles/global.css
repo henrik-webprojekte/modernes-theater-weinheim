@@ -49,6 +49,9 @@ html {
 .hero-foyer-gapfill {
   display: none;
 }
+.hero-foyer-bg {
+  object-position: center top;
+}
 @media (min-width: 1280px) {
   .hero-foyer-gapfill {
     display: block;
@@ -59,7 +62,13 @@ html {
     height: calc(100% - 10rem);
     width: 130%;
     max-width: none;
-    left: -15%;
+    left: -7%;
+    /* Bildinhalt so weit hochgeschoben, dass der Kronleuchter (liegt im
+       Original bei ~9% Bildhöhe) direkt unter der Streifenkante beginnt.
+       Der vw-Anteil skaliert mit der Bildgröße, der Leuchter bleibt daher
+       auf jeder Breite ~6px unter dem Streifen. left: -7% rückt ihn
+       rechts neben den zentrierten Hero-Text. */
+    object-position: center calc(6px - 8.4vw);
   }
 }
 
