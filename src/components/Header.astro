@@ -15,9 +15,11 @@ const navLinks = nav.slice(0, 4)
 const navRechts = nav.slice(4)
 ---
 
-{/* mt-2: Im Ruhezustand schwebt der Filmstreifen 8px unter der Fensterkante
-    (dahinter das Hero-Bild) — beim Scrollen dockt er durch sticky top-0 an. */}
-<header class="text-creme sticky top-0 z-30 mt-2">
+{/* mt-12: Im Ruhezustand schwebt der Filmstreifen 48px unter der Fensterkante
+    (dahinter das Hero-Bild) — beim Scrollen dockt er durch sticky top-0 an.
+    Die 48px entsprechen exakt der --dock-Strecke im Script, damit Streifen
+    und Emblem-Animation gleichzeitig fertig sind. */}
+<header class="text-creme sticky top-0 z-30 mt-12">
   <div class="header-film-bg absolute inset-0 z-0 pointer-events-none" aria-hidden="true"></div>
   {/* Gruppen-Layout: Logo solo links · Nav-Gruppe 1 · Rauten-Emblem (im
       Flex-Fluss) · Nav-Gruppe 2 · Shop/Telefon/TK-Logo solo rechts.
@@ -316,16 +318,17 @@ const navRechts = nav.slice(4)
     }
   });
 
-  // Emblem-Docking: --dock laeuft stufenlos 0..1 ueber die ersten 96px
-  // Scroll — das Rauten-Emblem gleitet parallel zur Scrollbewegung in die
-  // Streifenmitte (siehe <style>). Bei prefers-reduced-motion wird nicht
-  // interpoliert, sondern hart umgeschaltet.
+  // Emblem-Docking: --dock laeuft stufenlos 0..1 ueber die ersten 48px
+  // Scroll — dieselbe Strecke, nach der der Streifen (mt-12) andockt.
+  // Das Rauten-Emblem gleitet also synchron zum Streifen in dessen Mitte
+  // (siehe <style>). Bei prefers-reduced-motion wird nicht interpoliert,
+  // sondern hart umgeschaltet.
   const headerEl = document.querySelector<HTMLElement>("header");
   const reduzierteBewegung = window.matchMedia("(prefers-reduced-motion: reduce)");
   let dockFrame = false;
   function aktualisiereDock() {
     dockFrame = false;
-    let p = Math.min(window.scrollY / 96, 1);
+    let p = Math.min(window.scrollY / 48, 1);
     if (reduzierteBewegung.matches) p = p > 0.5 ? 1 : 0;
     headerEl?.style.setProperty("--dock", String(Math.round(p * 1000) / 1000));
   }
