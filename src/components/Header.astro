@@ -15,7 +15,7 @@ const navLinks = nav.slice(0, 4)
 const navRechts = nav.slice(4)
 ---
 
-<header class="bg-tiefschwarz text-creme border-b border-vintage-gold/50 sticky top-0 z-30" style="background: #1A1310;">
+<header class="bg-tiefschwarz text-creme sticky top-0 z-30" style="background: #1A1310;">
   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
 
     <a href="/" class="flex items-center shrink-0 group" aria-label="Modernes Theater — zur Startseite">
@@ -118,6 +118,8 @@ const navRechts = nav.slice(4)
     </button>
 
   </div>
+
+  <div class="film-perf absolute bottom-0 left-0 right-0 h-[11px] pointer-events-none z-10" aria-hidden="true"></div>
 
   <img
     src="/logos/vintage-rauten.png"
@@ -305,3 +307,13 @@ const navRechts = nav.slice(4)
     });
   });
 </script>
+
+<style>
+  /* Filmstreifen-Perforation als Markenzeichen am unteren Header-Rand:
+     goldene Perforationslöcher auf dem dunklen Header (= Filmmaterial). */
+  .film-perf {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='11'%3E%3Crect x='7' y='3' width='10' height='5' rx='1.4' fill='%23C9A55C'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: center;
+  }
+</style>
