@@ -31,7 +31,11 @@ const navRechts = nav.slice(4)
       />
     </a>
 
-    <div class="hidden md:block flex-1" aria-hidden="true"></div>
+    {/* Linker Puffer: basis-[58px] ab lg gleicht aus, dass die rechte
+        Gruppe (Shop/Tel/TK-Logo) breiter ist als das Logo links — beide
+        Puffer wachsen gleich, dadurch rueckt das Rauten-Emblem exakt in
+        die Container-Mitte (im Browser nachgemessen). */}
+    <div class="hidden md:block grow basis-0 lg:basis-[58px]" aria-hidden="true"></div>
 
     <nav class="hidden md:flex items-center gap-5 lg:gap-6 text-sm lg:text-base tracking-wider" aria-label="Hauptnavigation">
       {navLinks.map((item) => (
@@ -51,7 +55,7 @@ const navRechts = nav.slice(4)
     </nav>
 
     {/* Rauten-Emblem im Flex-Fluss: hängt mittig über die Header-Unterkante */}
-    <div class="hidden md:block relative w-36 lg:w-44 self-stretch shrink-0" aria-hidden="true">
+    <div class="hidden md:block relative w-36 lg:w-30 self-stretch shrink-0" aria-hidden="true">
       <img
         src="/logos/vintage-rauten.png"
         alt=""
@@ -76,7 +80,7 @@ const navRechts = nav.slice(4)
       ))}
     </nav>
 
-    <div class="hidden md:block flex-1" aria-hidden="true"></div>
+    <div class="hidden md:block grow basis-0" aria-hidden="true"></div>
 
     <div class="hidden md:flex items-center gap-4 lg:gap-5 shrink-0">
 
