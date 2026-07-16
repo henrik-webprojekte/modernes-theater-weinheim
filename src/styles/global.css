@@ -49,6 +49,9 @@ html {
 .hero-foyer-gapfill {
   display: none;
 }
+.hero-foyer-bg {
+  object-position: center top;
+}
 @media (min-width: 1280px) {
   .hero-foyer-gapfill {
     display: block;
@@ -57,9 +60,14 @@ html {
   .hero-foyer-bg {
     top: 10rem;
     height: calc(100% - 10rem);
-    width: 130%;
+    width: 122%;
     max-width: none;
-    left: -15%;
+    left: 0;
+    /* Bildinhalt hochgeschoben: der Kronleuchter (~9% Bildhöhe) beginnt
+       damit auf jeder Desktop-Breite konstant ~5px unter der Streifenkante
+       (vw-Anteil skaliert mit der Bildbreite). Zoom 122% + Box rechtsbündig
+       schieben ihn rechts neben die Hero-Texte. */
+    object-position: center calc(6px - 7.92vw);
   }
 }
 
