@@ -63,11 +63,22 @@ function formatEventDatum(event: Event): string {
 
     {/* 1. Hero */}
     <section class="text-creme relative overflow-hidden" style="background: #1A1310;">
+      <div class="hero-foyer-gapfill absolute inset-x-0 top-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <Image
+          src={heroFoyer}
+          alt=""
+          widths={[800, 1200, 1600, 2000]}
+          sizes="100vw"
+          class="w-full h-auto"
+          loading="eager"
+          style="opacity: 0.72; object-position: center top;"
+        />
+      </div>
       <Image
         src={heroFoyer}
         alt=""
         widths={[800, 1200, 1600, 2000, 2600, 3200]}
-        sizes="(min-width: 1280px) 205vw, 100vw"
+        sizes="(min-width: 1280px) 130vw, 100vw"
         class="hero-foyer-bg absolute inset-0 w-full h-full object-cover"
         loading="eager"
         style="opacity: 0.72; object-position: center top;"

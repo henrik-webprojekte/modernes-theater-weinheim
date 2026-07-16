@@ -38,18 +38,28 @@ html {
   padding-top: 10rem;
 }
 
-/* Foyer-Hero-Bild: ab Desktop-Breite so weit eingezoomt, dass der
-   Kronleuchter komplett unterhalb des Filmstreifen-Headers hängt. Der
-   Ausschnitt zeigt die rechte Bildhälfte (Wandgemälde-Bergkuppe +
-   Kronleuchter). Unterhalb 1280px bleibt das volle Bild — dort ist der
-   fixe Header relativ zu hoch, der nötige Zoom würde beengt wirken. */
+/* Foyer-Hero-Bild in zwei Ebenen (ab Desktop-Breite):
+   1. .hero-foyer-gapfill — ungezoomte Bild-Oberkante, exakt so hoch wie
+      Gap + Filmstreifen (10rem). Nur sie scheint durch Gap und
+      Perforationslöcher; die Naht liegt unsichtbar unter der Streifenkante.
+   2. .hero-foyer-bg — der eigentliche Hero-Ausschnitt, beginnt erst an
+      der Streifen-Unterkante. Dadurch hängt der Kronleuchter bei jedem
+      Zoomfaktor vollständig frei; moderater 130%-Ausschnitt.
+   Unterhalb 1280px bleibt das klassische Vollbild. */
+.hero-foyer-gapfill {
+  display: none;
+}
 @media (min-width: 1280px) {
+  .hero-foyer-gapfill {
+    display: block;
+    height: 10rem;
+  }
   .hero-foyer-bg {
-    width: 205%;
-    height: 205%;
+    top: 10rem;
+    height: calc(100% - 10rem);
+    width: 130%;
     max-width: none;
-    left: -61%;
-    top: 0;
+    left: -15%;
   }
 }
 
