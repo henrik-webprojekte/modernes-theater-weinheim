@@ -214,20 +214,24 @@ function heuteIsoDate(): string {
   return new Date().toISOString().slice(0, 10)
 }
 
-function isoDatePlusTage(tage: number): string {
+/** Ende der laufenden Kinowoche (Donnerstag bis Mittwoch):
+ *  liefert das ISO-Datum des Mittwochs. Gleiche Wochenlogik wie der
+ *  Wochen-Umschalter auf /programm. */
+function kinowocheEndeIsoDate(): string {
   const d = new Date()
-  d.setDate(d.getDate() + tage)
+  const diffZuDonnerstag = (d.getDay() - 4 + 7) % 7
+  d.setDate(d.getDate() - diffZuDonnerstag + 6)
   return d.toISOString().slice(0, 10)
 }
 
-/** Filme mit Vorstellungen innerhalb der nächsten `tageFenster` Tage
- *  (inkl. heute). Filme, deren nächste Vorstellung weiter in der Zukunft
- *  liegt (z. B. Kaffee-Tee-Kino nächsten Monat), gehören nicht zu
- *  „Diese Woche im Kino" und fallen raus. */
-export async function getFilmeMitBevorstehendenVorstellungen(limit = 4, tageFenster = 7): Promise<Film[]> {
+/** Filme mit Vorstellungen in der laufenden Kinowoche (heute bis
+ *  einschließlich Mittwoch). Filme, deren nächste Vorstellung erst in
+ *  einer späteren Kinowoche liegt (z. B. Kaffee-Tee-Kino nächsten Monat),
+ *  gehören nicht zu „Diese Woche im Kino" und fallen raus. */
+export async function getFilmeMitBevorstehendenVorstellungen(limit = 4): Promise<Film[]> {
   const alle = await getAktiveFilme()
   const heute = heuteIsoDate()
-  const bis = isoDatePlusTage(tageFenster - 1)
+  const bis = kinowocheEndeIsoDate()
   const withNext = alle
     .map((f) => {
       const kommende = (f.vorstellungen ?? [])
