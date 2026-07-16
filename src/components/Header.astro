@@ -61,7 +61,7 @@ const navRechts = nav.slice(4)
       <img
         src="/logos/vintage-rauten.png"
         alt=""
-        class="header-emblem absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 h-32 lg:h-40 w-auto max-w-none pointer-events-none drop-shadow-[0_6px_10px_rgba(0,0,0,0.55)]"
+        class="header-emblem absolute left-1/2 -translate-x-1/2 translate-y-1/2 w-auto max-w-none pointer-events-none"
       />
     </div>
 
@@ -316,14 +316,26 @@ const navRechts = nav.slice(4)
     }
   });
 
-  // Docked-Zustand: Header klebt ab ~8px Scroll (mt-2) an der Oberkante —
-  // dann wandert das Rauten-Emblem in die Streifenmitte (siehe <style>).
-  const headerEl = document.querySelector("header");
-  function aktualisiereDocked() {
-    headerEl?.classList.toggle("is-docked", window.scrollY > 4);
+  // Emblem-Docking: --dock laeuft stufenlos 0..1 ueber die ersten 96px
+  // Scroll — das Rauten-Emblem gleitet parallel zur Scrollbewegung in die
+  // Streifenmitte (siehe <style>). Bei prefers-reduced-motion wird nicht
+  // interpoliert, sondern hart umgeschaltet.
+  const headerEl = document.querySelector<HTMLElement>("header");
+  const reduzierteBewegung = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let dockFrame = false;
+  function aktualisiereDock() {
+    dockFrame = false;
+    let p = Math.min(window.scrollY / 96, 1);
+    if (reduzierteBewegung.matches) p = p > 0.5 ? 1 : 0;
+    headerEl?.style.setProperty("--dock", String(Math.round(p * 1000) / 1000));
   }
-  document.addEventListener("scroll", aktualisiereDocked, {passive: true});
-  aktualisiereDocked();
+  document.addEventListener("scroll", () => {
+    if (!dockFrame) {
+      dockFrame = true;
+      requestAnimationFrame(aktualisiereDock);
+    }
+  }, {passive: true});
+  aktualisiereDock();
 
   menu?.querySelectorAll("a[href]").forEach((link) => {
     link.addEventListener("click", () => {
@@ -351,15 +363,20 @@ const navRechts = nav.slice(4)
     mask-position: center;
   }
 
-  /* Rauten-Emblem: haengt im Ruhezustand ueber die Streifen-Unterkante.
-     Sobald der Header beim Scrollen andockt (.is-docked via Script),
-     rutscht es vertikal in die Streifenmitte und schrumpft exakt auf
-     Streifenhoehe (7rem = h-28). */
+  /* Rauten-Emblem: haengt im Ruhezustand (--dock: 0) ueber die
+     Streifen-Unterkante. Beim Scrollen setzt das Script --dock stufenlos
+     auf 0..1 — das Emblem gleitet parallel zur Scrollbewegung in die
+     Streifenmitte und schrumpft auf exakt Streifenhoehe (7rem = h-28).
+     Der Drop-Shadow zieht sich dabei proportional zurueck. */
   .header-emblem {
-    transition: height 300ms ease, bottom 300ms ease;
+    --d: var(--dock, 0);
+    bottom: calc(var(--d) * 50%);
+    height: calc(8rem - var(--d) * 1rem);
+    filter: drop-shadow(0 calc(6px - var(--d) * 4px) calc(10px - var(--d) * 4px) rgba(0, 0, 0, 0.55));
   }
-  header.is-docked .header-emblem {
-    bottom: 50%;
-    height: 7rem;
+  @media (min-width: 64rem) {
+    .header-emblem {
+      height: calc(10rem - var(--d) * 3rem);
+    }
   }
 </style>
