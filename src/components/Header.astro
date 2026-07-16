@@ -61,7 +61,7 @@ const navRechts = nav.slice(4)
       <img
         src="/logos/vintage-rauten.png"
         alt=""
-        class="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 h-32 lg:h-40 w-auto max-w-none pointer-events-none drop-shadow-[0_6px_10px_rgba(0,0,0,0.55)]"
+        class="header-emblem absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 h-32 lg:h-40 w-auto max-w-none pointer-events-none drop-shadow-[0_6px_10px_rgba(0,0,0,0.55)]"
       />
     </div>
 
@@ -316,6 +316,15 @@ const navRechts = nav.slice(4)
     }
   });
 
+  // Docked-Zustand: Header klebt ab ~8px Scroll (mt-2) an der Oberkante —
+  // dann wandert das Rauten-Emblem in die Streifenmitte (siehe <style>).
+  const headerEl = document.querySelector("header");
+  function aktualisiereDocked() {
+    headerEl?.classList.toggle("is-docked", window.scrollY > 4);
+  }
+  document.addEventListener("scroll", aktualisiereDocked, {passive: true});
+  aktualisiereDocked();
+
   menu?.querySelectorAll("a[href]").forEach((link) => {
     link.addEventListener("click", () => {
       const href = link.getAttribute("href") ?? "";
@@ -340,5 +349,17 @@ const navRechts = nav.slice(4)
     mask-size: 20px 100%;
     -webkit-mask-position: center;
     mask-position: center;
+  }
+
+  /* Rauten-Emblem: haengt im Ruhezustand ueber die Streifen-Unterkante.
+     Sobald der Header beim Scrollen andockt (.is-docked via Script),
+     rutscht es vertikal in die Streifenmitte und schrumpft exakt auf
+     Streifenhoehe (7rem = h-28). */
+  .header-emblem {
+    transition: height 300ms ease, bottom 300ms ease;
+  }
+  header.is-docked .header-emblem {
+    bottom: 50%;
+    height: 7rem;
   }
 </style>
