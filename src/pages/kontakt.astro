@@ -4,24 +4,39 @@ import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
 import HeroBg from "../components/HeroBg.astro"
 import TwoClickFacade from "../components/TwoClickFacade.astro"
+import {getKinoInfo} from "../lib/sanity"
 
 const googleMapsEmbedSrc = "https://maps.google.com/maps?q=Hauptstra%C3%9Fe%2061%2C%2069469%20Weinheim&z=17&ie=UTF8&output=embed"
 const googleMapsLink = "https://www.google.com/maps/search/?api=1&query=Hauptstra%C3%9Fe+61%2C+69469+Weinheim"
 
-const preise = [
+// Preise & Öffnungszeiten pflegt das Kino im Sanity-Studio
+// („Preise & Öffnungszeiten"). Solange dort nichts eingetragen ist,
+// gelten die eingebauten Werte (Stand Juni 2026).
+const kinoInfo = await getKinoInfo()
+
+const preiseFallback = [
   {label: "Erwachsene", wert: "11 €"},
   {label: "Ermäßigt", wert: "9 €"},
   {label: "Kinder ≤ 11", wert: "6 €"},
   {label: "Kinotag Di · Starttag Do", wert: "7 €", highlight: true},
 ]
 
-const zuschlaege = [
+const zuschlaegeFallback = [
   "VIP-Loge +1,50 €",
   "3D +3,00 €",
   "Sneak-Preview 5 €",
   "Kaffee-Tee-Kino 8 €",
   "Überlänge gestaffelt 0,50 – 1,50 €",
 ]
+
+const preise = kinoInfo?.preise?.length ? kinoInfo.preise : preiseFallback
+const zuschlaege = kinoInfo?.zuschlaege?.length ? kinoInfo.zuschlaege : zuschlaegeFallback
+const oeffnungszeitenKasse =
+  kinoInfo?.oeffnungszeitenKasse ??
+  "Unsere Kasse öffnet in der Regel 30 Minuten vor der ersten Vorstellung und schließt kurz nach Beginn des letzten Films."
+const oeffnungszeitenZusatz =
+  kinoInfo?.oeffnungszeitenZusatz ??
+  "An Tagen ohne Vorstellungen sind wir per Anrufbeantworter und E-Mail erreichbar."
 ---
 
 <Layout
@@ -96,10 +111,10 @@ const zuschlaege = [
             <h2 class="font-display text-lg text-tiefschwarz">Öffnungszeiten</h2>
           </div>
           <p class="text-base text-tiefschwarz/85 leading-relaxed mb-2">
-            Unsere Kasse öffnet in der Regel <strong>30 Minuten vor der ersten Vorstellung</strong> und schließt kurz nach Beginn des letzten Films.
+            {oeffnungszeitenKasse}
           </p>
           <p class="text-base text-tiefschwarz/85 leading-relaxed">
-            An Tagen ohne Vorstellungen sind wir per Anrufbeantworter und E-Mail erreichbar. Die exakten Vorstellungszeiten finden Sie im <a href="/programm" class="text-kino-rot font-medium">aktuellen Programm</a>.
+            {oeffnungszeitenZusatz} Die exakten Vorstellungszeiten finden Sie im <a href="/programm" class="text-kino-rot font-medium">aktuellen Programm</a>.
           </p>
         </div>
 

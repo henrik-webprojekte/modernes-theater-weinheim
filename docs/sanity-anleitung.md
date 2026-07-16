@@ -129,6 +129,26 @@ Design-Einstellungen — im Zweifel nicht ändern.
 
 ---
 
+## 6a. Preise & Öffnungszeiten ändern
+
+Links in der Liste finden Sie den Eintrag **„Preise & Öffnungszeiten"**
+(unterhalb des Trennstrichs). Das ist ein einzelnes Dokument — hier gibt
+es kein „Neu anlegen", Sie bearbeiten immer denselben Eintrag:
+
+- **Eintrittspreise** — die Preis-Kacheln auf der Kontakt-Seite.
+  Empfohlen sind genau vier Einträge, damit das Raster gleichmäßig bleibt.
+  „Hervorheben" gibt einer Kachel einen goldenen Rahmen (z. B. Kinotag).
+- **Zuschläge & Sonderpreise** — die Liste darunter, je Zeile ein Eintrag
+  (z. B. „3D +3,00 €").
+- **Öffnungszeiten: Kasse / Zusatz** — die beiden Absätze unter
+  „Öffnungszeiten". Der Hinweis auf das aktuelle Programm wird
+  automatisch angehängt.
+
+Wie überall gilt: Erst nach **Publish** erscheint die Änderung auf der
+Website (nach wenigen Minuten).
+
+---
+
 ## 7. Bild-Tipps
 
 - **Filmplakate**: Hochformat, mindestens 600 Pixel breit. Das Original-

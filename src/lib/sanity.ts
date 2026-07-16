@@ -51,6 +51,30 @@ export type Saal = {
   }
 }
 
+export type Preis = {
+  wert: string
+  label: string
+  highlight?: boolean
+}
+
+export type KinoInfo = {
+  preise?: Preis[]
+  zuschlaege?: string[]
+  oeffnungszeitenKasse?: string
+  oeffnungszeitenZusatz?: string
+}
+
+/** Singleton „Preise & Öffnungszeiten" (Dokument-ID kinoInfo).
+ *  Liefert null, solange das Kino den Eintrag noch nicht gepflegt hat —
+ *  die Kontakt-Seite fällt dann auf ihre eingebauten Werte zurück. */
+export async function getKinoInfo(): Promise<KinoInfo | null> {
+  return sanity.fetch<KinoInfo | null>(
+    `*[_type == "kinoInfo"][0] {
+      preise, zuschlaege, oeffnungszeitenKasse, oeffnungszeitenZusatz
+    }`
+  )
+}
+
 export async function getSaele(): Promise<Saal[]> {
   return sanity.fetch<Saal[]>(
     `*[_type == "saal"] | order(coalesce(reihenfolge, 999) asc, plaetze desc) {

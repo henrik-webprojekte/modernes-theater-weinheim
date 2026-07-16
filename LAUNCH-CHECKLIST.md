@@ -187,7 +187,10 @@ erledigt sein müssen. Wird laufend erweitert.
 - [ ] 🟢 👨‍💻 Fokus-Restore nach Newsletter/Vermietung-Submit
       (Fokus auf Status-Meldung statt auf Button)
 - [ ] 🟢 👨‍💻 Custom-Marker auf OSM (Leaflet.js, ~150 KB Bundle-Kosten)
-- [ ] 🟢 👨‍💻 Preise / Öffnungszeiten in Sanity ziehen (Kunde kann selbst pflegen)
+- [x] ✅ 👨‍💻 Preise / Öffnungszeiten in Sanity ziehen (16.07.2026): Singleton
+      „Preise & Öffnungszeiten" (kinoInfo) im Studio, Kontakt-Seite liest daraus
+      mit eingebautem Fallback. Anleitung Abschnitt 6a ergänzt.
+      **Restschritt: `npx sanity deploy` + Kino trägt Werte ein**
 - [ ] 🟢 👨‍💻 Sanity-Content-Automation: Neuer Film → Newsletter-Vorschlag?
 - [ ] 🟢 👨‍💻 PWA-Konfiguration (Homescreen-Icon, offline Lesezugriff)
 
