@@ -44,15 +44,15 @@ function gruppiereVorstellungen(vorstellungen: Vorstellung[] | undefined): Datum
 }
 
 function formatWoche(offset = 0): string {
+  // Kinowoche: Donnerstag (Starttag) bis Mittwoch
   const heute = new Date()
-  const tag = heute.getDay()
-  const diffZuMontag = tag === 0 ? -6 : 1 - tag
-  const montag = new Date(heute)
-  montag.setDate(heute.getDate() + diffZuMontag + offset * 7)
-  const sonntag = new Date(montag)
-  sonntag.setDate(montag.getDate() + 6)
+  const diffZuDonnerstag = (heute.getDay() - 4 + 7) % 7
+  const donnerstag = new Date(heute)
+  donnerstag.setDate(heute.getDate() - diffZuDonnerstag + offset * 7)
+  const mittwoch = new Date(donnerstag)
+  mittwoch.setDate(donnerstag.getDate() + 6)
   const opt: Intl.DateTimeFormatOptions = {day: "2-digit", month: "2-digit", year: "numeric"}
-  return `${montag.toLocaleDateString("de-DE", opt)} – ${sonntag.toLocaleDateString("de-DE", opt)}`
+  return `${donnerstag.toLocaleDateString("de-DE", opt)} – ${mittwoch.toLocaleDateString("de-DE", opt)}`
 }
 
 const vorstellungsAnzahl = filme.reduce(
@@ -362,23 +362,23 @@ const fskFarben: Record<number, string> = {
     return true
   }
 
+  // Kinowoche: Donnerstag (Starttag) bis Mittwoch
   function wochenGrenzen(offset: number): {von: Date; bis: Date} {
     const heute = new Date()
     heute.setHours(0, 0, 0, 0)
-    const tag = heute.getDay()
-    const diffZuMontag = tag === 0 ? -6 : 1 - tag
-    const montag = new Date(heute)
-    montag.setDate(heute.getDate() + diffZuMontag + offset * 7)
-    const naechsterMontag = new Date(montag)
-    naechsterMontag.setDate(montag.getDate() + 7)
-    return {von: montag, bis: naechsterMontag}
+    const diffZuDonnerstag = (heute.getDay() - 4 + 7) % 7
+    const donnerstag = new Date(heute)
+    donnerstag.setDate(heute.getDate() - diffZuDonnerstag + offset * 7)
+    const naechsterDonnerstag = new Date(donnerstag)
+    naechsterDonnerstag.setDate(donnerstag.getDate() + 7)
+    return {von: donnerstag, bis: naechsterDonnerstag}
   }
 
   function formatDatumRange(von: Date, bis: Date): string {
     const opt: Intl.DateTimeFormatOptions = {day: "2-digit", month: "2-digit", year: "numeric"}
-    const sonntag = new Date(bis)
-    sonntag.setDate(bis.getDate() - 1)
-    return `${von.toLocaleDateString("de-DE", opt)} – ${sonntag.toLocaleDateString("de-DE", opt)}`
+    const mittwoch = new Date(bis)
+    mittwoch.setDate(bis.getDate() - 1)
+    return `${von.toLocaleDateString("de-DE", opt)} – ${mittwoch.toLocaleDateString("de-DE", opt)}`
   }
 
   function wochenLabelText(offset: number): string {
