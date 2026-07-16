@@ -214,13 +214,24 @@ function heuteIsoDate(): string {
   return new Date().toISOString().slice(0, 10)
 }
 
-export async function getFilmeMitBevorstehendenVorstellungen(limit = 4): Promise<Film[]> {
+function isoDatePlusTage(tage: number): string {
+  const d = new Date()
+  d.setDate(d.getDate() + tage)
+  return d.toISOString().slice(0, 10)
+}
+
+/** Filme mit Vorstellungen innerhalb der nächsten `tageFenster` Tage
+ *  (inkl. heute). Filme, deren nächste Vorstellung weiter in der Zukunft
+ *  liegt (z. B. Kaffee-Tee-Kino nächsten Monat), gehören nicht zu
+ *  „Diese Woche im Kino" und fallen raus. */
+export async function getFilmeMitBevorstehendenVorstellungen(limit = 4, tageFenster = 7): Promise<Film[]> {
   const alle = await getAktiveFilme()
   const heute = heuteIsoDate()
+  const bis = isoDatePlusTage(tageFenster - 1)
   const withNext = alle
     .map((f) => {
       const kommende = (f.vorstellungen ?? [])
-        .filter((v) => v.datum && v.datum >= heute)
+        .filter((v) => v.datum && v.datum >= heute && v.datum <= bis)
         .sort((a, b) =>
           (a.datum ?? "").localeCompare(b.datum ?? "") ||
           (a.uhrzeit ?? "").localeCompare(b.uhrzeit ?? "")
