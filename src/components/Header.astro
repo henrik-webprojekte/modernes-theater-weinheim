@@ -15,8 +15,9 @@ const navLinks = nav.slice(0, 4)
 const navRechts = nav.slice(4)
 ---
 
-<header class="bg-tiefschwarz text-creme sticky top-0 z-30" style="background: #1A1310;">
-  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+<header class="text-creme sticky top-0 z-30">
+  <div class="header-film-bg absolute inset-0 z-0 pointer-events-none" aria-hidden="true"></div>
+  <div class="max-w-7xl mx-auto px-4 h-20 flex items-center gap-4 relative z-10">
 
     <a href="/" class="flex items-center shrink-0 group" aria-label="Modernes Theater — zur Startseite">
       <img
@@ -118,8 +119,6 @@ const navRechts = nav.slice(4)
     </button>
 
   </div>
-
-  <div class="film-perf absolute bottom-0 left-0 right-0 h-[18px] translate-y-full pointer-events-none z-10" aria-hidden="true"></div>
 
   <img
     src="/logos/vintage-rauten.png"
@@ -309,18 +308,18 @@ const navRechts = nav.slice(4)
 </script>
 
 <style>
-  /* Filmstreifen als Markenzeichen direkt unter dem Header:
-     dunkles Filmmaterial-Band mit einer Reihe echt ausgestanzter
-     Perforationslöcher (CSS-mask) — beim Scrollen scheint der
-     Seiteninhalt durch die Löcher. */
-  .film-perf {
-    background-color: #14100b;
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='18'%3E%3Cpath fill-rule='evenodd' d='M0 0 H20 V18 H0 Z M8.5 2.5 H11.5 A2.5 2.5 0 0 1 14 5 V13 A2.5 2.5 0 0 1 11.5 15.5 H8.5 A2.5 2.5 0 0 1 6 13 V5 A2.5 2.5 0 0 1 8.5 2.5 Z'/%3E%3C/svg%3E");
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='18'%3E%3Cpath fill-rule='evenodd' d='M0 0 H20 V18 H0 Z M8.5 2.5 H11.5 A2.5 2.5 0 0 1 14 5 V13 A2.5 2.5 0 0 1 11.5 15.5 H8.5 A2.5 2.5 0 0 1 6 13 V5 A2.5 2.5 0 0 1 8.5 2.5 Z'/%3E%3C/svg%3E");
+  /* Der Header ist ein Filmstreifen: dunkler Hintergrund mit je einer
+     Reihe echt ausgestanzter Perforationslöcher am oberen UND unteren
+     Rand (CSS-mask). Der Inhalt (Logo/Nav) liegt unmaskiert darüber;
+     durch die Löcher scheint der Seiteninhalt durch (beim Scrollen). */
+  .header-film-bg {
+    background-color: #1A1310;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='80'%3E%3Cpath fill-rule='evenodd' d='M0 0 H20 V80 H0 Z M8.5 2.5 H11.5 A2.5 2.5 0 0 1 14 5 V13 A2.5 2.5 0 0 1 11.5 15.5 H8.5 A2.5 2.5 0 0 1 6 13 V5 A2.5 2.5 0 0 1 8.5 2.5 Z M8.5 64.5 H11.5 A2.5 2.5 0 0 1 14 67 V75 A2.5 2.5 0 0 1 11.5 77.5 H8.5 A2.5 2.5 0 0 1 6 75 V67 A2.5 2.5 0 0 1 8.5 64.5 Z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='80'%3E%3Cpath fill-rule='evenodd' d='M0 0 H20 V80 H0 Z M8.5 2.5 H11.5 A2.5 2.5 0 0 1 14 5 V13 A2.5 2.5 0 0 1 11.5 15.5 H8.5 A2.5 2.5 0 0 1 6 13 V5 A2.5 2.5 0 0 1 8.5 2.5 Z M8.5 64.5 H11.5 A2.5 2.5 0 0 1 14 67 V75 A2.5 2.5 0 0 1 11.5 77.5 H8.5 A2.5 2.5 0 0 1 6 75 V67 A2.5 2.5 0 0 1 8.5 64.5 Z'/%3E%3C/svg%3E");
     -webkit-mask-repeat: repeat-x;
     mask-repeat: repeat-x;
-    -webkit-mask-size: 20px 18px;
-    mask-size: 20px 18px;
+    -webkit-mask-size: 20px 100%;
+    mask-size: 20px 100%;
     -webkit-mask-position: center;
     mask-position: center;
   }
