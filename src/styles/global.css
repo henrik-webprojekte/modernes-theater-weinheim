@@ -22,19 +22,19 @@
 /* Sticky-Header: Anker-Sprungziele (#preise, #anfahrt, #chic …) nicht hinter
    dem fixierten Header verstecken */
 html {
-  scroll-padding-top: 6.5rem;
+  scroll-padding-top: 7.5rem;
 }
 
 /* Der Header ist transparent-perforiert (Filmstreifen). Damit durch die
    Löcher das Hintergrundbild statt der hellen Seite scheint, wird die erste
-   (dunkle) Hero-Sektion um die Header-Höhe (6rem) unter den Header gezogen;
-   ihr Inhalt bekommt zum Ausgleich padding-top, bleibt also sichtbar.
-   Detail-Seiten mit Zurück-Link sind über .no-bleed ausgenommen. */
+   (dunkle) Hero-Sektion um die Header-Höhe (7rem = h-28) unter den Header
+   gezogen; die Section bekommt zum Ausgleich padding-top in gleicher Höhe.
+   Das eigene py-* des Hero-Inhalts bleibt dadurch erhalten — der Text
+   startet also unterhalb des überhängenden Rauten-Emblems.
+   Einzelne Seiten könnten sich über .no-bleed ausnehmen (aktuell keine). */
 #hauptinhalt > section:first-child:not(.no-bleed) {
-  margin-top: -6rem;
-}
-#hauptinhalt > section:first-child:not(.no-bleed) > div:last-child {
-  padding-top: 6rem;
+  margin-top: -7rem;
+  padding-top: 7rem;
 }
 
 /* Skip-Link: WCAG 2.4.1 Bypass Blocks */

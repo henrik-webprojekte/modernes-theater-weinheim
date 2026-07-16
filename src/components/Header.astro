@@ -17,7 +17,11 @@ const navRechts = nav.slice(4)
 
 <header class="text-creme sticky top-0 z-30">
   <div class="header-film-bg absolute inset-0 z-0 pointer-events-none" aria-hidden="true"></div>
-  <div class="max-w-7xl mx-auto px-4 h-24 flex items-center gap-4 relative z-10">
+  {/* Gruppen-Layout: Logo solo links · Nav-Gruppe 1 · Rauten-Emblem (im
+      Flex-Fluss) · Nav-Gruppe 2 · Shop/Telefon/TK-Logo solo rechts.
+      Die beiden flex-1-Puffer verteilen den Restraum gleichmäßig, dadurch
+      sitzen Gruppe 1 und 2 mit identischem Abstand links/rechts vom Emblem. */}
+  <div class="max-w-7xl mx-auto px-4 h-28 flex items-center gap-5 lg:gap-6 relative z-10">
 
     <a href="/" class="flex items-center shrink-0 group" aria-label="Modernes Theater — zur Startseite">
       <img
@@ -27,7 +31,9 @@ const navRechts = nav.slice(4)
       />
     </a>
 
-    <nav class="hidden md:flex flex-1 items-center justify-center gap-5 text-sm lg:text-base tracking-wider md:pl-10 lg:pl-20" aria-label="Hauptnavigation">
+    <div class="hidden md:block flex-1" aria-hidden="true"></div>
+
+    <nav class="hidden md:flex items-center gap-5 lg:gap-6 text-sm lg:text-base tracking-wider" aria-label="Hauptnavigation">
       {navLinks.map((item) => (
         <a
           href={item.href}
@@ -44,9 +50,16 @@ const navRechts = nav.slice(4)
       ))}
     </nav>
 
-    <div class="hidden md:block w-36 lg:w-44 shrink-0" aria-hidden="true"></div>
+    {/* Rauten-Emblem im Flex-Fluss: hängt mittig über die Header-Unterkante */}
+    <div class="hidden md:block relative w-36 lg:w-44 self-stretch shrink-0" aria-hidden="true">
+      <img
+        src="/logos/vintage-rauten.png"
+        alt=""
+        class="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 h-32 lg:h-40 w-auto max-w-none pointer-events-none drop-shadow-[0_6px_10px_rgba(0,0,0,0.55)]"
+      />
+    </div>
 
-    <nav class="hidden md:flex flex-1 items-center justify-center gap-5 text-sm lg:text-base tracking-wider" aria-label="Weitere Navigation">
+    <nav class="hidden md:flex items-center gap-5 lg:gap-6 text-sm lg:text-base tracking-wider" aria-label="Weitere Navigation">
       {navRechts.map((item) => (
         <a
           href={item.href}
@@ -63,12 +76,16 @@ const navRechts = nav.slice(4)
       ))}
     </nav>
 
+    <div class="hidden md:block flex-1" aria-hidden="true"></div>
+
+    <div class="hidden md:flex items-center gap-4 lg:gap-5 shrink-0">
+
     <a
       href="https://shop.kinoweinheim.de/"
       target="_blank"
       rel="noopener"
       aria-label="Zum Shop (öffnet in neuem Fenster)"
-      class="hidden md:inline-flex items-center gap-1.5 shrink-0 border border-vintage-gold/60 rounded px-2.5 py-1.5 text-[11px] uppercase tracking-widest text-vintage-gold hover:bg-vintage-gold/10 hover:text-creme transition-colors"
+      class="inline-flex items-center gap-1.5 shrink-0 border border-vintage-gold/60 rounded px-2.5 py-1.5 text-[11px] uppercase tracking-widest text-vintage-gold hover:bg-vintage-gold/10 hover:text-creme transition-colors"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="9" cy="21" r="1"/>
@@ -93,7 +110,7 @@ const navRechts = nav.slice(4)
       target="_blank"
       rel="noopener"
       aria-label="Modernes Theater ist Mitglied bei Traditionelle Kinos (öffnet in neuem Fenster)"
-      class="hidden md:inline-flex items-center shrink-0 opacity-90 hover:opacity-100 transition-opacity"
+      class="inline-flex items-center shrink-0 opacity-90 hover:opacity-100 transition-opacity"
       title="Mitglied bei Traditionelle Kinos"
     >
       <img
@@ -102,6 +119,8 @@ const navRechts = nav.slice(4)
         class="h-12 lg:h-14 w-auto"
       />
     </a>
+
+    </div>
 
     <button
       id="menu-toggle"
@@ -119,13 +138,6 @@ const navRechts = nav.slice(4)
     </button>
 
   </div>
-
-  <img
-    src="/logos/vintage-rauten.png"
-    alt=""
-    aria-hidden="true"
-    class="hidden md:block absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 h-32 lg:h-40 w-auto pointer-events-none z-20 drop-shadow-[0_6px_10px_rgba(0,0,0,0.55)]"
-  />
 </header>
 
 <div
@@ -314,8 +326,8 @@ const navRechts = nav.slice(4)
      durch die Löcher scheint der Seiteninhalt durch (beim Scrollen). */
   .header-film-bg {
     background-color: #1A1310;
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='96'%3E%3Cpath fill-rule='evenodd' d='M0 0 H20 V96 H0 Z M8.5 4 H11.5 A2.5 2.5 0 0 1 14 6.5 V14.5 A2.5 2.5 0 0 1 11.5 17 H8.5 A2.5 2.5 0 0 1 6 14.5 V6.5 A2.5 2.5 0 0 1 8.5 4 Z M8.5 79 H11.5 A2.5 2.5 0 0 1 14 81.5 V89.5 A2.5 2.5 0 0 1 11.5 92 H8.5 A2.5 2.5 0 0 1 6 89.5 V81.5 A2.5 2.5 0 0 1 8.5 79 Z'/%3E%3C/svg%3E");
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='96'%3E%3Cpath fill-rule='evenodd' d='M0 0 H20 V96 H0 Z M8.5 4 H11.5 A2.5 2.5 0 0 1 14 6.5 V14.5 A2.5 2.5 0 0 1 11.5 17 H8.5 A2.5 2.5 0 0 1 6 14.5 V6.5 A2.5 2.5 0 0 1 8.5 4 Z M8.5 79 H11.5 A2.5 2.5 0 0 1 14 81.5 V89.5 A2.5 2.5 0 0 1 11.5 92 H8.5 A2.5 2.5 0 0 1 6 89.5 V81.5 A2.5 2.5 0 0 1 8.5 79 Z'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='112'%3E%3Cpath fill-rule='evenodd' d='M0 0 H20 V112 H0 Z M8.5 4 H11.5 A2.5 2.5 0 0 1 14 6.5 V14.5 A2.5 2.5 0 0 1 11.5 17 H8.5 A2.5 2.5 0 0 1 6 14.5 V6.5 A2.5 2.5 0 0 1 8.5 4 Z M8.5 95 H11.5 A2.5 2.5 0 0 1 14 97.5 V105.5 A2.5 2.5 0 0 1 11.5 108 H8.5 A2.5 2.5 0 0 1 6 105.5 V97.5 A2.5 2.5 0 0 1 8.5 95 Z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='112'%3E%3Cpath fill-rule='evenodd' d='M0 0 H20 V112 H0 Z M8.5 4 H11.5 A2.5 2.5 0 0 1 14 6.5 V14.5 A2.5 2.5 0 0 1 11.5 17 H8.5 A2.5 2.5 0 0 1 6 14.5 V6.5 A2.5 2.5 0 0 1 8.5 4 Z M8.5 95 H11.5 A2.5 2.5 0 0 1 14 97.5 V105.5 A2.5 2.5 0 0 1 11.5 108 H8.5 A2.5 2.5 0 0 1 6 105.5 V97.5 A2.5 2.5 0 0 1 8.5 95 Z'/%3E%3C/svg%3E");
     -webkit-mask-repeat: repeat-x;
     mask-repeat: repeat-x;
     -webkit-mask-size: 20px 100%;
