@@ -15,7 +15,9 @@ const navLinks = nav.slice(0, 4)
 const navRechts = nav.slice(4)
 ---
 
-<header class="text-creme sticky top-0 z-30">
+{/* mt-2: Im Ruhezustand schwebt der Filmstreifen 8px unter der Fensterkante
+    (dahinter das Hero-Bild) — beim Scrollen dockt er durch sticky top-0 an. */}
+<header class="text-creme sticky top-0 z-30 mt-2">
   <div class="header-film-bg absolute inset-0 z-0 pointer-events-none" aria-hidden="true"></div>
   {/* Gruppen-Layout: Logo solo links · Nav-Gruppe 1 · Rauten-Emblem (im
       Flex-Fluss) · Nav-Gruppe 2 · Shop/Telefon/TK-Logo solo rechts.

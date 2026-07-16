@@ -33,8 +33,9 @@ html {
    startet also unterhalb des überhängenden Rauten-Emblems.
    Einzelne Seiten könnten sich über .no-bleed ausnehmen (aktuell keine). */
 #hauptinhalt > section:first-child:not(.no-bleed) {
-  margin-top: -7rem;
-  padding-top: 7rem;
+  /* 7rem Header-Höhe + 0.5rem Ruhe-Gap über dem Filmstreifen (Header mt-2) */
+  margin-top: -7.5rem;
+  padding-top: 7.5rem;
 }
 
 /* Skip-Link: WCAG 2.4.1 Bypass Blocks */
