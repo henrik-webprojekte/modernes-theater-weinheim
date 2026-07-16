@@ -22,7 +22,7 @@
 /* Sticky-Header: Anker-Sprungziele (#preise, #anfahrt, #chic …) nicht hinter
    dem fixierten Header verstecken */
 html {
-  scroll-padding-top: 6rem;
+  scroll-padding-top: 6.5rem;
 }
 
 /* Skip-Link: WCAG 2.4.1 Bypass Blocks */
