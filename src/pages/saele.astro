@@ -116,7 +116,7 @@ function hexZuTextfarben(dunkel: boolean, accent: string) {
                 <p class="italic text-sm md:text-base mb-4" style={`color: ${farben.charakter};`}>{saal.charakterUntertitel}</p>
               )}
               {saal.kurzbeschreibung && (
-                <p class="text-sm md:text-base leading-relaxed mb-6" style={`color: ${farben.text};`}>{saal.kurzbeschreibung}</p>
+                <p class="text-base leading-relaxed mb-6" style={`color: ${farben.text};`}>{saal.kurzbeschreibung}</p>
               )}
 
               {saal.fakten && saal.fakten.length > 0 && (
@@ -138,7 +138,7 @@ function hexZuTextfarben(dunkel: boolean, accent: string) {
               {saal.technik && (
                 <>
                   <p class="text-[10px] uppercase tracking-[0.2em] mb-1" style={`color: ${farben.kicker};`}>Technik</p>
-                  <p class="text-xs md:text-sm leading-relaxed" style={`color: ${farben.text};`}>{saal.technik}</p>
+                  <p class="text-sm md:text-base leading-relaxed" style={`color: ${farben.text};`}>{saal.technik}</p>
                 </>
               )}
             </div>

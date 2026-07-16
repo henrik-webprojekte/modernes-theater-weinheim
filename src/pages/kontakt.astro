@@ -57,10 +57,10 @@ const zuschlaege = [
             </svg>
             <h2 class="font-display text-lg text-tiefschwarz">Anrufen & reservieren</h2>
           </div>
-          <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-2">
+          <p class="text-base text-tiefschwarz/85 leading-relaxed mb-2">
             <strong>Kartenreservierungen nehmen wir kostenlos entgegen</strong> — telefonisch während der Öffnungszeiten oder direkt an der Kinokasse.
           </p>
-          <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+          <p class="text-base text-tiefschwarz/85 leading-relaxed">
             Tel. <a href="tel:0620162155" class="text-kino-rot font-medium">06201 · 62155</a><br />
             Mail <a href="mailto:zentrale@kinoweinheim.de" class="text-kino-rot font-medium">zentrale@kinoweinheim.de</a>
           </p>
@@ -74,7 +74,7 @@ const zuschlaege = [
             </svg>
             <h2 class="font-display text-lg text-tiefschwarz">Adresse</h2>
           </div>
-          <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+          <p class="text-base text-tiefschwarz/85 leading-relaxed">
             Modernes Theater<br />
             Hauptstraße 61<br />
             69469 Weinheim
@@ -95,10 +95,10 @@ const zuschlaege = [
             </svg>
             <h2 class="font-display text-lg text-tiefschwarz">Öffnungszeiten</h2>
           </div>
-          <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-2">
+          <p class="text-base text-tiefschwarz/85 leading-relaxed mb-2">
             Unsere Kasse öffnet in der Regel <strong>30 Minuten vor der ersten Vorstellung</strong> und schließt kurz nach Beginn des letzten Films.
           </p>
-          <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+          <p class="text-base text-tiefschwarz/85 leading-relaxed">
             An Tagen ohne Vorstellungen sind wir per Anrufbeantworter und E-Mail erreichbar. Die exakten Vorstellungszeiten finden Sie im <a href="/programm" class="text-kino-rot font-medium">aktuellen Programm</a>.
           </p>
         </div>
@@ -113,10 +113,10 @@ const zuschlaege = [
             </svg>
             <h2 class="font-display text-lg text-tiefschwarz">Für Gruppen: Sondervorstellungen</h2>
           </div>
-          <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-2">
+          <p class="text-base text-tiefschwarz/85 leading-relaxed mb-2">
             Schulklassen, Betriebsausflüge, Vereine, private Runden: Wir organisieren gerne <strong>Sondervorstellungen einzelner Filme</strong> — auch außerhalb der regulären Zeiten.
           </p>
-          <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+          <p class="text-base text-tiefschwarz/85 leading-relaxed">
             Anfrage einfach telefonisch unter <a href="tel:0620162155" class="text-kino-rot font-medium">06201 · 62155</a> oder per E-Mail an <a href="mailto:zentrale@kinoweinheim.de" class="text-kino-rot font-medium">zentrale@kinoweinheim.de</a>.
           </p>
         </div>
@@ -152,7 +152,7 @@ const zuschlaege = [
           <div class="bg-off-white px-5 py-4 border-b border-vintage-gold/20" style="background: #FAF6EE;">
             <p class="text-[10px] uppercase tracking-[0.2em] text-warmes-braun mb-1">Öffentlicher Verkehr</p>
             <h3 class="font-display text-lg text-tiefschwarz leading-tight">Anreise planen mit bwegt</h3>
-            <p class="text-sm text-tiefschwarz/85 leading-relaxed mt-2">
+            <p class="text-base text-tiefschwarz/85 leading-relaxed mt-2">
               Ziel ist die Haltestelle „Woinemer Kino". Sagen Sie uns Ihre Starthaltestelle und wir zeigen die Verbindung.
             </p>
           </div>
@@ -235,12 +235,12 @@ const zuschlaege = [
           ))}
         </div>
 
-        <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-8 max-w-2xl mx-auto text-center">
+        <p class="text-base text-tiefschwarz/85 leading-relaxed mb-8 max-w-2xl mx-auto text-center">
           <em class="not-italic font-medium">„Ermäßigt"</em> gilt für Schüler, Rentner und Menschen mit Behinderung gegen unaufgeforderte Vorlage eines entsprechenden Dokuments.
         </p>
 
         <p class="text-xs uppercase tracking-widest text-warmes-braun mb-2">Zuschläge & Sonderpreise</p>
-        <ul class="text-sm text-tiefschwarz/85 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+        <ul class="text-base text-tiefschwarz/85 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
           {zuschlaege.map((z) => (
             <li class="flex items-start gap-2">
               <span class="text-warmes-braun mt-1" aria-hidden="true">·</span>
@@ -248,6 +248,11 @@ const zuschlaege = [
             </li>
           ))}
         </ul>
+
+        <p class="text-base text-tiefschwarz/85 leading-relaxed mt-8 text-center max-w-2xl mx-auto">
+          <span class="font-medium">Kino verschenken:</span> Gutscheine erhalten Sie an unserer Kinokasse und in unserem
+          <a href="https://shop.kinoweinheim.de/" target="_blank" rel="noopener" class="text-kino-rot border-b border-vintage-gold/60 pb-0.5 hover:text-tiefschwarz transition-colors">Online-Shop&nbsp;↗</a>
+        </p>
 
         <p class="text-xs text-warmes-braun italic mt-6 text-center">
           Alle Preise verstehen sich als Endpreise inklusive der gesetzlichen Umsatzsteuer.
@@ -260,7 +265,7 @@ const zuschlaege = [
         <div class="bg-creme border border-vintage-gold/40 rounded p-6 md:p-8 text-center" style="background: #F5EDE0; border-top: 3px solid #8A6B2E;">
           <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style="color: #8A6B2E;">Auch in der Nähe</p>
           <h2 class="font-display text-2xl text-tiefschwarz mb-3 leading-tight">Partnerkino Brennessel Hemsbach</h2>
-          <p class="text-sm text-tiefschwarz/85 leading-relaxed max-w-xl mx-auto mb-4">
+          <p class="text-base text-tiefschwarz/85 leading-relaxed max-w-xl mx-auto mb-4">
             Wenn Sie in oder um Hemsbach zuhause sind: unser Partnerkino Brennessel zeigt ebenfalls sorgfältig kuratiertes Programm — ein weiteres traditionsreiches Kino der Region.
           </p>
           <a href="https://www.brennessel-kino.de/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-sm text-kino-rot border-b border-vintage-gold/60 pb-0.5 hover:text-tiefschwarz transition-colors">
@@ -275,7 +280,7 @@ const zuschlaege = [
       <div class="max-w-2xl mx-auto text-center">
         <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3">Newsletter</p>
         <h2 class="font-display text-2xl text-tiefschwarz mb-3">Kein Filmstart mehr verpassen</h2>
-        <p class="text-sm text-tiefschwarz/85 leading-relaxed mb-6">
+        <p class="text-base text-tiefschwarz/85 leading-relaxed mb-6">
           Wir informieren Sie über neue Filme, Sonderreihen und Events — ca. einmal pro Woche, jederzeit abbestellbar.
         </p>
 
