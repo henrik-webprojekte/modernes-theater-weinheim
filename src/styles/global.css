@@ -25,6 +25,18 @@ html {
   scroll-padding-top: 6.5rem;
 }
 
+/* Der Header ist transparent-perforiert (Filmstreifen). Damit durch die
+   Löcher das Hintergrundbild statt der hellen Seite scheint, wird die erste
+   (dunkle) Hero-Sektion um die Header-Höhe (6rem) unter den Header gezogen;
+   ihr Inhalt bekommt zum Ausgleich padding-top, bleibt also sichtbar.
+   Detail-Seiten mit Zurück-Link sind über .no-bleed ausgenommen. */
+#hauptinhalt > section:first-child:not(.no-bleed) {
+  margin-top: -6rem;
+}
+#hauptinhalt > section:first-child:not(.no-bleed) > div:last-child {
+  padding-top: 6rem;
+}
+
 /* Skip-Link: WCAG 2.4.1 Bypass Blocks */
 .skip-link {
   position: absolute;
