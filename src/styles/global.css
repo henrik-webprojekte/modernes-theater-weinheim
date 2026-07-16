@@ -19,6 +19,12 @@
   --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Sticky-Header: Anker-Sprungziele (#preise, #anfahrt, #chic …) nicht hinter
+   dem fixierten Header verstecken */
+html {
+  scroll-padding-top: 6rem;
+}
+
 /* Skip-Link: WCAG 2.4.1 Bypass Blocks */
 .skip-link {
   position: absolute;
