@@ -38,6 +38,21 @@ html {
   padding-top: 10rem;
 }
 
+/* Foyer-Hero-Bild: ab Desktop-Breite so weit eingezoomt, dass der
+   Kronleuchter komplett unterhalb des Filmstreifen-Headers hängt. Der
+   Ausschnitt zeigt die rechte Bildhälfte (Wandgemälde-Bergkuppe +
+   Kronleuchter). Unterhalb 1280px bleibt das volle Bild — dort ist der
+   fixe Header relativ zu hoch, der nötige Zoom würde beengt wirken. */
+@media (min-width: 1280px) {
+  .hero-foyer-bg {
+    width: 205%;
+    height: 205%;
+    max-width: none;
+    left: -61%;
+    top: 0;
+  }
+}
+
 /* Skip-Link: WCAG 2.4.1 Bypass Blocks */
 .skip-link {
   position: absolute;
