@@ -128,11 +128,20 @@ export const filmType = defineType({
       initialValue: false,
     }),
     defineField({
+      name: "spielwochen",
+      title: "Vorstellungsserien (mehrere Tage gleiche Uhrzeit)",
+      type: "array",
+      of: [{type: "spielwoche"}],
+      description:
+        "Der schnelle Weg: EIN Eintrag für z. B. „diese Woche täglich 17:00\". Uhrzeit + Wochentage ankreuzen — die Website legt die einzelnen Termine automatisch an.",
+    }),
+    defineField({
       name: "vorstellungen",
-      title: "Vorstellungen",
+      title: "Einzelne Vorstellungen (je ein Termin)",
       type: "array",
       of: [{type: "vorstellung"}],
-      description: "Alle Vorstellungstermine dieses Films",
+      description:
+        "Für einzelne, unregelmäßige Termine (z. B. eine Vorpremiere oder ein Kaffee-Tee-Kino an genau einem Tag). Für ganze Wochen lieber „Vorstellungsserien\" oben nutzen.",
     }),
     defineField({
       name: "status",

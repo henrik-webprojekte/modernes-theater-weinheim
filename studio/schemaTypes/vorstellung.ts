@@ -25,10 +25,10 @@ export const vorstellungType = defineType({
     }),
     defineField({
       name: "saal",
-      title: "Saal",
+      title: "Saal (optional)",
       type: "reference",
       to: [{type: "saal"}],
-      validation: (Rule) => Rule.required(),
+      description: "Leer lassen, wenn der Saal noch nicht feststeht.",
     }),
     defineField({
       name: "format",
@@ -50,7 +50,7 @@ export const vorstellungType = defineType({
     prepare({datum, uhrzeit, saal, format}) {
       return {
         title: `${datum ?? "?"} · ${uhrzeit ?? "?"}`,
-        subtitle: `${saal ?? "Saal fehlt"} · ${format ?? "?"}`,
+        subtitle: `${saal ?? "Saal offen"} · ${format ?? "?"}`,
       }
     },
   },

@@ -85,15 +85,27 @@ export async function getSaele(): Promise<Saal[]> {
   )
 }
 
+export type Saalref = {
+  _id: string
+  name: string
+  farbakzent?: string
+} | null
+
 export type Vorstellung = {
   datum: string
   uhrzeit: string
   format: "2D" | "3D"
-  saal: {
-    _id: string
-    name: string
-    farbakzent?: string
-  } | null
+  saal: Saalref
+}
+
+/** Vorstellungsserie aus Sanity: Uhrzeit + eine Kinowoche + angekreuzte
+ *  Wochentage. Wird beim Laden in einzelne Vorstellungen aufgelöst. */
+export type Spielwoche = {
+  uhrzeit: string
+  woche: string
+  wochentage?: number[]
+  format: "2D" | "3D"
+  saal: Saalref
 }
 
 export type Film = {
@@ -118,7 +130,48 @@ export type Film = {
   istPreview: boolean
   istOmU: boolean
   vorstellungen?: Vorstellung[]
+  spielwochen?: Spielwoche[]
   status: "entwurf" | "aktiv" | "archiviert"
+}
+
+/** Wandelt die Vorstellungsserien eines Films in einzelne Vorstellungen um
+ *  und hängt sie an film.vorstellungen an. Rein datumsbasiert (UTC), damit
+ *  das Ergebnis unabhängig von der Bau-Zeitzone reproduzierbar ist. */
+function isoZuUtc(iso: string): Date {
+  const [y, m, d] = iso.split("-").map(Number)
+  return new Date(Date.UTC(y, (m ?? 1) - 1, d ?? 1))
+}
+function utcZuIso(d: Date): string {
+  return d.toISOString().slice(0, 10)
+}
+function expandiereSpielwoche(sw: Spielwoche): Vorstellung[] {
+  if (!sw.woche || !sw.uhrzeit || !sw.wochentage?.length) return []
+  // Donnerstag (Starttag) der Kinowoche, die den gewählten Tag enthält
+  const basis = isoZuUtc(sw.woche)
+  const seitDonnerstag = (basis.getUTCDay() - 4 + 7) % 7
+  const donnerstag = new Date(basis)
+  donnerstag.setUTCDate(basis.getUTCDate() - seitDonnerstag)
+  return sw.wochentage.map((w) => {
+    const offset = (w - 4 + 7) % 7 // Do=0, Fr=1, … Mi=6
+    const tag = new Date(donnerstag)
+    tag.setUTCDate(donnerstag.getUTCDate() + offset)
+    return {datum: utcZuIso(tag), uhrzeit: sw.uhrzeit, format: sw.format ?? "2D", saal: sw.saal ?? null}
+  })
+}
+
+/** Führt Einzel-Vorstellungen und aufgelöste Serien zu einer Liste zusammen;
+ *  entfernt exakte Doppel (gleiches Datum/Uhrzeit/Format/Saal). */
+function mitAufgeloestenSerien(film: Film): Film {
+  const ausSerien = (film.spielwochen ?? []).flatMap(expandiereSpielwoche)
+  const alle = [...(film.vorstellungen ?? []), ...ausSerien]
+  const gesehen = new Set<string>()
+  const vorstellungen = alle.filter((v) => {
+    const key = `${v.datum}|${v.uhrzeit}|${v.format}|${v.saal?._id ?? ""}`
+    if (gesehen.has(key)) return false
+    gesehen.add(key)
+    return true
+  })
+  return {...film, vorstellungen}
 }
 
 export type Event = {
@@ -174,7 +227,7 @@ export async function getFilmSlugs(): Promise<string[]> {
 }
 
 export async function getFilmBySlug(slug: string): Promise<Film | null> {
-  return sanity.fetch<Film | null>(
+  const film = await sanity.fetch<Film | null>(
     `*[_type == "film" && slug.current == $slug][0]{
       _id,
       titel,
@@ -198,14 +251,22 @@ export async function getFilmBySlug(slug: string): Promise<Film | null> {
         uhrzeit,
         format,
         "saal": saal->{ _id, name, farbakzent }
+      },
+      spielwochen[] {
+        uhrzeit,
+        woche,
+        wochentage,
+        format,
+        "saal": saal->{ _id, name, farbakzent }
       }
     }`,
     {slug}
   )
+  return film ? mitAufgeloestenSerien(film) : null
 }
 
 export async function getAktiveFilme(): Promise<Film[]> {
-  return sanity.fetch<Film[]>(
+  const filme = await sanity.fetch<Film[]>(
     `*[_type == "film" && status == "aktiv"] | order(titel asc) {
       _id,
       titel,
@@ -229,9 +290,17 @@ export async function getAktiveFilme(): Promise<Film[]> {
         uhrzeit,
         format,
         "saal": saal->{ _id, name, farbakzent }
+      },
+      spielwochen[] {
+        uhrzeit,
+        woche,
+        wochentage,
+        format,
+        "saal": saal->{ _id, name, farbakzent }
       }
     }`
   )
+  return filme.map(mitAufgeloestenSerien)
 }
 
 function heuteIsoDate(): string {
