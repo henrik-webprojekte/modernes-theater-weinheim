@@ -199,17 +199,29 @@ const fskFarben: Record<number, string> = {
                     )}
                   </div>
 
-                  <div class="flex flex-wrap items-center gap-2 text-xs text-warmes-braun uppercase tracking-widest mb-3">
-                    <span>{film.laenge} Min</span>
-                    <span class="text-warmes-braun/40">·</span>
-                    <span class="px-1.5 py-0.5 rounded font-medium" style={`background: ${fskFarben[film.fsk] ?? "#6B4E1F"}; color: white;`}>FSK {film.fsk}</span>
-                    {film.genre && (
-                      <>
-                        <span class="text-warmes-braun/40">·</span>
-                        <span>{film.genre}</span>
-                      </>
-                    )}
-                  </div>
+                  {(film.laenge != null || film.fsk != null || film.genre) && (
+                    <div class="flex flex-wrap items-center gap-2 text-xs text-warmes-braun uppercase tracking-widest mb-3">
+                      {film.laenge != null && <span>{film.laenge} Min</span>}
+                      {film.fsk != null && (
+                        <>
+                          {film.laenge != null && <span class="text-warmes-braun/40">·</span>}
+                          <span class="px-1.5 py-0.5 rounded font-medium" style={`background: ${fskFarben[film.fsk] ?? "#6B4E1F"}; color: white;`}>FSK {film.fsk}</span>
+                        </>
+                      )}
+                      {film.genre && (
+                        <>
+                          {(film.laenge != null || film.fsk != null) && <span class="text-warmes-braun/40">·</span>}
+                          <span>{film.genre}</span>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  {film.hinweis && (
+                    <p class="inline-block rounded px-2.5 py-1 mb-3 text-xs font-semibold tracking-wide" style="background: #C9A55C; color: #1A1310;">
+                      {film.hinweis}
+                    </p>
+                  )}
 
                   {film.vorstellungen && film.vorstellungen.length > 0 && (
                     <div class="mt-1">

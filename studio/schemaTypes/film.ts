@@ -19,21 +19,28 @@ export const filmType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "hinweis",
+      title: "Hinweis / Untertitel",
+      type: "string",
+      description:
+        "Kurzer Zusatz, der direkt in der Programm-Übersicht unter dem Titel erscheint — z. B. „Eintritt nur 5 €\", „Vorpremiere\" oder „mit Filmgespräch\". Optional.",
+    }),
+    defineField({
       name: "plakat",
-      title: "Plakat",
+      title: "Plakat (optional)",
       type: "image",
       options: {hotspot: true},
-      validation: (Rule) => Rule.required(),
+      description: "Ohne Plakat zeigt die Website einen Platzhalter.",
     }),
     defineField({
       name: "laenge",
-      title: "Länge in Minuten",
+      title: "Länge in Minuten (optional)",
       type: "number",
-      validation: (Rule) => Rule.required().integer().positive(),
+      validation: (Rule) => Rule.integer().positive(),
     }),
     defineField({
       name: "fsk",
-      title: "FSK",
+      title: "FSK (optional)",
       type: "number",
       options: {
         list: [
@@ -44,33 +51,17 @@ export const filmType = defineType({
           {title: "FSK 18", value: 18},
         ],
       },
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "genre",
-      title: "Genre",
+      title: "Genre (optional)",
       type: "string",
-      options: {
-        list: [
-          "Action",
-          "Animation",
-          "Dokumentation",
-          "Drama",
-          "Familie",
-          "Fantasy",
-          "Horror",
-          "Komödie",
-          "Krimi",
-          "Musik",
-          "Romantik",
-          "Sci-Fi",
-          "Thriller",
-        ],
-      },
+      description:
+        "Frei eingebbar. Übliche Werte: Action, Animation, Dokumentation, Drama, Familie, Fantasy, Horror, Komödie, Krimi, Musik, Romantik, Sci-Fi, Thriller.",
     }),
     defineField({
       name: "kurzbeschreibung",
-      title: "Kurzbeschreibung",
+      title: "Kurzbeschreibung (optional)",
       type: "text",
       rows: 4,
       description: "Ein bis drei Sätze für die Programm-Übersicht",

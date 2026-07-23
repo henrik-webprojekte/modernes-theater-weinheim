@@ -146,6 +146,9 @@ function formatEventDatum(event: Event): string {
                   )}
                 </div>
                 <h3 class="font-display text-base md:text-lg text-tiefschwarz leading-tight mb-1 group-hover:text-kino-rot transition-colors">{film.titel}</h3>
+                {film.hinweis && (
+                  <span class="inline-block rounded px-2 py-0.5 mb-1 text-[11px] font-semibold tracking-wide" style="background: #C9A55C; color: #1A1310;">{film.hinweis}</span>
+                )}
                 <p class="text-xs uppercase tracking-widest text-warmes-braun">
                   {formatNaechsteVorstellung(film)}
                 </p>

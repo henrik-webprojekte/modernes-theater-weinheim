@@ -83,7 +83,7 @@ const movieSchema = {
   ...(film.plakat ? {"image": urlFor(film.plakat).width(1000).url()} : {}),
   ...(film.genre ? {"genre": film.genre} : {}),
   ...(film.laenge ? {"duration": `PT${film.laenge}M`} : {}),
-  "contentRating": `FSK ${film.fsk}`,
+  ...(film.fsk != null ? {"contentRating": `FSK ${film.fsk}`} : {}),
   ...(film.trailerUrl ? {"trailer": {"@type": "VideoObject", "name": `Trailer: ${film.titel}`, "url": film.trailerUrl}} : {}),
 }
 
@@ -177,19 +177,31 @@ const screeningEvents = gruppiert.flatMap((g) =>
             )}
           </div>
 
-          <h1 class="font-display text-3xl md:text-5xl leading-tight text-creme mb-4 text-balance">{film.titel}</h1>
+          <h1 class="font-display text-3xl md:text-5xl leading-tight text-creme mb-3 text-balance">{film.titel}</h1>
 
-          <div class="flex flex-wrap items-center gap-3 text-xs text-creme/80 uppercase tracking-widest mb-6">
-            <span>{film.laenge} Minuten</span>
-            <span class="text-creme/40">·</span>
-            <span class="px-2 py-0.5 rounded font-medium" style={`background: ${fskFarben[film.fsk] ?? "#6B4E1F"}; color: white;`}>FSK {film.fsk}</span>
-            {film.genre && (
-              <>
-                <span class="text-creme/40">·</span>
-                <span>{film.genre}</span>
-              </>
-            )}
-          </div>
+          {film.hinweis && (
+            <p class="inline-block rounded px-3 py-1 mb-4 text-sm font-semibold tracking-wide" style="background: #C9A55C; color: #1A1310;">
+              {film.hinweis}
+            </p>
+          )}
+
+          {(film.laenge != null || film.fsk != null || film.genre) && (
+            <div class="flex flex-wrap items-center gap-3 text-xs text-creme/80 uppercase tracking-widest mb-6">
+              {film.laenge != null && <span>{film.laenge} Minuten</span>}
+              {film.fsk != null && (
+                <>
+                  {film.laenge != null && <span class="text-creme/40">·</span>}
+                  <span class="px-2 py-0.5 rounded font-medium" style={`background: ${fskFarben[film.fsk] ?? "#6B4E1F"}; color: white;`}>FSK {film.fsk}</span>
+                </>
+              )}
+              {film.genre && (
+                <>
+                  {(film.laenge != null || film.fsk != null) && <span class="text-creme/40">·</span>}
+                  <span>{film.genre}</span>
+                </>
+              )}
+            </div>
+          )}
 
           <div class="flex flex-wrap gap-3">
             <a

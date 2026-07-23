@@ -117,9 +117,10 @@ export type Film = {
     hotspot?: {x: number; y: number; height: number; width: number}
     crop?: {top: number; bottom: number; left: number; right: number}
   }
-  laenge: number
-  fsk: number
+  laenge?: number
+  fsk?: number
   genre?: string
+  hinweis?: string
   kurzbeschreibung?: string
   trailerUrl?: string
   istIn3dVerfuegbar: boolean
@@ -236,6 +237,7 @@ export async function getFilmBySlug(slug: string): Promise<Film | null> {
       laenge,
       fsk,
       genre,
+      hinweis,
       kurzbeschreibung,
       trailerUrl,
       istIn3dVerfuegbar,
@@ -275,6 +277,7 @@ export async function getAktiveFilme(): Promise<Film[]> {
       laenge,
       fsk,
       genre,
+      hinweis,
       kurzbeschreibung,
       trailerUrl,
       istIn3dVerfuegbar,
