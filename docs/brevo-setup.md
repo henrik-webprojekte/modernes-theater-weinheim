@@ -27,6 +27,12 @@ Templates, die intern als „DOI-Template" markiert sind (`doiTemplate: true`).*
   als DOI-Template erkannt — egal ob `{{ params.DOIurl }}` im Button, im
   HTML-Block oder per API-PUT im HTML steht. Fehler: `400 — "An active DOI
   template does not exist"`.
+- ⚠️ **Zusatzbefund 24.07.2026 — der Platzhalter war AUCH falsch:** Die
+  funktionierende Vorlage #6 nutzt im Button `{{ doubleoptin }}`, die
+  gescheiterte Eigenkreation #2 nutzte `{{ params.DOIurl }}`. **Nur
+  `{{ doubleoptin }}` erzeugt den echten Bestätigungslink.** Beim Umgestalten
+  einer DOI-Vorlage muss dieser Platzhalter zeichengenau erhalten bleiben —
+  Design und Texte drumherum sind frei änderbar.
 - DOI-Templates entstehen **ausschließlich über den Formular-Assistenten**:
   Marketing → **Formulare** → Anmeldeformular anlegen → Schritt „Einstellungen" →
   „Double-Opt-in-E-Mail" → „Standard-Template für Double-Opt-in-Bestätigungen"
