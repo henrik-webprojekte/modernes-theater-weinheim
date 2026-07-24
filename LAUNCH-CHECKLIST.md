@@ -109,6 +109,11 @@ erledigt sein müssen. Wird laufend erweitert.
 - [ ] 🔴 👨‍💻 Beim Umzug aufs echte Konto: Env-Vars tauschen nach Plan in
       `docs/brevo-setup.md` — **`BREVO_VERMIETUNG_TO` dabei löschen** (Default
       greift dann: veranstaltung@kinoweinheim.de)
+- [ ] 🔴 👨‍💻 **`BREVO_LIST_ID` bewusst setzen und verifizieren.** Befund
+      24.07.2026: Der Test-Kontakt landete in „Ihre erste Liste" (ID 2), nicht in
+      „Newsletter Test" (ID 3, leer) — die Variable zeigt vermutlich auf 2.
+      Nach dem Setzen mit einer Test-Anmeldung prüfen, in welcher Liste der
+      Kontakt tatsächlich erscheint (Wert ist „Sensitive", nicht auslesbar)
 
 ### 3.2 Sanity-Zugang
 
