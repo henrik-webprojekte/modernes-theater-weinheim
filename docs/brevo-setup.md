@@ -33,6 +33,12 @@ Templates, die intern als „DOI-Template" markiert sind (`doiTemplate: true`).*
   `{{ doubleoptin }}` erzeugt den echten Bestätigungslink.** Beim Umgestalten
   einer DOI-Vorlage muss dieser Platzhalter zeichengenau erhalten bleiben —
   Design und Texte drumherum sind frei änderbar.
+- ✅ **Entwarnung 24.07.2026 (E2E-getestet):** Eine bestehende DOI-Vorlage
+  **darf inhaltlich komplett ersetzt werden** — HTML, Design, Texte, Betreff —
+  ohne die DOI-Fähigkeit zu verlieren. Vorlage #6 wurde auf Kino-Design
+  (Creme/Kino-Rot, Sie-Form, Adresse im Fuß) umgebaut, Anmeldung funktioniert
+  weiterhin. **Nur nicht: neue Vorlage anlegen oder `{{ doubleoptin }}` ändern.**
+  → Im Ziel-Konto also: Vorlage per Assistent erzeugen, dann Design einsetzen.
 - DOI-Templates entstehen **ausschließlich über den Formular-Assistenten**:
   Marketing → **Formulare** → Anmeldeformular anlegen → Schritt „Einstellungen" →
   „Double-Opt-in-E-Mail" → „Standard-Template für Double-Opt-in-Bestätigungen"
