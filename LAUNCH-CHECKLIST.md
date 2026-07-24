@@ -109,6 +109,15 @@ erledigt sein müssen. Wird laufend erweitert.
 - [ ] 🔴 👨‍💻 Beim Umzug aufs echte Konto: Env-Vars tauschen nach Plan in
       `docs/brevo-setup.md` — **`BREVO_VERMIETUNG_TO` dabei löschen** (Default
       greift dann: veranstaltung@kinoweinheim.de)
+- [ ] 🔴 🎬 **DOI-Bestätigungsmail auf Kino-Design und Sie-Form umstellen.**
+      Befund 24.07.2026: Die live verschickte Vorlage (#6, Brevo-Standard) ist
+      blaues Generikdesign und **duzt** — die Website siezt durchgehend. Die schön
+      gestaltete Eigenkreation (#2, Kino-Rot, Sie-Form) wird nie verschickt, weil
+      sie nicht DOI-fähig ist (siehe Falle in `docs/brevo-setup.md`).
+      **Weg: Vorlage #6 direkt bearbeiten, KEINE neue anlegen** — danach zwingend
+      E2E-Test, ob der Bestätigungslink noch funktioniert
+- [ ] 🟢 👨‍💻 Aufräumen im Ziel-Konto: leere Fehlversuch-Vorlage (#1 „Neues
+      Template", inaktiv, ohne Inhalt) löschen
 - [ ] 🔴 👨‍💻 **`BREVO_LIST_ID` bewusst setzen und verifizieren.** Befund
       24.07.2026: Der Test-Kontakt landete in „Ihre erste Liste" (ID 2), nicht in
       „Newsletter Test" (ID 3, leer) — die Variable zeigt vermutlich auf 2.
