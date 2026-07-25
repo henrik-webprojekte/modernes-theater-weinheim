@@ -65,11 +65,21 @@ Quelle der Lösung: raab-online-marketing.com/blog/brevo-doi-link-funktioniert-n
    müssten alle Abonnenten neu gewonnen werden (Einwilligungen sind nicht
    übertragbar ohne sauberen Export/Import-Nachweis).
 2. **Domain-Absender verifizieren:** z. B. `newsletter@kinoweinheim.de` —
-   erfordert DNS-Einträge (DKIM/SPF/Brevo-Code) beim Domain-Hoster. Erst damit
-   verschwindet der `@brevosend.com`-Ersatzabsender und die Zustellbarkeit
-   wird produktionstauglich.
-3. **Im Zielkonto anlegen:** Liste „Newsletter", DOI-Template über den
-   Formular-Assistenten (siehe Falle oben!), API-Key erzeugen.
+   erfordert DNS-Einträge beim Domain-Hoster. Erst damit verschwindet der
+   `@brevosend.com`-Ersatzabsender und die Zustellbarkeit wird produktionstauglich.
+   **Diese DNS-Einträge sind zu erwarten** (Brevo generiert die genauen Werte pro
+   Domain im Konto unter Einstellungen → Absender/Domains → Domain authentifizieren):
+   - **DKIM** (2 CNAME-Records, `brevo1._domainkey…` / `brevo2._domainkey…`) — Signatur
+   - **SPF** (TXT-Record mit `include:spf.brevo.com`) — erlaubt Brevo als Versender
+   - **DMARC** (TXT-Record `_dmarc`, optional aber empfohlen) — Richtlinie
+   - **Brevo-Bestätigungscode** (1 TXT-Record) — Nachweis der Domain-Kontrolle
+   Nach dem Eintragen im Registrar dauert die Verifizierung wenige Minuten bis Stunden.
+
+3. **Im Zielkonto anlegen:** Liste „Newsletter", API-Key erzeugen, und die
+   DOI-Vorlage über den **Formular-Assistenten** (siehe Falle oben!). Danach das
+   fertige Kino-Design aus `docs/brevo-doi-template.html` einsetzen (Sie-Form,
+   Creme/Kino-Rot; Einbau-Anleitung als Kommentar oben in der Datei) — kein
+   Neu-Gestalten nötig.
 4. **Vercel-Env-Vars tauschen** (alle in Production): `BREVO_API_KEY`,
    `BREVO_LIST_ID`, `BREVO_TEMPLATE_ID`, `BREVO_SENDER_EMAIL`
    (Domain-Adresse), `BREVO_SENDER_NAME` („Modernes Theater Weinheim").
