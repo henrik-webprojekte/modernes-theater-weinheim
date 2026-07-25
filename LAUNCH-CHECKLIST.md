@@ -118,11 +118,10 @@ erledigt sein müssen. Wird laufend erweitert.
       „Modernes Theater Weinheim" statt „… Test"), danach E2E-Test
 - [ ] 🟢 👨‍💻 Aufräumen: Fehlversuch-Vorlagen #1 (leer, inaktiv) und #2
       (Eigenkreation mit falschem Platzhalter) löschen — Design ist in #6 übernommen
-- [ ] 🔴 👨‍💻 **`BREVO_LIST_ID` bewusst setzen und verifizieren.** Befund
-      24.07.2026: Der Test-Kontakt landete in „Ihre erste Liste" (ID 2), nicht in
-      „Newsletter Test" (ID 3, leer) — die Variable zeigt vermutlich auf 2.
-      Nach dem Setzen mit einer Test-Anmeldung prüfen, in welcher Liste der
-      Kontakt tatsächlich erscheint (Wert ist „Sensitive", nicht auslesbar)
+- [ ] 🔴 👨‍💻 **`BREVO_LIST_ID` im Ziel-Konto auf die echte „Newsletter"-Liste
+      setzen und per Test-Anmeldung verifizieren.** Im Test-Konto geklärt
+      (24.07.2026): Variable zeigt korrekt auf ID 3 („Newsletter Test"). Wert ist
+      „Sensitive"/nicht auslesbar → Kontrolle nur über Verhaltenstest möglich
 
 ### 3.2 Sanity-Zugang
 

@@ -10,12 +10,12 @@
 - **DOI-Template:** ID **6** — „Standard-Template für Double-Opt-in-Bestätigungen" (vom Formular-Assistenten erzeugt)
 - **Vercel-Env-Vars (Production):** `BREVO_API_KEY`, `BREVO_LIST_ID`, `BREVO_TEMPLATE_ID=6`, `BREVO_SENDER_EMAIL`, `BREVO_SENDER_NAME`, `BREVO_VERMIETUNG_TO` (→ Henris Adresse, damit Testanfragen NICHT ans Kino gehen)
 - **Newsletter-E2E-Test:** ✅ bestanden (Anmeldung → DOI-Mail → Bestätigung → Kontakt in Liste → Redirect auf /newsletter-bestaetigt)
-- ⚠️ **Befund 24.07.2026:** Der Test-Kontakt liegt in **„Ihre erste Liste" (ID 2)**,
-  nicht in „Newsletter Test" (ID 3, 0 Kontakte). `BREVO_LIST_ID` zeigt also
-  vermutlich auf **2** — die Liste #3 entstand erst nach dem Test (10:00 vs. 12:19).
-  Der Wert ist in Vercel „Sensitive" und nicht auslesbar; Klärung nur über einen
-  Verhaltenstest (Anmeldung mit Plus-Alias, dann sehen welcher Listenzähler steigt).
-  **Beim Konto-Umzug ohnehin neu setzen — dann bewusst und mit Test verifizieren.**
+- ✅ **Zielliste geklärt 24.07.2026 (Verhaltenstest):** `BREVO_LIST_ID` zeigt auf
+  **3 („Newsletter Test")** — eine frische Anmeldung mit Plus-Alias landete dort.
+  Der alte Test-Kontakt in „Ihre erste Liste" (ID 2) ist ein Überbleibsel aus
+  einem früheren Versuch, kein Zeichen einer Fehlkonfiguration. (Der Wert ist in
+  Vercel „Sensitive" und nicht auslesbar — deshalb war der Verhaltenstest nötig.)
+  **Beim Konto-Umzug neu setzen und wieder per Test verifizieren.**
 - **Vermietungs-E2E-Test:** ✅ bestanden (Anfrage → Mail an BREVO_VERMIETUNG_TO → Reply-To = Anfragender)
 
 ## ⚠️ Die DOI-Template-Falle (teuer gelernt am 09.07.2026)
