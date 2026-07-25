@@ -9,6 +9,12 @@ erledigt sein müssen. Wird laufend erweitert.
 **Verantwortlich:**
 👨‍💻 Henri · 🎬 Kino · ⚖️ Anwalt · 🌐 Externer Dienstleister
 
+**Zugehörige Dokumente:**
+- `docs/kino-fragenkatalog.md` — was das Kino liefern/entscheiden muss (Gesprächs-Spickzettel)
+- `docs/go-live-ablauf.md` — alle Launch-Schritte in Reihenfolge (Runbook)
+- `docs/redirect-plan.md` — Umleitung der alten Adressen
+- `docs/brevo-setup.md` · `docs/rechtliches-vorbereitung.md` · `docs/sanity-anleitung.md`
+
 ---
 
 ## 1. Rechtliches
@@ -160,7 +166,8 @@ erledigt sein müssen. Wird laufend erweitert.
 - [ ] 🔴 👨‍💻 Custom Domain in Vercel-Projekt eintragen
 - [ ] 🔴 👨‍💻 Redirect-Strategie für alte Site-URLs:
       alte `kinoweinheim.de/pages/*` → neue Pfade per 301-Redirect,
-      oder alte Site komplett abschalten?
+      oder alte Site komplett abschalten? **Plan + vercel.json-Vorlage liegt
+      bereit in `docs/redirect-plan.md`** — nur echte Alt-Pfade eintragen + aktivieren
 - [ ] 🟡 👨‍💻 SSL-Zertifikat verifizieren (Vercel macht automatisch)
 - [ ] 🟡 🎬 E-Mail-Adressen an neuer Domain funktionsfähig (falls Domain-Wechsel)
 - [ ] 🟡 👨‍💻 Deploy-Zeitfenster planen (Downtime minimieren)
@@ -183,9 +190,10 @@ erledigt sein müssen. Wird laufend erweitert.
       Performance/A11y/Best-Practices/SEO jeweils ≥ 90
 - [ ] 🟡 👨‍💻 axe DevTools auf allen Seiten in Production: 0 kritische/ernste Verstöße
 - [x] ✅ 👨‍💻 Custom 404-Seite mit Vintage-Design ergänzt (`src/pages/404.astro`)
-- [ ] 🟡 👨‍💻 npm-audit-Finding beobachten: `path-to-regexp` (High, transitiv über
-      `@astrojs/vercel`) — reine Build-Zeit-Abhängigkeit, kein Runtime-Risiko;
-      Fix erst wenn Adapter-Update ohne Downgrade verfügbar
+- [x] ✅ 👨‍💻 npm audit fix angewandt (25.07.2026): 8 → 3 Warnungen, u. a.
+      Astro-XSS-Patch (7.1.3). Build grün, Smoke-Test bestanden. **Verbleibend:**
+      3× `path-to-regexp` (High, nur Build-Zeit über `@astrojs/vercel`, kein
+      Runtime-Risiko) — Fix erst wenn Adapter-Update ohne Downgrade verfügbar
 - [x] ✅ 🎬 Sanity-Slug-Tippfehler korrigiert (09.07.2026): `kaffee-tee-kino`,
       `wiesensee-hemsbach` — auf Production verifiziert
 - [ ] 🔴 🎬 Neue Saal-Felder in Sanity befüllen (Reihenfolge, Fakten-Kacheln,
