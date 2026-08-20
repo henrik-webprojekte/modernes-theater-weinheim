@@ -219,7 +219,8 @@ export type Event = {
   titel: string
   slug: {current: string}
   kategorie: string
-  kurzbeschreibung?: string
+  /** Seit der Umstellung Fließtext; ältere Datensätze können noch String sein. */
+  kurzbeschreibung?: unknown
   beschreibungLang?: unknown[]
   startDatum: string
   endDatum?: string

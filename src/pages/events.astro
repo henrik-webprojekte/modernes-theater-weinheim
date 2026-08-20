@@ -4,6 +4,7 @@ import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
 import HeroBg from "../components/HeroBg.astro"
 import {getEvents, istEventAktuell, nachDatum, type Event} from "../lib/sanity"
+import {richtextZuText} from "../lib/portableText"
 
 const alle = await getEvents()
 
@@ -134,8 +135,8 @@ function zeitangabe(event: Event): string {
                 <h3 class="font-display text-2xl md:text-3xl leading-tight mb-3 group-hover:text-vintage-gold transition-colors">
                   {event.titel}
                 </h3>
-                {event.kurzbeschreibung && (
-                  <p class="text-sm text-creme/80 leading-relaxed">{event.kurzbeschreibung}</p>
+                {richtextZuText(event.kurzbeschreibung) && (
+                  <p class="text-sm text-creme/80 leading-relaxed">{richtextZuText(event.kurzbeschreibung)}</p>
                 )}
                 {event.ort && (
                   <p class="text-xs text-creme/60 italic mt-3">Ort: {event.ort}</p>
@@ -200,8 +201,8 @@ function zeitangabe(event: Event): string {
                       <h3 class="font-display text-xl text-tiefschwarz mb-2 leading-tight group-hover:text-kino-rot transition-colors">
                         {event.titel}
                       </h3>
-                      {event.kurzbeschreibung && (
-                        <p class="text-sm text-tiefschwarz/85 leading-relaxed">{event.kurzbeschreibung}</p>
+                      {richtextZuText(event.kurzbeschreibung) && (
+                        <p class="text-sm text-tiefschwarz/85 leading-relaxed">{richtextZuText(event.kurzbeschreibung)}</p>
                       )}
                       {event.ort && (
                         <p class="text-xs text-warmes-braun italic mt-3">Ort: {event.ort}</p>

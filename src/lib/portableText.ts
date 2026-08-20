@@ -56,8 +56,12 @@ export function richtextZuHtml(inhalt: unknown): string {
 
 /** Nur der nackte Text — für Meta-Angaben und strukturierte Daten. */
 export function richtextZuText(inhalt: unknown): string {
+  // Einzeilig halten: Der Text landet unter anderem in <meta description> und
+  // in den strukturierten Daten, wo Zeilenumbrüche nichts verloren haben.
+  const einzeilig = (text: string) => text.replace(/\s+/g, " ").trim()
+
   if (!inhalt) return ""
-  if (typeof inhalt === "string") return inhalt.trim()
+  if (typeof inhalt === "string") return einzeilig(inhalt)
   if (!Array.isArray(inhalt)) return ""
 
   const absaetze: string[] = []
@@ -69,7 +73,7 @@ export function richtextZuText(inhalt: unknown): string {
       .map((kind) => (kind && typeof kind === "object" ? String((kind as {text?: unknown}).text ?? "") : ""))
       .join("")
       .trim()
-    if (zeile) absaetze.push(zeile)
+    if (zeile) absaetze.push(einzeilig(zeile))
   }
   return absaetze.join(" ")
 }

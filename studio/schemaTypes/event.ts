@@ -37,8 +37,9 @@ export const eventType = defineType({
     defineField({
       name: "kurzbeschreibung",
       title: "Kurzbeschreibung",
-      type: "text",
-      rows: 3,
+      type: "richtext",
+      description:
+        "Ein bis drei Sätze. Erscheint auf der Event-Seite unter dem Titel und als Anrisstext in den Übersichtskacheln — dort ohne Formatierung, weil die ganze Kachel bereits anklickbar ist.",
     }),
     defineField({
       name: "beschreibungLang",

@@ -33,6 +33,9 @@ const beschreibungHtml = richtextZuHtml(film.kurzbeschreibung)
 
 const ktkTermin = kaffeeTeeKinoVorstellung(film)
 const ktkReihe = ktkTermin ? await getKaffeeTeeKinoReihe() : null
+const ktkReiheHtml =
+  richtextZuHtml(ktkReihe?.kurzbeschreibung) ||
+  "<p>Zum Kinoticket gibt es Kaffee oder Tee und Kuchen. Jeden ersten Mittwoch im Monat zeigen wir einen besonderen Film — auch die Jüngeren dürfen sich gerne am Filmgenuss versuchen.</p>"
 const ktkDatumLang = ktkTermin?.datum
   ? new Date(ktkTermin.datum).toLocaleDateString("de-DE", {
       weekday: "long",
@@ -310,10 +313,7 @@ const screeningEvents = gruppiert.flatMap((g) =>
                 </div>
               </dl>
 
-              <p class="text-sm text-tiefschwarz/85 leading-relaxed">
-                {ktkReihe?.kurzbeschreibung ??
-                  "Zum Kinoticket gibt es Kaffee oder Tee und Kuchen. Jeden ersten Mittwoch im Monat zeigen wir einen besonderen Film — auch die Jüngeren dürfen sich gerne am Filmgenuss versuchen."}
-              </p>
+              <div class="film-beschreibung text-sm text-tiefschwarz/85 leading-relaxed" set:html={ktkReiheHtml}></div>
 
               {ktkReihe && (
                 <a

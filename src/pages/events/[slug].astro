@@ -4,7 +4,7 @@ import Header from "../../components/Header.astro"
 import Footer from "../../components/Footer.astro"
 import HeroBg from "../../components/HeroBg.astro"
 import {getEventSlugs, getEventBySlug, getKaffeeTeeKinoTermine, urlFor} from "../../lib/sanity"
-import {richtextZuHtml} from "../../lib/portableText"
+import {richtextZuHtml, richtextZuText} from "../../lib/portableText"
 
 export async function getStaticPaths() {
   const slugs = await getEventSlugs()
@@ -62,6 +62,8 @@ function formatDatum(startDatum: string, endDatum?: string): string {
 }
 
 const beschreibungHtml = richtextZuHtml(event.beschreibungLang)
+const kurzHtml = richtextZuHtml(event.kurzbeschreibung)
+const kurzText = richtextZuText(event.kurzbeschreibung)
 
 const bildUrl = event.bild
   ? urlFor(event.bild).width(1600).url()
@@ -70,7 +72,7 @@ const bildUrl = event.bild
 
 <Layout
   title={`${event.titel} — Modernes Theater Weinheim`}
-  description={event.kurzbeschreibung ?? `${event.titel} im Modernen Theater Weinheim.`}
+  description={kurzText || `${event.titel} im Modernen Theater Weinheim.`}
 >
   <Header />
 
@@ -119,17 +121,19 @@ const bildUrl = event.bild
           />
         )}
 
-        {event.kurzbeschreibung && (
-          <p class="font-display text-lg md:text-xl text-tiefschwarz leading-relaxed mb-8" style={`border-left: 3px solid ${farbe}; padding-left: 1.25rem;`}>
-            {event.kurzbeschreibung}
-          </p>
+        {kurzHtml && (
+          <div
+            class="event-beschreibung font-display text-lg md:text-xl text-tiefschwarz leading-relaxed mb-8"
+            style={`border-left: 3px solid ${farbe}; padding-left: 1.25rem;`}
+            set:html={kurzHtml}
+          ></div>
         )}
 
         {beschreibungHtml && (
           <div class="event-beschreibung text-tiefschwarz/90 leading-relaxed" set:html={beschreibungHtml}></div>
         )}
 
-        {!beschreibungHtml && !event.kurzbeschreibung && (
+        {!beschreibungHtml && !kurzHtml && (
           <p class="text-sm italic text-warmes-braun">Weitere Informationen folgen.</p>
         )}
 
