@@ -130,6 +130,7 @@ export type Film = {
   istNeu: boolean
   istPreview: boolean
   istOmU: boolean
+  angepinnt?: boolean
   vorstellungen?: Vorstellung[]
   spielwochen?: Spielwoche[]
   status: "entwurf" | "aktiv" | "archiviert"
@@ -192,13 +193,16 @@ export type Event = {
     crop?: {top: number; bottom: number; left: number; right: number}
   }
   veroeffentlicht: boolean
+  angepinnt?: boolean
+  pinnHinweis?: string
 }
 
 export async function getEvents(): Promise<Event[]> {
   return sanity.fetch<Event[]>(
     `*[_type == "event" && veroeffentlicht == true] | order(startDatum asc) {
       _id, titel, slug, kategorie, kurzbeschreibung,
-      startDatum, endDatum, wiederkehrend, ort, veroeffentlicht
+      startDatum, endDatum, wiederkehrend, ort, veroeffentlicht,
+      angepinnt, pinnHinweis
     }`
   )
 }
@@ -214,7 +218,8 @@ export async function getEventBySlug(slug: string): Promise<Event | null> {
   return sanity.fetch<Event | null>(
     `*[_type == "event" && slug.current == $slug][0]{
       _id, titel, slug, kategorie, kurzbeschreibung, beschreibungLang,
-      startDatum, endDatum, wiederkehrend, ort, bild, veroeffentlicht
+      startDatum, endDatum, wiederkehrend, ort, bild, veroeffentlicht,
+      angepinnt, pinnHinweis
     }`,
     {slug}
   )
@@ -247,6 +252,7 @@ export async function getFilmBySlug(slug: string): Promise<Film | null> {
       istNeu,
       istPreview,
       istOmU,
+      angepinnt,
       status,
       vorstellungen[] {
         datum,
@@ -269,7 +275,8 @@ export async function getFilmBySlug(slug: string): Promise<Film | null> {
 
 export async function getAktiveFilme(): Promise<Film[]> {
   const filme = await sanity.fetch<Film[]>(
-    `*[_type == "film" && status == "aktiv"] | order(titel asc) {
+    `*[_type == "film" && status == "aktiv"]
+     | order(coalesce(angepinnt, false) desc, coalesce(istNeu, false) desc, titel asc) {
       _id,
       titel,
       slug,
@@ -287,6 +294,7 @@ export async function getAktiveFilme(): Promise<Film[]> {
       istNeu,
       istPreview,
       istOmU,
+      angepinnt,
       status,
       vorstellungen[] {
         datum,
@@ -347,15 +355,41 @@ export async function getFilmeMitBevorstehendenVorstellungen(limit = 4): Promise
   return withNext.map((x) => x.film)
 }
 
+/** Ist das Event noch aktuell? Wiederkehrende Reihen (Kaffee-Tee-Kino,
+ *  Enzo-Day) laufen dauerhaft und bleiben immer stehen; alle anderen sind
+ *  vorbei, sobald ihr letzter Tag verstrichen ist. */
+export function istEventAktuell(event: Event, heute = heuteIsoDate()): boolean {
+  if (event.wiederkehrend) return true
+  if (!event.startDatum) return true
+  return (event.endDatum ?? event.startDatum) >= heute
+}
+
+/** Chronologisch, wiederkehrende Reihen ans Ende (sie haben kein echtes Datum). */
+export function nachDatum(a: Event, b: Event): number {
+  const aDatum = a.wiederkehrend ? "9999-12-31" : (a.startDatum ?? "9999-12-31")
+  const bDatum = b.wiederkehrend ? "9999-12-31" : (b.startDatum ?? "9999-12-31")
+  return aDatum.localeCompare(bDatum) || a.titel.localeCompare(b.titel, "de")
+}
+
+/** Alle angepinnten Events, die noch aktuell sind — für die Event-Seite. */
+export async function getAngepinnteEvents(): Promise<Event[]> {
+  const alle = await getEvents()
+  return alle.filter((e) => e.angepinnt && istEventAktuell(e)).sort(nachDatum)
+}
+
+/** Das eine Event für den Hinweis-Balken im Kopf jeder Seite: das
+ *  nächststattfindende der angepinnten. Gibt es keins, bleibt der Balken weg. */
+export async function getHinweisEvent(): Promise<Event | null> {
+  const angepinnt = await getAngepinnteEvents()
+  return angepinnt[0] ?? null
+}
+
 export async function getKommendeEvents(limit = 3): Promise<Event[]> {
   const alle = await getEvents()
-  const heute = heuteIsoDate()
   return alle
-    .filter((e) => !e.startDatum || (e.endDatum ?? e.startDatum) >= heute)
-    .sort((a, b) => {
-      const aDate = a.startDatum ?? "9999-12-31"
-      const bDate = b.startDatum ?? "9999-12-31"
-      return aDate.localeCompare(bDate)
-    })
+    .filter((e) => istEventAktuell(e))
+    // Angepinntes zuerst, sonst chronologisch — damit ein hervorgehobenes
+    // Event auch im Startseiten-Block „Nächste Höhepunkte" oben steht.
+    .sort((a, b) => Number(Boolean(b.angepinnt)) - Number(Boolean(a.angepinnt)) || nachDatum(a, b))
     .slice(0, limit)
 }

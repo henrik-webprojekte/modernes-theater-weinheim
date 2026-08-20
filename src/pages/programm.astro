@@ -155,8 +155,12 @@ const fskFarben: Record<number, string> = {
           <div class="flex flex-col gap-3" id="programm-liste">
             {filme.map((film: Film) => (
               <article
-                class="programm-item bg-off-white border border-vintage-gold/20 rounded p-5 flex gap-5"
+                class:list={[
+                  "programm-item bg-off-white rounded p-5 flex gap-5 border",
+                  film.angepinnt ? "border-vintage-gold/70 shadow-sm" : "border-vintage-gold/20",
+                ]}
                 style="background: #FAF6EE;"
+                data-angepinnt={film.angepinnt ? "1" : "0"}
                 data-fsk={film.fsk}
                 data-genre={film.genre ?? ""}
                 data-3d={film.istIn3dVerfuegbar ? "1" : "0"}
@@ -188,6 +192,12 @@ const fskFarben: Record<number, string> = {
                     <h2 class="font-display text-xl md:text-2xl text-tiefschwarz leading-tight">
                       {film.titel}
                     </h2>
+                    {film.angepinnt && (
+                      <span
+                        class="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded text-creme"
+                        style="background: #8A6B2E;"
+                      >Unser Tipp</span>
+                    )}
                     {film.istNeu && (
                       <span class="bg-kino-rot text-creme text-[10px] uppercase tracking-widest px-2 py-0.5 rounded">Neu</span>
                     )}

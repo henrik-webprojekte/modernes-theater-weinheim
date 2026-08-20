@@ -80,6 +80,22 @@ export const eventType = defineType({
       options: {hotspot: true},
     }),
     defineField({
+      name: "angepinnt",
+      title: "Anpinnen",
+      type: "boolean",
+      description:
+        "Hebt das Event hervor: es erscheint ganz oben auf der Event-Seite und bekommt einen Hinweis-Balken, den jeder Besucher auf jeder Seite sieht. Sparsam einsetzen — im Balken steht immer nur das nächste angepinnte Event.",
+      initialValue: false,
+    }),
+    defineField({
+      name: "pinnHinweis",
+      title: "Text für den Hinweis-Balken (optional)",
+      type: "string",
+      description:
+        "Kurzer Satz für den Balken, z. B. „40 Jahre Modernes Theater — wir feiern mit Ihnen“. Bleibt das Feld leer, wird der Titel des Events angezeigt. Wirkt nur, wenn „Anpinnen“ an ist.",
+      hidden: ({parent}) => !parent?.angepinnt,
+    }),
+    defineField({
       name: "veroeffentlicht",
       title: "Veröffentlicht",
       type: "boolean",
@@ -87,9 +103,13 @@ export const eventType = defineType({
     }),
   ],
   preview: {
-    select: {title: "titel", subtitle: "kategorie", media: "bild"},
-    prepare({title, subtitle, media}) {
-      return {title, subtitle, media}
+    select: {title: "titel", subtitle: "kategorie", media: "bild", angepinnt: "angepinnt"},
+    prepare({title, subtitle, media, angepinnt}) {
+      return {
+        title: angepinnt ? `📌 ${title}` : title,
+        subtitle: angepinnt ? `Angepinnt · ${subtitle ?? ""}` : subtitle,
+        media,
+      }
     },
   },
 })

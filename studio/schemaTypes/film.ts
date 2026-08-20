@@ -119,6 +119,14 @@ export const filmType = defineType({
       initialValue: false,
     }),
     defineField({
+      name: "angepinnt",
+      title: "Anpinnen",
+      type: "boolean",
+      description:
+        "Setzt den Film im Programm ganz nach oben — noch vor die neuen Filme. Für Filme, die besonders beworben werden sollen.",
+      initialValue: false,
+    }),
+    defineField({
       name: "spielwochen",
       title: "Vorstellungsserien (mehrere Tage gleiche Uhrzeit)",
       type: "array",
@@ -151,16 +159,16 @@ export const filmType = defineType({
     }),
   ],
   preview: {
-    select: {title: "titel", subtitle: "genre", media: "plakat", status: "status"},
-    prepare({title, subtitle, media, status}) {
+    select: {title: "titel", subtitle: "genre", media: "plakat", status: "status", angepinnt: "angepinnt"},
+    prepare({title, subtitle, media, status, angepinnt}) {
       const statusLabel: Record<string, string> = {
         entwurf: "Entwurf",
         aktiv: "Aktiv",
         archiviert: "Archiviert",
       }
       return {
-        title,
-        subtitle: `${statusLabel[status] ?? "?"} · ${subtitle ?? ""}`,
+        title: angepinnt ? `📌 ${title}` : title,
+        subtitle: `${angepinnt ? "Angepinnt · " : ""}${statusLabel[status] ?? "?"} · ${subtitle ?? ""}`,
         media,
       }
     },

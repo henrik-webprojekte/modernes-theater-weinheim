@@ -3,9 +3,61 @@ import Layout from "../layouts/Layout.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
 import HeroBg from "../components/HeroBg.astro"
-import {getEvents, type Event} from "../lib/sanity"
+import {getEvents, istEventAktuell, nachDatum, type Event} from "../lib/sanity"
 
-const events = await getEvents()
+const alle = await getEvents()
+
+// Vergangenes verschwindet von selbst; wiederkehrende Reihen bleiben stehen.
+const events = alle.filter((e) => istEventAktuell(e)).sort(nachDatum)
+const angepinnte = events.filter((e) => e.angepinnt)
+
+/** Reihenfolge und Beschriftung der Abschnitte — bewusst fest, damit das Kino
+ *  seine Struktur wiedererkennt, egal was gerade im Kalender steht. */
+const kategorien = [
+  {
+    wert: "kaffee-tee-kino",
+    titel: "Kaffee-Tee-Kino",
+    beschreibung: "Der gemütliche Nachmittag mit Kaffee, Kuchen und Film.",
+  },
+  {
+    wert: "enzo-day",
+    titel: "Enzo-Day",
+    beschreibung: "Unser Treffpunkt vor der Vorstellung.",
+  },
+  {
+    wert: "open-air",
+    titel: "Open Air",
+    beschreibung: "Kino unter freiem Himmel — im Sommer an wechselnden Orten der Region.",
+  },
+  {
+    wert: "schmittini",
+    titel: "Zauberer Schmittini",
+    beschreibung: "Zauberei auf der Kinobühne, für kleine und große Gäste.",
+  },
+  {
+    wert: "sondervorstellung",
+    titel: "Sondervorstellungen",
+    beschreibung: "Einzeltermine, Premieren und Vorstellungen mit Gästen.",
+  },
+  {wert: "sonstiges", titel: "Weitere Termine", beschreibung: ""},
+]
+
+// Nur Abschnitte, in denen tatsächlich etwas steht
+const abschnitte = kategorien
+  .map((k) => ({...k, eintraege: events.filter((e) => e.kategorie === k.wert)}))
+  .filter((k) => k.eintraege.length > 0)
+
+// Kategorien, die im Schema (noch) nicht vorgesehen sind, gehen nicht verloren
+const bekannt = new Set(kategorien.map((k) => k.wert))
+const uebrige = events.filter((e) => !bekannt.has(e.kategorie))
+if (uebrige.length > 0) {
+  abschnitte.push({
+    wert: "weitere",
+    titel: "Weitere Termine",
+    beschreibung: "",
+    eintraege: uebrige,
+  })
+}
 
 function farbeFuerKategorie(kategorie: string): string {
   const farben: Record<string, string> = {
@@ -25,6 +77,10 @@ function formatDatum(startDatum: string, endDatum?: string): string {
   if (!endDatum) return start
   const ende = new Date(endDatum).toLocaleDateString("de-DE", opt)
   return `${start} – ${ende}`
+}
+
+function zeitangabe(event: Event): string {
+  return event.wiederkehrend ?? formatDatum(event.startDatum, event.endDatum)
 }
 ---
 
@@ -51,30 +107,112 @@ function formatDatum(startDatum: string, endDatum?: string): string {
       </div>
     </section>
 
-    <section class="bg-creme px-6 py-16" style="background: #F5EDE0;">
-      <div class="max-w-5xl mx-auto">
-        {events.length > 0 ? (
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {events.map((event: Event) => (
+    {angepinnte.length > 0 && (
+      <section class="px-6 pt-14 pb-4" style="background: #F5EDE0;">
+        <div class="max-w-5xl mx-auto">
+          <div class="flex items-center gap-3 mb-6">
+            <span aria-hidden="true" class="w-2 h-2 rotate-45" style="background: #C9A55C;"></span>
+            <h2 class="font-display text-2xl md:text-3xl text-tiefschwarz">Im Blick</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {angepinnte.map((event: Event) => (
               <a
                 href={`/events/${event.slug.current}`}
-                class="group bg-off-white border border-vintage-gold/20 rounded p-5 flex flex-col hover:border-vintage-gold/60 hover:shadow-sm transition-all"
-                style={`background: #FAF6EE; border-top: 3px solid ${farbeFuerKategorie(event.kategorie)};`}
+                class="group relative rounded p-6 md:p-7 flex flex-col text-creme overflow-hidden transition-shadow hover:shadow-md"
+                style="background: #241A15; border: 1px solid rgba(201,165,92,0.45);"
               >
-                <p class="text-[10px] uppercase tracking-[0.2em] mb-2" style={`color: ${farbeFuerKategorie(event.kategorie)};`}>
-                  {event.wiederkehrend ?? formatDatum(event.startDatum, event.endDatum)}
+                <span
+                  aria-hidden="true"
+                  class="absolute inset-x-0 top-0 h-[3px]"
+                  style="background: linear-gradient(90deg, #C9A55C 0%, rgba(201,165,92,0.15) 100%);"
+                ></span>
+
+                <p class="text-[11px] uppercase tracking-[0.22em] mb-3" style="color: #C9A55C;">
+                  {zeitangabe(event)}
                 </p>
-                <h2 class="font-display text-xl text-tiefschwarz mb-2 leading-tight group-hover:text-kino-rot transition-colors">{event.titel}</h2>
+                <h3 class="font-display text-2xl md:text-3xl leading-tight mb-3 group-hover:text-vintage-gold transition-colors">
+                  {event.titel}
+                </h3>
                 {event.kurzbeschreibung && (
-                  <p class="text-sm text-tiefschwarz/85 leading-relaxed">{event.kurzbeschreibung}</p>
+                  <p class="text-sm text-creme/80 leading-relaxed">{event.kurzbeschreibung}</p>
                 )}
                 {event.ort && (
-                  <p class="text-xs text-warmes-braun italic mt-3">Ort: {event.ort}</p>
+                  <p class="text-xs text-creme/60 italic mt-3">Ort: {event.ort}</p>
                 )}
-                <span class="mt-4 pt-3 border-t border-vintage-gold/20 text-xs text-kino-rot inline-flex items-center gap-1">
+                <span class="mt-5 pt-4 text-xs inline-flex items-center gap-1" style="color: #C9A55C; border-top: 1px solid rgba(201,165,92,0.25);">
                   Details <span aria-hidden="true">→</span>
                 </span>
               </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {abschnitte.length > 1 && (
+      <nav aria-label="Zu den Kategorien springen" class="px-6 pt-10" style="background: #F5EDE0;">
+        <div class="max-w-5xl mx-auto flex flex-wrap gap-2">
+          {abschnitte.map((k) => (
+            <a
+              href={`#kategorie-${k.wert}`}
+              class="text-xs uppercase tracking-[0.18em] rounded-full px-4 py-2 border transition-colors hover:bg-vintage-gold/15"
+              style={`color: ${farbeFuerKategorie(k.wert)}; border-color: ${farbeFuerKategorie(k.wert)}55;`}
+            >
+              {k.titel}
+              <span class="ml-1.5 opacity-60">{k.eintraege.length}</span>
+            </a>
+          ))}
+        </div>
+      </nav>
+    )}
+
+    <section class="px-6 py-12 md:py-14" style="background: #F5EDE0;">
+      <div class="max-w-5xl mx-auto">
+        {abschnitte.length > 0 ? (
+          <div class="space-y-14">
+            {abschnitte.map((k) => (
+              <section id={`kategorie-${k.wert}`} class="scroll-mt-32">
+                <div class="mb-6 pb-3" style={`border-bottom: 2px solid ${farbeFuerKategorie(k.wert)}33;`}>
+                  <h2 class="font-display text-2xl md:text-3xl text-tiefschwarz">{k.titel}</h2>
+                  {k.beschreibung && (
+                    <p class="text-sm text-tiefschwarz/70 mt-1.5 leading-relaxed">{k.beschreibung}</p>
+                  )}
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {k.eintraege.map((event: Event) => (
+                    <a
+                      href={`/events/${event.slug.current}`}
+                      class="group bg-off-white border border-vintage-gold/20 rounded p-5 flex flex-col hover:border-vintage-gold/60 hover:shadow-sm transition-all"
+                      style={`background: #FAF6EE; border-top: 3px solid ${farbeFuerKategorie(event.kategorie)};`}
+                    >
+                      <div class="flex items-baseline justify-between gap-2 mb-2">
+                        <p class="text-[10px] uppercase tracking-[0.2em]" style={`color: ${farbeFuerKategorie(event.kategorie)};`}>
+                          {zeitangabe(event)}
+                        </p>
+                        {event.angepinnt && (
+                          <span class="shrink-0 text-[9px] uppercase tracking-[0.18em] px-1.5 py-0.5 rounded" style="color: #8A6B2E; background: rgba(201,165,92,0.18);">
+                            Im Blick
+                          </span>
+                        )}
+                      </div>
+                      <h3 class="font-display text-xl text-tiefschwarz mb-2 leading-tight group-hover:text-kino-rot transition-colors">
+                        {event.titel}
+                      </h3>
+                      {event.kurzbeschreibung && (
+                        <p class="text-sm text-tiefschwarz/85 leading-relaxed">{event.kurzbeschreibung}</p>
+                      )}
+                      {event.ort && (
+                        <p class="text-xs text-warmes-braun italic mt-3">Ort: {event.ort}</p>
+                      )}
+                      <span class="mt-4 pt-3 border-t border-vintage-gold/20 text-xs text-kino-rot inline-flex items-center gap-1">
+                        Details <span aria-hidden="true">→</span>
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         ) : (
