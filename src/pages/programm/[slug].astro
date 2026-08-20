@@ -12,6 +12,7 @@ import {
   urlFor,
   type Vorstellung,
 } from "../../lib/sanity"
+import {richtextZuHtml, richtextZuText} from "../../lib/portableText"
 
 export async function getStaticPaths() {
   const slugs = await getFilmSlugs()
@@ -27,6 +28,9 @@ if (!film) {
 
 // Läuft dieser Film einmal als Kaffee-Tee-Kino? Dann wird der Text der Reihe
 // eingeblendet — gepflegt im gleichnamigen Event, nicht hier im Code.
+const beschreibungText = richtextZuText(film.kurzbeschreibung)
+const beschreibungHtml = richtextZuHtml(film.kurzbeschreibung)
+
 const ktkTermin = kaffeeTeeKinoVorstellung(film)
 const ktkReihe = ktkTermin ? await getKaffeeTeeKinoReihe() : null
 const ktkDatumLang = ktkTermin?.datum
@@ -99,7 +103,7 @@ const movieSchema = {
   "@context": "https://schema.org",
   "@type": "Movie",
   "name": film.titel,
-  ...(film.kurzbeschreibung ? {"description": film.kurzbeschreibung} : {}),
+  ...(beschreibungText ? {"description": beschreibungText} : {}),
   ...(film.plakat ? {"image": urlFor(film.plakat).width(1000).url()} : {}),
   ...(film.genre ? {"genre": film.genre} : {}),
   ...(film.laenge ? {"duration": `PT${film.laenge}M`} : {}),
@@ -134,7 +138,7 @@ const screeningEvents = gruppiert.flatMap((g) =>
 )
 ---
 
-<Layout title={`${film.titel} — Modernes Theater Weinheim`} description={film.kurzbeschreibung}>
+<Layout title={`${film.titel} — Modernes Theater Weinheim`} description={beschreibungText}>
   <script type="application/ld+json" set:html={JSON.stringify(movieSchema)} />
   {screeningEvents.length > 0 && (
     <script type="application/ld+json" set:html={JSON.stringify(screeningEvents)} />
@@ -246,11 +250,11 @@ const screeningEvents = gruppiert.flatMap((g) =>
       </div>
     </section>
 
-    {film.kurzbeschreibung && (
+    {beschreibungHtml && (
       <section class="bg-off-white px-6 py-12" style="background: #FAF6EE;">
         <div class="max-w-3xl mx-auto">
           <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3">Worum es geht</p>
-          <p class="text-lg text-tiefschwarz/85 leading-relaxed">{film.kurzbeschreibung}</p>
+          <div class="film-beschreibung text-lg text-tiefschwarz/85 leading-relaxed" set:html={beschreibungHtml}></div>
         </div>
       </section>
     )}
@@ -415,3 +419,28 @@ const screeningEvents = gruppiert.flatMap((g) =>
 
   <Footer />
 </Layout>
+
+<style>
+  /* Beschreibung des Films: Absätze und Links wie in der Event-Beschreibung */
+  .film-beschreibung :global(p) {
+    margin-bottom: 1rem;
+  }
+  .film-beschreibung :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .film-beschreibung :global(a) {
+    color: #6B1818;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(201, 165, 92, 0.6);
+  }
+  .film-beschreibung :global(a:hover) {
+    color: #1A1310;
+  }
+  .film-beschreibung :global(strong) {
+    font-weight: 600;
+  }
+  .film-beschreibung :global(em) {
+    font-style: italic;
+  }
+</style>

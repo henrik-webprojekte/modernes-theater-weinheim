@@ -134,7 +134,8 @@ export type Film = {
   fsk?: number
   genre?: string
   hinweis?: string
-  kurzbeschreibung?: string
+  /** Seit der Umstellung Fließtext; ältere Datensätze können noch String sein. */
+  kurzbeschreibung?: unknown
   trailerUrl?: string
   istIn3dVerfuegbar: boolean
   istSneak: boolean

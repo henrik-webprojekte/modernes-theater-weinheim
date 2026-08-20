@@ -3,6 +3,11 @@
  *
  * Der Renderer bringt von Haus aus keinen Serializer für Links mit — ohne den
  * hier definierten würde ein im Studio gesetzter Link als toter Text erscheinen.
+ *
+ * Beide Funktionen nehmen zusätzlich einen einfachen String entgegen. Die
+ * Film-Beschreibungen waren früher reine Textfelder; so bleibt die Seite auch
+ * dann heil, wenn Datenbestand und Schema kurzzeitig auseinanderlaufen — etwa
+ * zwischen dem Ausrollen und der Migration.
  */
 import {toHTML, escapeHTML, uriLooksSafe, type PortableTextComponents} from "@portabletext/to-html"
 
@@ -32,8 +37,39 @@ const komponenten: PortableTextComponents = {
   },
 }
 
+/** Reiner Text aus der Zeit vor der Umstellung: Absätze an Leerzeilen. */
+function textZuHtml(text: string): string {
+  return text
+    .split(/\n\s*\n/)
+    .map((absatz) => absatz.trim())
+    .filter(Boolean)
+    .map((absatz) => `<p>${escapeHTML(absatz)}</p>`)
+    .join("")
+}
+
 /** Rich-Text aus Sanity in HTML — mit klickbaren Links. */
-export function richtextZuHtml(blocks: unknown): string {
-  if (!blocks) return ""
-  return toHTML(blocks as never, {components: komponenten})
+export function richtextZuHtml(inhalt: unknown): string {
+  if (!inhalt) return ""
+  if (typeof inhalt === "string") return textZuHtml(inhalt)
+  return toHTML(inhalt as never, {components: komponenten})
+}
+
+/** Nur der nackte Text — für Meta-Angaben und strukturierte Daten. */
+export function richtextZuText(inhalt: unknown): string {
+  if (!inhalt) return ""
+  if (typeof inhalt === "string") return inhalt.trim()
+  if (!Array.isArray(inhalt)) return ""
+
+  const absaetze: string[] = []
+  for (const block of inhalt) {
+    if (!block || typeof block !== "object") continue
+    const kinder = (block as {children?: unknown}).children
+    if (!Array.isArray(kinder)) continue
+    const zeile = kinder
+      .map((kind) => (kind && typeof kind === "object" ? String((kind as {text?: unknown}).text ?? "") : ""))
+      .join("")
+      .trim()
+    if (zeile) absaetze.push(zeile)
+  }
+  return absaetze.join(" ")
 }

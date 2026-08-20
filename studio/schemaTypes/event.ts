@@ -1,4 +1,4 @@
-﻿import {defineType, defineField, defineArrayMember} from "sanity"
+﻿import {defineType, defineField} from "sanity"
 
 export const eventType = defineType({
   name: "event",
@@ -43,32 +43,7 @@ export const eventType = defineType({
     defineField({
       name: "beschreibungLang",
       title: "Ausführliche Beschreibung",
-      type: "array",
-      of: [
-        defineArrayMember({
-          type: "block",
-          marks: {
-            annotations: [
-              {
-                name: "link",
-                type: "object",
-                title: "Link",
-                fields: [
-                  {
-                    name: "href",
-                    type: "url",
-                    title: "Adresse",
-                    description:
-                      "Vollständige Adresse, z. B. https://shop.kinoweinheim.de — auch mailto: und tel: sind möglich.",
-                    validation: (Rule: any) =>
-                      Rule.required().uri({scheme: ["http", "https", "mailto", "tel"]}),
-                  },
-                ],
-              },
-            ],
-          },
-        }),
-      ],
+      type: "richtext",
       description:
         "Für die Event-Detailseite. Text markieren und über das Link-Symbol verlinken — z. B. „Tickets im Shop\" oder den Namen eines Kooperationspartners. Externe Links öffnen sich automatisch in einem neuen Tab.",
     }),

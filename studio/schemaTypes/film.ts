@@ -61,10 +61,10 @@ export const filmType = defineType({
     }),
     defineField({
       name: "kurzbeschreibung",
-      title: "Kurzbeschreibung (optional)",
-      type: "text",
-      rows: 4,
-      description: "Ein bis drei Sätze für die Programm-Übersicht",
+      title: "Beschreibung (optional)",
+      type: "richtext",
+      description:
+        "Worum geht es in dem Film? Erscheint auf der Filmseite. Text markieren und über das Link-Symbol verlinken — z. B. den Namen eines Kooperationspartners.",
     }),
     defineField({
       name: "trailerUrl",
