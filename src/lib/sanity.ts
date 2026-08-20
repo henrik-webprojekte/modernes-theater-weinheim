@@ -319,7 +319,12 @@ export async function getFilmBySlug(slug: string): Promise<Film | null> {
 export async function getAktiveFilme(): Promise<Film[]> {
   const filme = await sanity.fetch<Film[]>(
     `*[_type == "film" && status == "aktiv"]
-     | order(coalesce(angepinnt, false) desc, coalesce(istNeu, false) desc, titel asc) {
+     | order(
+         coalesce(istSneak, false) asc,
+         coalesce(angepinnt, false) desc,
+         coalesce(istNeu, false) desc,
+         titel asc
+       ) {
       _id,
       titel,
       slug,
