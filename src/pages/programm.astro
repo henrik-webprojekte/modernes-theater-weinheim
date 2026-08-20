@@ -253,6 +253,7 @@ const fskFarben: Record<number, string> = {
                                   style={`background: ${v.istKaffeeTeeKino ? "#8A6B2E" : v.format === "3D" ? "#4A2A5A" : "#6B1818"};`}
                                   data-datum={v.datum ?? ""}
                                   data-format={v.format ?? "2D"}
+                                  data-ktk={v.istKaffeeTeeKino ? "1" : "0"}
                                   title={v.istKaffeeTeeKino ? `Kaffee-Tee-Kino — Einlass ${v.einlass}, Eintritt ${v.eintritt} inkl. Kaffee/Tee und Kuchen` : undefined}
                                 >
                                   <span class="tabular-nums font-semibold">{v.uhrzeit}</span>
@@ -379,6 +380,16 @@ const fskFarben: Record<number, string> = {
   let aktuellerFilter = "all"
   let wochenOffset = 0
 
+  /** Gilt der Filter für eine einzelne Uhrzeit? „Kaffee-Tee-Kino" und „3D"
+   *  beschreiben den einzelnen Termin — dort soll nicht der ganze Spielplan
+   *  des Films stehen bleiben, sondern nur die passende Vorstellung. Alle
+   *  anderen Filter beschreiben den Film als Ganzes. */
+  function passtVorstellung(chip: HTMLElement, filter: string): boolean {
+    if (filter === "kaffee-tee-kino") return chip.dataset.ktk === "1"
+    if (filter === "3d") return chip.dataset.format === "3D"
+    return true
+  }
+
   function passtKategorie(item: HTMLElement, filter: string): boolean {
     if (filter === "all") return true
     if (filter === "familie") return item.dataset.genre === "Familie" || Number(item.dataset.fsk) <= 6
@@ -437,11 +448,19 @@ const fskFarben: Record<number, string> = {
           return
         }
         const datum = new Date(datumStr)
-        const passt = datum >= von && datum < bis
+        const inZeitraum = datum >= von && datum < bis
+
+        let passendeChips = 0
+        zeile.querySelectorAll<HTMLElement>(".vorstellung-chip").forEach((chip) => {
+          const chipOk = passtVorstellung(chip, aktuellerFilter)
+          chip.style.display = chipOk ? "" : "none"
+          if (chipOk) passendeChips++
+        })
+
+        // Ein Tag verschwindet, wenn an ihm keine passende Vorstellung bleibt
+        const passt = inZeitraum && passendeChips > 0
         zeile.style.display = passt ? "" : "none"
-        if (passt) {
-          inWoche += zeile.querySelectorAll(".vorstellung-chip").length
-        }
+        if (passt) inWoche += passendeChips
       })
 
       const filmZeigt = kategorieOk && (total === 0 || inWoche > 0)
@@ -510,9 +529,9 @@ const fskFarben: Record<number, string> = {
       item.querySelectorAll<HTMLElement>(".vorstellungen-zeile").forEach((zeile) => {
         const tag = zeile.dataset.datumTag
         if (!tag) return
-        // Beim Kaffee-Tee-Kino zählt nur der Termin der Reihe, nicht die
-        // regulären Vorstellungen desselben Films.
-        if (filter === "kaffee-tee-kino" && zeile.dataset.ktk !== "1") return
+        // Nur Tage zählen, an denen eine zum Filter passende Vorstellung liegt
+        const chips = Array.from(zeile.querySelectorAll<HTMLElement>(".vorstellung-chip"))
+        if (!chips.some((chip) => passtVorstellung(chip, filter))) return
         const datum = new Date(tag)
         if (datum < heute) return
         if (!frühestes || datum < frühestes) frühestes = datum
