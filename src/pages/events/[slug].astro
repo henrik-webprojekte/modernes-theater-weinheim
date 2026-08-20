@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro"
 import Header from "../../components/Header.astro"
 import Footer from "../../components/Footer.astro"
 import HeroBg from "../../components/HeroBg.astro"
-import {getEventSlugs, getEventBySlug, urlFor} from "../../lib/sanity"
+import {getEventSlugs, getEventBySlug, getKaffeeTeeKinoTermine, urlFor} from "../../lib/sanity"
 import {toHTML} from "@portabletext/to-html"
 
 export async function getStaticPaths() {
@@ -34,6 +34,20 @@ const kategorieLabel: Record<string, string> = {
   "schmittini": "Zauberer Schmittini",
   "sondervorstellung": "Sondervorstellung",
   "sonstiges": "Sonstiges",
+}
+
+// Bei der Kaffee-Tee-Kino-Reihe entsteht die Terminliste automatisch aus den
+// Filmen — gepflegt wird ausschließlich am Film, nie hier im Event.
+const istKtkReihe = event.kategorie === "kaffee-tee-kino" && Boolean(event.wiederkehrend)
+const ktkTermine = istKtkReihe ? await getKaffeeTeeKinoTermine() : []
+
+function terminDatumLang(datum: string): string {
+  return new Date(datum).toLocaleDateString("de-DE", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  })
 }
 
 const farbe = kategorieFarbe[event.kategorie] ?? "#6B4E1F"
@@ -123,6 +137,51 @@ const bildUrl = event.bild
 
       </div>
     </section>
+
+    {istKtkReihe && (
+      <section class="px-6 pb-14 md:pb-20" style="background: #F5EDE0;">
+        <div class="max-w-3xl mx-auto">
+          <div class="flex flex-wrap items-baseline justify-between gap-3 mb-6 pb-3" style="border-bottom: 2px solid rgba(138,107,46,0.25);">
+            <h2 class="font-display text-2xl md:text-3xl text-tiefschwarz">Die nächsten Termine</h2>
+            <a
+              href="/programm?filter=kaffee-tee-kino"
+              class="text-xs uppercase tracking-[0.18em] border-b transition-colors hover:text-tiefschwarz"
+              style="color: #8A6B2E; border-color: rgba(138,107,46,0.5);"
+            >
+              Im Programm ansehen <span aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          {ktkTermine.length > 0 ? (
+            <ul class="space-y-3">
+              {ktkTermine.map(({film, vorstellung}) => (
+                <li>
+                  <a
+                    href={`/programm/${film.slug.current}`}
+                    class="group flex flex-wrap items-center gap-x-4 gap-y-1 rounded p-4 transition-colors hover:border-vintage-gold/60"
+                    style="background: #FAF6EE; border: 1px solid rgba(201,165,92,0.25);"
+                  >
+                    <span class="text-xs uppercase tracking-[0.18em] shrink-0" style="color: #8A6B2E;">
+                      {terminDatumLang(vorstellung.datum)}
+                    </span>
+                    <span class="font-display text-lg text-tiefschwarz group-hover:text-kino-rot transition-colors flex-1 min-w-0">
+                      {film.titel}
+                    </span>
+                    <span class="text-xs text-warmes-braun shrink-0 tabular-nums">
+                      Einlass {vorstellung.einlass} · Beginn {vorstellung.uhrzeit} · {vorstellung.eintritt}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="text-sm italic text-warmes-braun">
+              Der nächste Film der Reihe steht noch nicht fest. Ein Anruf unter 06201 · 62155 hilft weiter.
+            </p>
+          )}
+        </div>
+      </section>
+    )}
 
     <section class="bg-off-white border-t border-vintage-gold/20 px-6 py-10" style="background: #FAF6EE;">
       <div class="max-w-3xl mx-auto text-center">

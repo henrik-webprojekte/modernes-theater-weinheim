@@ -4,7 +4,14 @@ import Header from "../../components/Header.astro"
 import Footer from "../../components/Footer.astro"
 import HeroBg from "../../components/HeroBg.astro"
 import TwoClickFacade from "../../components/TwoClickFacade.astro"
-import {getFilmSlugs, getFilmBySlug, urlFor, type Vorstellung} from "../../lib/sanity"
+import {
+  getFilmSlugs,
+  getFilmBySlug,
+  getKaffeeTeeKinoReihe,
+  kaffeeTeeKinoVorstellung,
+  urlFor,
+  type Vorstellung,
+} from "../../lib/sanity"
 
 export async function getStaticPaths() {
   const slugs = await getFilmSlugs()
@@ -17,6 +24,19 @@ const film = slug ? await getFilmBySlug(slug) : null
 if (!film) {
   return Astro.redirect("/programm")
 }
+
+// Läuft dieser Film einmal als Kaffee-Tee-Kino? Dann wird der Text der Reihe
+// eingeblendet — gepflegt im gleichnamigen Event, nicht hier im Code.
+const ktkTermin = kaffeeTeeKinoVorstellung(film)
+const ktkReihe = ktkTermin ? await getKaffeeTeeKinoReihe() : null
+const ktkDatumLang = ktkTermin?.datum
+  ? new Date(ktkTermin.datum).toLocaleDateString("de-DE", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    })
+  : null
 
 function extractYouTubeId(url: string | undefined): string | null {
   if (!url) return null
@@ -259,6 +279,51 @@ const screeningEvents = gruppiert.flatMap((g) =>
         <p class="text-xs uppercase tracking-[0.2em] text-warmes-braun mb-3 text-center">Alle Termine</p>
         <h2 class="font-display text-3xl md:text-4xl text-tiefschwarz text-center mb-10">Vorstellungen</h2>
 
+        {ktkTermin && (
+          <div class="mb-8 rounded overflow-hidden" style="background: #FAF6EE; border: 1px solid rgba(138,107,46,0.35);">
+            <div class="px-5 py-3 flex items-center gap-2.5" style="background: #8A6B2E;">
+              <span aria-hidden="true" class="w-1.5 h-1.5 rotate-45 bg-creme/80"></span>
+              <p class="text-xs uppercase tracking-[0.2em] text-creme">
+                Dieser Film läuft im Kaffee-Tee-Kino
+              </p>
+            </div>
+
+            <div class="p-5 md:p-6">
+              <p class="font-display text-xl md:text-2xl text-tiefschwarz mb-4">{ktkDatumLang}</p>
+
+              <dl class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-5">
+                <div>
+                  <dt class="text-[10px] uppercase tracking-[0.18em] text-warmes-braun mb-1">Einlass</dt>
+                  <dd class="text-base text-tiefschwarz tabular-nums">{ktkTermin.einlass}</dd>
+                </div>
+                <div>
+                  <dt class="text-[10px] uppercase tracking-[0.18em] text-warmes-braun mb-1">Filmbeginn</dt>
+                  <dd class="text-base text-tiefschwarz tabular-nums">{ktkTermin.uhrzeit}</dd>
+                </div>
+                <div>
+                  <dt class="text-[10px] uppercase tracking-[0.18em] text-warmes-braun mb-1">Eintritt</dt>
+                  <dd class="text-base text-tiefschwarz">{ktkTermin.eintritt}</dd>
+                </div>
+              </dl>
+
+              <p class="text-sm text-tiefschwarz/85 leading-relaxed">
+                {ktkReihe?.kurzbeschreibung ??
+                  "Zum Kinoticket gibt es Kaffee oder Tee und Kuchen. Jeden ersten Mittwoch im Monat zeigen wir einen besonderen Film — auch die Jüngeren dürfen sich gerne am Filmgenuss versuchen."}
+              </p>
+
+              {ktkReihe && (
+                <a
+                  href={`/events/${ktkReihe.slug.current}`}
+                  class="inline-flex items-center gap-1 mt-4 text-sm border-b transition-colors"
+                  style="color: #8A6B2E; border-color: rgba(138,107,46,0.5);"
+                >
+                  Alles über die Reihe <span aria-hidden="true">→</span>
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
         {gruppiert.length === 0 && (
           <div class="bg-off-white border border-vintage-gold/40 rounded p-8 text-center">
             <p class="text-warmes-braun italic">Für diesen Film sind aktuell keine Vorstellungen geplant.</p>
@@ -274,9 +339,15 @@ const screeningEvents = gruppiert.flatMap((g) =>
                   {g.entries.map((v) => (
                     <span
                       class="inline-flex items-center gap-2 text-sm text-creme px-3 py-2 rounded"
-                      style={`background: ${v.format === "3D" ? "#4A2A5A" : "#6B1818"};`}
+                      style={`background: ${v.istKaffeeTeeKino ? "#8A6B2E" : v.format === "3D" ? "#4A2A5A" : "#6B1818"};`}
                     >
                       <span class="font-medium">{v.uhrzeit}</span>
+                      {v.istKaffeeTeeKino && (
+                        <>
+                          <span class="opacity-40">·</span>
+                          <span class="text-[10px] uppercase tracking-widest opacity-90">Kaffee-Tee-Kino</span>
+                        </>
+                      )}
                       {v.saal?.name && (
                         <>
                           <span class="opacity-40">·</span>

@@ -96,6 +96,10 @@ export type Vorstellung = {
   uhrzeit: string
   format: "2D" | "3D"
   saal: Saalref
+  /** Gesetzt bei der einen Vorstellung, die als Kaffee-Tee-Kino läuft. */
+  istKaffeeTeeKino?: boolean
+  einlass?: string
+  eintritt?: string
 }
 
 /** Vorstellungsserie aus Sanity: Uhrzeit + eine Kinowoche + angekreuzte
@@ -106,6 +110,15 @@ export type Spielwoche = {
   wochentage?: number[]
   format: "2D" | "3D"
   saal: Saalref
+}
+
+/** Der eine Kaffee-Tee-Kino-Termin eines Films (Reihe: 1. Mittwoch im Monat). */
+export type KaffeeTeeKinoTermin = {
+  datum?: string
+  beginn?: string
+  einlass?: string
+  eintritt?: string
+  saal?: Saalref
 }
 
 export type Film = {
@@ -126,7 +139,7 @@ export type Film = {
   istIn3dVerfuegbar: boolean
   istSneak: boolean
   istSonderreihe: boolean
-  istKaffeeTeeKino: boolean
+  kaffeeTeeKino?: KaffeeTeeKinoTermin
   istNeu: boolean
   istPreview: boolean
   istOmU: boolean
@@ -163,9 +176,33 @@ function expandiereSpielwoche(sw: Spielwoche): Vorstellung[] {
 
 /** Führt Einzel-Vorstellungen und aufgelöste Serien zu einer Liste zusammen;
  *  entfernt exakte Doppel (gleiches Datum/Uhrzeit/Format/Saal). */
+/** Vorbelegung der Reihe, falls im Termin nichts Abweichendes steht. */
+export const KTK_BEGINN = "15:00"
+export const KTK_EINLASS = "14:00"
+export const KTK_EINTRITT = "8,00 €"
+
+/** Der Kaffee-Tee-Kino-Termin eines Films als vollwertige Vorstellung. */
+export function kaffeeTeeKinoVorstellung(film: Film): Vorstellung | null {
+  const termin = film.kaffeeTeeKino
+  if (!termin?.datum) return null
+  return {
+    datum: termin.datum,
+    uhrzeit: termin.beginn || KTK_BEGINN,
+    format: "2D",
+    saal: termin.saal ?? null,
+    istKaffeeTeeKino: true,
+    einlass: termin.einlass || KTK_EINLASS,
+    eintritt: termin.eintritt || KTK_EINTRITT,
+  }
+}
+
 function mitAufgeloestenSerien(film: Film): Film {
   const ausSerien = (film.spielwochen ?? []).flatMap(expandiereSpielwoche)
-  const alle = [...(film.vorstellungen ?? []), ...ausSerien]
+  const ktk = kaffeeTeeKinoVorstellung(film)
+  // Der Kaffee-Tee-Kino-Termin steht vorn: Trifft er zufällig auf eine
+  // gleiche reguläre Vorstellung, gewinnt er beim Entdoppeln — er trägt
+  // die zusätzlichen Angaben der Reihe.
+  const alle = [...(ktk ? [ktk] : []), ...(film.vorstellungen ?? []), ...ausSerien]
   const gesehen = new Set<string>()
   const vorstellungen = alle.filter((v) => {
     const key = `${v.datum}|${v.uhrzeit}|${v.format}|${v.saal?._id ?? ""}`
@@ -248,7 +285,13 @@ export async function getFilmBySlug(slug: string): Promise<Film | null> {
       istIn3dVerfuegbar,
       istSneak,
       istSonderreihe,
-      istKaffeeTeeKino,
+      kaffeeTeeKino {
+        datum,
+        beginn,
+        einlass,
+        eintritt,
+        "saal": saal->{ _id, name, farbakzent }
+      },
       istNeu,
       istPreview,
       istOmU,
@@ -290,7 +333,13 @@ export async function getAktiveFilme(): Promise<Film[]> {
       istIn3dVerfuegbar,
       istSneak,
       istSonderreihe,
-      istKaffeeTeeKino,
+      kaffeeTeeKino {
+        datum,
+        beginn,
+        einlass,
+        eintritt,
+        "saal": saal->{ _id, name, farbakzent }
+      },
       istNeu,
       istPreview,
       istOmU,
@@ -353,6 +402,36 @@ export async function getFilmeMitBevorstehendenVorstellungen(limit = 4): Promise
     )
     .slice(0, limit)
   return withNext.map((x) => x.film)
+}
+
+/** Das Event, das die Reihe „Kaffee-Tee-Kino" beschreibt (der wiederkehrende
+ *  Eintrag, nicht ein einzelner Termin). Liefert den Text, der bei jeder
+ *  Kaffee-Tee-Kino-Vorstellung eingeblendet wird — gepflegt an einer Stelle. */
+export async function getKaffeeTeeKinoReihe(): Promise<Event | null> {
+  return sanity.fetch<Event | null>(
+    `*[_type == "event" && kategorie == "kaffee-tee-kino" && veroeffentlicht == true
+       && defined(wiederkehrend)] | order(_createdAt asc) [0]{
+      _id, titel, slug, kategorie, kurzbeschreibung,
+      startDatum, endDatum, wiederkehrend, ort, veroeffentlicht,
+      angepinnt, pinnHinweis
+    }`
+  )
+}
+
+/** Ein Kaffee-Tee-Kino-Termin samt zugehörigem Film — für die Reihen-Seite. */
+export type KaffeeTeeKinoEintrag = {film: Film; vorstellung: Vorstellung}
+
+/** Alle noch bevorstehenden Kaffee-Tee-Kino-Termine, chronologisch.
+ *  Gepflegt wird nur am Film; diese Liste entsteht daraus von selbst. */
+export async function getKaffeeTeeKinoTermine(): Promise<KaffeeTeeKinoEintrag[]> {
+  const filme = await getAktiveFilme()
+  const heute = heuteIsoDate()
+  const eintraege: KaffeeTeeKinoEintrag[] = []
+  for (const film of filme) {
+    const vorstellung = kaffeeTeeKinoVorstellung(film)
+    if (vorstellung && vorstellung.datum >= heute) eintraege.push({film, vorstellung})
+  }
+  return eintraege.sort((a, b) => a.vorstellung.datum.localeCompare(b.vorstellung.datum))
 }
 
 /** Ist das Event noch aktuell? Wiederkehrende Reihen (Kaffee-Tee-Kino,

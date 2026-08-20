@@ -91,13 +91,6 @@ export const filmType = defineType({
       initialValue: false,
     }),
     defineField({
-      name: "istKaffeeTeeKino",
-      title: "Kaffee-Tee-Kino",
-      type: "boolean",
-      description: "Anschalten, wenn dieser Film Teil der Kaffee-Tee-Kino-Reihe ist (jeder 1. Mittwoch im Monat, 15:00, 8 EUR inkl. Kaffee/Tee + Kuchen).",
-      initialValue: false,
-    }),
-    defineField({
       name: "istNeu",
       title: "Neu",
       type: "boolean",
@@ -117,6 +110,65 @@ export const filmType = defineType({
       type: "boolean",
       description: "Original mit Untertiteln — anschalten wenn der Film in Originalsprache mit deutschen Untertiteln läuft.",
       initialValue: false,
+    }),
+    defineField({
+      name: "kaffeeTeeKino",
+      title: "Kaffee-Tee-Kino-Termin",
+      type: "object",
+      description:
+        "Läuft dieser Film zusätzlich einmal als Kaffee-Tee-Kino? Dann genügt das Datum — Einlass, Beginn und Eintritt sind bereits vorbelegt. Die Vorstellung erscheint danach automatisch im Programm, zusammen mit dem Text der Reihe. Pro Film ist ein solcher Termin vorgesehen.",
+      options: {collapsible: true, collapsed: true},
+      fields: [
+        defineField({
+          name: "datum",
+          title: "Tag des Kaffee-Tee-Kinos",
+          type: "date",
+          options: {dateFormat: "DD.MM.YYYY"},
+          description:
+            "Üblicherweise der erste Mittwoch im Monat. Bleibt das Feld leer, gibt es für diesen Film kein Kaffee-Tee-Kino.",
+        }),
+        defineField({
+          name: "beginn",
+          title: "Filmbeginn",
+          type: "string",
+          initialValue: "15:00",
+          description: "Format HH:MM. Standard der Reihe ist 15:00.",
+          validation: (Rule) =>
+            Rule.regex(/^([01]\d|2[0-3]):[0-5]\d$/, {name: "Uhrzeit", invert: false}),
+        }),
+        defineField({
+          name: "einlass",
+          title: "Einlass",
+          type: "string",
+          initialValue: "14:00",
+          description: "Format HH:MM. Standard der Reihe ist 14:00.",
+          validation: (Rule) =>
+            Rule.regex(/^([01]\d|2[0-3]):[0-5]\d$/, {name: "Uhrzeit", invert: false}),
+        }),
+        defineField({
+          name: "eintritt",
+          title: "Eintritt",
+          type: "string",
+          initialValue: "8,00 €",
+          description: "Standard der Reihe: 8,00 € inklusive Kaffee/Tee und Kuchen.",
+        }),
+        defineField({
+          name: "saal",
+          title: "Saal (optional)",
+          type: "reference",
+          to: [{type: "saal"}],
+          description: "Leer lassen, wenn der Saal noch nicht feststeht.",
+        }),
+      ],
+      preview: {
+        select: {datum: "datum", beginn: "beginn"},
+        prepare({datum, beginn}) {
+          return {
+            title: datum ? `Kaffee-Tee-Kino am ${datum}` : "Kein Kaffee-Tee-Kino-Termin",
+            subtitle: datum ? `Beginn ${beginn ?? "15:00"}` : undefined,
+          }
+        },
+      },
     }),
     defineField({
       name: "angepinnt",

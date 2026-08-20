@@ -165,7 +165,7 @@ const fskFarben: Record<number, string> = {
                 data-genre={film.genre ?? ""}
                 data-3d={film.istIn3dVerfuegbar ? "1" : "0"}
                 data-sneak={film.istSneak ? "1" : "0"}
-                data-kaffee-tee-kino={film.istKaffeeTeeKino ? "1" : "0"}
+                data-kaffee-tee-kino={film.kaffeeTeeKino?.datum ? "1" : "0"}
                 data-omu={film.istOmU ? "1" : "0"}
                 data-vorstellungen={film.vorstellungen?.length ?? 0}
               >
@@ -241,6 +241,7 @@ const fskFarben: Record<number, string> = {
                           <div
                             class="vorstellungen-zeile flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 py-2"
                             data-datum-tag={gruppe.datum}
+                            data-ktk={gruppe.entries.some((v) => v.istKaffeeTeeKino) ? "1" : "0"}
                           >
                             <div class="w-full sm:w-20 shrink-0 font-display text-sm text-kino-rot leading-tight">
                               {gruppe.formatted}
@@ -249,12 +250,16 @@ const fskFarben: Record<number, string> = {
                               {gruppe.entries.map((v) => (
                                 <span
                                   class="vorstellung-chip inline-flex items-center gap-1.5 text-xs text-creme px-2 py-1 rounded font-medium"
-                                  style={`background: ${v.format === "3D" ? "#4A2A5A" : "#6B1818"};`}
+                                  style={`background: ${v.istKaffeeTeeKino ? "#8A6B2E" : v.format === "3D" ? "#4A2A5A" : "#6B1818"};`}
                                   data-datum={v.datum ?? ""}
                                   data-format={v.format ?? "2D"}
+                                  title={v.istKaffeeTeeKino ? `Kaffee-Tee-Kino — Einlass ${v.einlass}, Eintritt ${v.eintritt} inkl. Kaffee/Tee und Kuchen` : undefined}
                                 >
                                   <span class="tabular-nums font-semibold">{v.uhrzeit}</span>
                                   {v.saal?.name && <span class="opacity-90">· {v.saal.name}</span>}
+                                  {v.istKaffeeTeeKino && (
+                                    <span class="text-[9px] font-bold px-1 rounded" style="background: rgba(255,255,255,0.2);">Kaffee-Tee-Kino</span>
+                                  )}
                                   {v.format === "3D" && (
                                     <span class="text-[9px] font-bold px-1 rounded" style="background: rgba(255,255,255,0.18);">3D</span>
                                   )}
@@ -454,11 +459,28 @@ const fskFarben: Record<number, string> = {
     if (countVorstLabel) countVorstLabel.textContent = sichtbareVorstellungen === 1 ? "Vorstellung" : "Vorstellungen"
   }
 
+  /** Filter in der Adresszeile spiegeln, damit Links teilbar sind
+   *  (z. B. /programm?filter=kaffee-tee-kino von der Reihen-Seite aus). */
+  function filterInAdresseSchreiben(filter: string) {
+    const url = new URL(window.location.href)
+    if (filter === "all") url.searchParams.delete("filter")
+    else url.searchParams.set("filter", filter)
+    window.history.replaceState({}, "", url)
+  }
+
+  function filterSetzen(filter: string, inAdresseSchreiben = true) {
+    const treffer = Array.from(chips).find((c) => c.dataset.filter === filter)
+    aktuellerFilter = treffer ? filter : "all"
+    chips.forEach((c) =>
+      c.setAttribute("aria-pressed", c.dataset.filter === aktuellerFilter ? "true" : "false"),
+    )
+    if (inAdresseSchreiben) filterInAdresseSchreiben(aktuellerFilter)
+    anwenden()
+  }
+
   chips.forEach((chip) => {
     chip.addEventListener("click", () => {
-      aktuellerFilter = chip.dataset.filter ?? "all"
-      chips.forEach((c) => c.setAttribute("aria-pressed", c === chip ? "true" : "false"))
-      anwenden()
+      filterSetzen(chip.dataset.filter ?? "all")
     })
   })
 
@@ -474,5 +496,41 @@ const fskFarben: Record<number, string> = {
     anwenden()
   })
 
-  anwenden()
+  /** Erste Kinowoche, in der es zu diesem Filter überhaupt etwas zu sehen gibt.
+   *  Nötig für Einstiege von außen: Der Link „Im Programm ansehen" auf der
+   *  Kaffee-Tee-Kino-Seite soll nicht in einer leeren laufenden Woche landen,
+   *  wenn der nächste Termin erst in drei Wochen ist. */
+  function ersteWocheMitTreffern(filter: string): number {
+    const heute = new Date()
+    heute.setHours(0, 0, 0, 0)
+    let frühestes: Date | null = null
+
+    items.forEach((item) => {
+      if (!passtKategorie(item, filter)) return
+      item.querySelectorAll<HTMLElement>(".vorstellungen-zeile").forEach((zeile) => {
+        const tag = zeile.dataset.datumTag
+        if (!tag) return
+        // Beim Kaffee-Tee-Kino zählt nur der Termin der Reihe, nicht die
+        // regulären Vorstellungen desselben Films.
+        if (filter === "kaffee-tee-kino" && zeile.dataset.ktk !== "1") return
+        const datum = new Date(tag)
+        if (datum < heute) return
+        if (!frühestes || datum < frühestes) frühestes = datum
+      })
+    })
+
+    if (!frühestes) return 0
+    const {von} = wochenGrenzen(0)
+    const tage = Math.floor(((frühestes as Date).getTime() - von.getTime()) / 86400000)
+    return Math.max(0, Math.floor(tage / 7))
+  }
+
+  // Startzustand: ein ?filter= aus der Adresse gewinnt, sonst „Alle Filme"
+  const filterAusAdresse = new URLSearchParams(window.location.search).get("filter")
+  if (filterAusAdresse) {
+    wochenOffset = ersteWocheMitTreffern(filterAusAdresse)
+    filterSetzen(filterAusAdresse, false)
+  } else {
+    anwenden()
+  }
 </script>
