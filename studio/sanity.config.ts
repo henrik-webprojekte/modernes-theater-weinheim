@@ -2,6 +2,11 @@ import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
+import {
+  useAlleVorstellungenLoeschen,
+  useVergangeneVorstellungenEntfernen,
+} from './actions/vorstellungenActions'
+import {aufraeumenTool} from './tools/AufraeumenTool'
 
 export default defineConfig({
   name: 'default',
@@ -31,6 +36,9 @@ export default defineConfig({
     visionTool(),
   ],
 
+  // Eigenes Werkzeug in der oberen Leiste, neben „Inhalte" und „Vision"
+  tools: (prev) => [...prev, aufraeumenTool],
+
   schema: {
     types: schemaTypes,
   },
@@ -38,5 +46,11 @@ export default defineConfig({
   document: {
     // Singleton nicht über „Neues Dokument" anlegbar machen
     newDocumentOptions: (prev) => prev.filter((item) => item.templateId !== 'kinoInfo'),
+
+    // Aufräum-Knöpfe nur im Film-Formular anbieten
+    actions: (prev, context) =>
+      context.schemaType === 'film'
+        ? [...prev, useVergangeneVorstellungenEntfernen, useAlleVorstellungenLoeschen]
+        : prev,
   },
 })
