@@ -100,6 +100,8 @@ export type Vorstellung = {
   istKaffeeTeeKino?: boolean
   einlass?: string
   eintritt?: string
+  /** Einzeln angepinnt: erscheint auf der Startseite im Rampenlicht. */
+  hervorheben?: boolean
 }
 
 /** Vorstellungsserie aus Sanity: Uhrzeit + eine Kinowoche + angekreuzte
@@ -119,6 +121,7 @@ export type KaffeeTeeKinoTermin = {
   einlass?: string
   eintritt?: string
   saal?: Saalref
+  hervorheben?: boolean
 }
 
 export type Film = {
@@ -194,6 +197,7 @@ export function kaffeeTeeKinoVorstellung(film: Film): Vorstellung | null {
     istKaffeeTeeKino: true,
     einlass: termin.einlass || KTK_EINLASS,
     eintritt: termin.eintritt || KTK_EINTRITT,
+    hervorheben: termin.hervorheben,
   }
 }
 
@@ -292,6 +296,7 @@ export async function getFilmBySlug(slug: string): Promise<Film | null> {
         beginn,
         einlass,
         eintritt,
+        hervorheben,
         "saal": saal->{ _id, name, farbakzent }
       },
       istNeu,
@@ -303,6 +308,7 @@ export async function getFilmBySlug(slug: string): Promise<Film | null> {
         datum,
         uhrzeit,
         format,
+        hervorheben,
         "saal": saal->{ _id, name, farbakzent }
       },
       spielwochen[] {
@@ -345,6 +351,7 @@ export async function getAktiveFilme(): Promise<Film[]> {
         beginn,
         einlass,
         eintritt,
+        hervorheben,
         "saal": saal->{ _id, name, farbakzent }
       },
       istNeu,
@@ -356,6 +363,7 @@ export async function getAktiveFilme(): Promise<Film[]> {
         datum,
         uhrzeit,
         format,
+        hervorheben,
         "saal": saal->{ _id, name, farbakzent }
       },
       spielwochen[] {
@@ -477,5 +485,127 @@ export async function getKommendeEvents(limit = 3): Promise<Event[]> {
     // Angepinntes zuerst, sonst chronologisch — damit ein hervorgehobenes
     // Event auch im Startseiten-Block „Nächste Höhepunkte" oben steht.
     .sort((a, b) => Number(Boolean(b.angepinnt)) - Number(Boolean(a.angepinnt)) || nachDatum(a, b))
+    .slice(0, limit)
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Rampenlicht — der hervorgehobene Block ganz oben auf der Startseite
+   ──────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Ein Eintrag im Rampenlicht. Drei Herkünfte, eine gemeinsame Form, damit die
+ * Startseite sie in einer Schleife ausgeben kann:
+ *
+ * - `vorstellung` — eine einzeln angepinnte Vorstellung (auch ein
+ *   Kaffee-Tee-Kino-Termin). Verschwindet von allein, sobald sie vorbei ist.
+ * - `film`        — ein angepinnter Film ohne konkreten Termin.
+ * - `event`       — ein angepinntes Event.
+ */
+export type RampenlichtEintrag = {
+  typ: "vorstellung" | "film" | "event"
+  /** Für die Reihenfolge; angepinnte Filme ohne Termin haben keins. */
+  datum?: string
+  titel: string
+  /** Kurzes Etikett darüber, z. B. „Kaffee-Tee-Kino" oder die Event-Kategorie. */
+  kicker: string
+  /** Termin im Klartext, z. B. „Mi 02.09. · 15:00 Uhr, Einlass 14:00". */
+  termin?: string
+  /** Zusatz aus dem Feld „Hinweis" bzw. der Event-Kurzbeschreibung. */
+  hinweis?: string
+  ziel: string
+  bild?: Film["plakat"] | Event["bild"]
+  /** Plakate stehen hochkant, Event-Bilder quer — die Kachel richtet sich danach. */
+  bildFormat: "hochkant" | "quer"
+}
+
+/** Anzeigename der Event-Kategorien — die Liste steht im Studio-Schema
+ *  `event.kategorie`; hier stehen dieselben Werte für die Website. */
+export const EVENT_KATEGORIE_LABEL: Record<string, string> = {
+  "kaffee-tee-kino": "Kaffee-Tee-Kino",
+  "enzo-day": "Enzo-Day",
+  "open-air": "Open Air",
+  schmittini: "Zauberer Schmittini",
+  sondervorstellung: "Sondervorstellung",
+  sonstiges: "Sonstiges",
+}
+
+const WOCHENTAGE_KURZ = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+
+function terminText(v: Vorstellung): string {
+  const tag = WOCHENTAGE_KURZ[isoZuUtc(v.datum).getUTCDay()]
+  const [, monat, tagZahl] = v.datum.split("-")
+  const basis = `${tag} ${tagZahl}.${monat}. · ${v.uhrzeit} Uhr`
+  return v.istKaffeeTeeKino && v.einlass ? `${basis}, Einlass ${v.einlass}` : basis
+}
+
+/**
+ * Alles, was gerade im Rampenlicht steht — chronologisch, Termine zuerst.
+ *
+ * Was hier landet, entscheidet allein das Kino über die Schalter in Sanity.
+ * Zwei Regeln halten den Block sauber, ohne dass jemand aufräumen muss:
+ *
+ * 1. Vorbei ist vorbei: Vorstellungen in der Vergangenheit und abgelaufene
+ *    Events fallen automatisch raus.
+ * 2. Der genauere Eintrag gewinnt: Ist an einem Film eine einzelne
+ *    Vorstellung hervorgehoben, erscheint der Film nicht zusätzlich als
+ *    eigener Eintrag — sonst stünde er doppelt im Block.
+ */
+export async function getRampenlicht(limit = 3): Promise<RampenlichtEintrag[]> {
+  const [filme, events] = await Promise.all([getAktiveFilme(), getEvents()])
+  const heute = heuteIsoDate()
+
+  const ausVorstellungen: RampenlichtEintrag[] = []
+  const filmeMitTermin = new Set<string>()
+
+  for (const film of filme) {
+    const hervorgehoben = (film.vorstellungen ?? [])
+      .filter((v) => v.hervorheben && v.datum >= heute)
+      .sort((a, b) => a.datum.localeCompare(b.datum) || a.uhrzeit.localeCompare(b.uhrzeit))
+
+    for (const v of hervorgehoben) {
+      filmeMitTermin.add(film._id)
+      ausVorstellungen.push({
+        typ: "vorstellung",
+        datum: v.datum,
+        titel: film.titel,
+        kicker: v.istKaffeeTeeKino ? "Kaffee-Tee-Kino" : "Besondere Vorstellung",
+        termin: terminText(v),
+        hinweis: film.hinweis,
+        ziel: `/programm/${film.slug.current}`,
+        bild: film.plakat,
+        bildFormat: "hochkant",
+      })
+    }
+  }
+
+  const ausFilmen: RampenlichtEintrag[] = filme
+    .filter((f) => f.angepinnt && !filmeMitTermin.has(f._id))
+    .map((f) => ({
+      typ: "film" as const,
+      titel: f.titel,
+      kicker: f.istNeu ? "Neu im Programm" : "Unser Tipp",
+      hinweis: f.hinweis,
+      ziel: `/programm/${f.slug.current}`,
+      bild: f.plakat,
+      bildFormat: "hochkant" as const,
+    }))
+
+  const ausEvents: RampenlichtEintrag[] = events
+    .filter((e) => e.angepinnt && istEventAktuell(e, heute))
+    .map((e) => ({
+      typ: "event" as const,
+      datum: e.wiederkehrend ? undefined : e.startDatum,
+      titel: e.titel,
+      kicker: EVENT_KATEGORIE_LABEL[e.kategorie] ?? e.kategorie ?? "Event",
+      termin: e.wiederkehrend || undefined,
+      hinweis: e.pinnHinweis,
+      ziel: `/events/${e.slug.current}`,
+      bild: e.bild,
+      bildFormat: "quer" as const,
+    }))
+
+  // Termine chronologisch nach vorn, Dauerhaftes ohne Datum dahinter.
+  return [...ausVorstellungen, ...ausEvents, ...ausFilmen]
+    .sort((a, b) => (a.datum ?? "9999-12-31").localeCompare(b.datum ?? "9999-12-31"))
     .slice(0, limit)
 }

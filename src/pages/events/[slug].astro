@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro"
 import Header from "../../components/Header.astro"
 import Footer from "../../components/Footer.astro"
 import HeroBg from "../../components/HeroBg.astro"
-import {getEventSlugs, getEventBySlug, getKaffeeTeeKinoTermine, urlFor} from "../../lib/sanity"
+import {getEventSlugs, getEventBySlug, getKaffeeTeeKinoTermine, urlFor, EVENT_KATEGORIE_LABEL} from "../../lib/sanity"
 import {richtextZuHtml, richtextZuText} from "../../lib/portableText"
 
 export async function getStaticPaths() {
@@ -27,14 +27,9 @@ const kategorieFarbe: Record<string, string> = {
   "sonstiges": "#6B4E1F",
 }
 
-const kategorieLabel: Record<string, string> = {
-  "kaffee-tee-kino": "Kaffee-Tee-Kino",
-  "enzo-day": "Enzo-Day",
-  "open-air": "Open Air",
-  "schmittini": "Zauberer Schmittini",
-  "sondervorstellung": "Sondervorstellung",
-  "sonstiges": "Sonstiges",
-}
+// Anzeigenamen der Kategorien liegen zentral in lib/sanity.ts, damit sie
+// nicht an zwei Stellen auseinanderlaufen.
+const kategorieLabel = EVENT_KATEGORIE_LABEL
 
 // Bei der Kaffee-Tee-Kino-Reihe entsteht die Terminliste automatisch aus den
 // Filmen — gepflegt wird ausschließlich am Film, nie hier im Event.

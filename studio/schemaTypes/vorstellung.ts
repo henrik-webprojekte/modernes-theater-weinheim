@@ -44,13 +44,27 @@ export const vorstellungType = defineType({
       initialValue: "2D",
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: "hervorheben",
+      title: "Auf der Startseite hervorheben",
+      type: "boolean",
+      description:
+        "Stellt genau diese eine Vorstellung ganz oben auf die Startseite, in den Block „Im Rampenlicht\". Sobald der Termin vorbei ist, verschwindet sie dort von allein — der Schalter muss nicht zurückgesetzt werden.",
+      initialValue: false,
+    }),
   ],
   preview: {
-    select: {datum: "datum", uhrzeit: "uhrzeit", saal: "saal.name", format: "format"},
-    prepare({datum, uhrzeit, saal, format}) {
+    select: {
+      datum: "datum",
+      uhrzeit: "uhrzeit",
+      saal: "saal.name",
+      format: "format",
+      hervorheben: "hervorheben",
+    },
+    prepare({datum, uhrzeit, saal, format, hervorheben}) {
       return {
-        title: `${datum ?? "?"} · ${uhrzeit ?? "?"}`,
-        subtitle: `${saal ?? "Saal offen"} · ${format ?? "?"}`,
+        title: `${hervorheben ? "📌 " : ""}${datum ?? "?"} · ${uhrzeit ?? "?"}`,
+        subtitle: `${hervorheben ? "Im Rampenlicht · " : ""}${saal ?? "Saal offen"} · ${format ?? "?"}`,
       }
     },
   },

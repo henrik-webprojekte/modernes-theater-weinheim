@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
+import Rampenlicht from "../components/Rampenlicht.astro"
 import {Image} from "astro:assets"
 import {
   getSaele,
@@ -147,6 +148,9 @@ function formatEventDatum(event: Event): string {
         </div>
       </div>
     </section>
+
+    {/* 1.5 Im Rampenlicht — nur da, wenn etwas angepinnt ist */}
+    <Rampenlicht />
 
     {/* 2. Diese Woche im Programm */}
     <section class="bg-off-white px-6 py-16 md:py-20" style="background: #FAF6EE;">

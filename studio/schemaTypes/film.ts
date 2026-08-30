@@ -159,13 +159,23 @@ export const filmType = defineType({
           to: [{type: "saal"}],
           description: "Leer lassen, wenn der Saal noch nicht feststeht.",
         }),
+        defineField({
+          name: "hervorheben",
+          title: "Auf der Startseite hervorheben",
+          type: "boolean",
+          description:
+            "Stellt diesen Kaffee-Tee-Kino-Termin ganz oben auf die Startseite, in den Block „Im Rampenlicht\". Nach dem Termin verschwindet er dort von allein.",
+          initialValue: false,
+          hidden: ({parent}) => !parent?.datum,
+        }),
       ],
       preview: {
-        select: {datum: "datum", beginn: "beginn"},
-        prepare({datum, beginn}) {
+        select: {datum: "datum", beginn: "beginn", hervorheben: "hervorheben"},
+        prepare({datum, beginn, hervorheben}) {
+          if (!datum) return {title: "Kein Kaffee-Tee-Kino-Termin"}
           return {
-            title: datum ? `Kaffee-Tee-Kino am ${datum}` : "Kein Kaffee-Tee-Kino-Termin",
-            subtitle: datum ? `Beginn ${beginn ?? "15:00"}` : undefined,
+            title: `${hervorheben ? "📌 " : ""}Kaffee-Tee-Kino am ${datum}`,
+            subtitle: `${hervorheben ? "Im Rampenlicht · " : ""}Beginn ${beginn ?? "15:00"}`,
           }
         },
       },
@@ -175,7 +185,7 @@ export const filmType = defineType({
       title: "Anpinnen",
       type: "boolean",
       description:
-        "Setzt den Film im Programm ganz nach oben — noch vor die neuen Filme. Für Filme, die besonders beworben werden sollen.",
+        "Setzt den Film im Programm ganz nach oben — noch vor die neuen Filme — und zeigt ihn auf der Startseite im Block „Im Rampenlicht\". Für Filme, die besonders beworben werden sollen. Anders als bei einer hervorgehobenen Vorstellung gibt es hier kein Datum, das den Film wieder verschwinden lässt: Der Schalter bleibt an, bis ihn jemand ausschaltet oder der Film archiviert wird.",
       initialValue: false,
     }),
     defineField({

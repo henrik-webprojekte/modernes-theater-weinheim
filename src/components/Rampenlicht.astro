@@ -1,0 +1,100 @@
+---
+/**
+ * „Im Rampenlicht" — der hervorgehobene Block ganz oben auf der Startseite.
+ *
+ * Zeigt, was das Kino in Sanity angepinnt hat: einzelne Vorstellungen (auch
+ * Kaffee-Tee-Kino-Termine), angepinnte Filme und angepinnte Events. Ist nichts
+ * angepinnt, gibt die Komponente gar nichts aus — die Startseite soll keinen
+ * leeren Kasten zeigen, nur weil gerade nichts besonders läuft.
+ *
+ * Sitzt bewusst UNTER der Hero: Die Hero zieht sich per `margin-top: -10rem`
+ * unter den Filmstreifen des Headers (siehe global.css). Ein Block darüber
+ * würde diese eingemessene Verzahnung zerstören.
+ */
+import {getRampenlicht, urlFor} from "../lib/sanity"
+
+const eintraege = await getRampenlicht()
+---
+
+{eintraege.length > 0 && (
+  <section
+    aria-labelledby="rampenlicht-titel"
+    class="px-6 py-12 md:py-14 border-b border-vintage-gold/20"
+    style="background: #241A15;"
+  >
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-center gap-3 mb-8">
+        <span aria-hidden="true" class="w-1.5 h-1.5 rotate-45 shrink-0" style="background: #C9A55C;"></span>
+        <h2
+          id="rampenlicht-titel"
+          class="font-display text-2xl md:text-3xl leading-tight text-creme"
+        >
+          Im Rampenlicht
+        </h2>
+        <span aria-hidden="true" class="flex-1 h-px bg-vintage-gold/25"></span>
+      </div>
+
+      <ul class="grid gap-5 md:gap-6 md:grid-cols-2 lg:grid-cols-3 list-none p-0 m-0">
+        {eintraege.map((e) => (
+          <li class="flex">
+            <a
+              href={e.ziel}
+              class="group flex gap-4 w-full rounded border border-vintage-gold/30 p-3 transition-colors hover:border-vintage-gold/70"
+              style="background: #1A1310;"
+            >
+              {e.bild ? (
+                <img
+                  src={urlFor(e.bild).width(220).url()}
+                  srcset={`${urlFor(e.bild).width(220).url()} 220w, ${urlFor(e.bild).width(360).url()} 360w`}
+                  sizes="110px"
+                  alt=""
+                  loading="lazy"
+                  class:list={[
+                    "shrink-0 self-start w-[74px] rounded object-cover",
+                    e.bildFormat === "hochkant" ? "aspect-[2/3]" : "aspect-[4/3]",
+                  ]}
+                />
+              ) : (
+                <span
+                  aria-hidden="true"
+                  class:list={[
+                    "shrink-0 self-start w-[74px] rounded border border-vintage-gold/25",
+                    e.bildFormat === "hochkant" ? "aspect-[2/3]" : "aspect-[4/3]",
+                  ]}
+                  style="background: #241A15;"
+                ></span>
+              )}
+
+              <div class="min-w-0 flex flex-col">
+                <p class="text-[10px] uppercase tracking-[0.22em] mb-1.5" style="color: #C9A55C;">
+                  {e.kicker}
+                </p>
+                <h3 class="font-display text-base md:text-lg leading-tight text-creme text-balance group-hover:text-vintage-gold transition-colors">
+                  {e.titel}
+                </h3>
+                {e.termin && (
+                  <p class="mt-1.5 text-xs uppercase tracking-widest text-creme/80">{e.termin}</p>
+                )}
+                {e.hinweis && (
+                  <p class="mt-1.5 text-xs leading-snug text-creme/65 rampenlicht-hinweis">
+                    {e.hinweis}
+                  </p>
+                )}
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  /* Ein langer Hinweistext darf die Kachel nicht in die Länge ziehen. */
+  .rampenlicht-hinweis {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
