@@ -20,6 +20,38 @@ const kommendeEvents = await getKommendeEvents(3)
 
 const wochentage = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
 
+// Höhe der Plakate in "Diese Woche im Kino" — die Karten stehen bewusst auf
+// gleicher Höhe, ihre Breite ergibt sich aus dem Seitenverhältnis des Plakats.
+const PLAKAT_HOEHE_MOBIL = 240
+const PLAKAT_HOEHE_DESKTOP = 420
+
+/**
+ * Breite, die ein Plakat bei fester Höhe einnimmt.
+ *
+ * Ohne diese Rechnung wäre die Karte `w-fit` und damit so breit wie ihr
+ * breitestes Kind — bei langen Filmtiteln also breiter als das Plakat, was
+ * den schwarzen Plakat-Rahmen rechts hervorschauen ließ. Mit fester
+ * Kartenbreite bricht stattdessen der Titel um.
+ *
+ * Das Seitenverhältnis steckt in der Asset-Referenz (`…-408x610-png`); ein in
+ * Sanity gesetzter Zuschnitt wird wie im Bild-Baukasten mitgerechnet. Fällt
+ * beides aus, gilt das klassische Plakatformat 2:3.
+ */
+function plakatBreite(plakat: Film["plakat"], hoehe: number): number {
+  const masse = /-(\d+)x(\d+)-/.exec(plakat?.asset?._ref ?? "")
+  let breite = masse ? Number(masse[1]) : 2
+  let hoeheQuelle = masse ? Number(masse[2]) : 3
+
+  const zuschnitt = plakat?.crop
+  if (zuschnitt) {
+    breite *= 1 - (zuschnitt.left ?? 0) - (zuschnitt.right ?? 0)
+    hoeheQuelle *= 1 - (zuschnitt.top ?? 0) - (zuschnitt.bottom ?? 0)
+  }
+
+  if (!(breite > 0) || !(hoeheQuelle > 0)) return Math.round((hoehe * 2) / 3)
+  return Math.round(hoehe * (breite / hoeheQuelle))
+}
+
 function formatNaechsteVorstellung(film: Film): string {
   const heute = new Date().toISOString().slice(0, 10)
   const kommende = (film.vorstellungen ?? [])
@@ -128,7 +160,11 @@ function formatEventDatum(event: Event): string {
         {dieseWocheFilme.length > 0 && (
           <div class="flex flex-wrap justify-center gap-6 md:gap-8 mb-8">
             {dieseWocheFilme.map((film) => (
-              <a href={`/programm/${film.slug.current}`} class="group flex flex-col w-fit">
+              <a
+                href={`/programm/${film.slug.current}`}
+                class="group flex flex-col w-[var(--plakat-mobil)] md:w-[var(--plakat-desktop)]"
+                style={`--plakat-mobil: ${plakatBreite(film.plakat, PLAKAT_HOEHE_MOBIL)}px; --plakat-desktop: ${plakatBreite(film.plakat, PLAKAT_HOEHE_DESKTOP)}px;`}
+              >
                 <div class="rounded overflow-hidden border border-vintage-gold/40 bg-tiefschwarz mb-3 relative" style="background: #1A1310;">
                   {film.plakat ? (
                     <img
@@ -137,16 +173,16 @@ function formatEventDatum(event: Event): string {
                       sizes="(max-width: 768px) 40vw, 280px"
                       alt={`Filmplakat: ${film.titel}`}
                       loading="lazy"
-                      class="block w-auto h-[240px] md:h-[420px] transition-transform group-hover:scale-[1.02]"
+                      class="block w-full h-[240px] md:h-[420px] object-cover transition-transform group-hover:scale-[1.02]"
                     />
                   ) : (
-                    <div class="w-[160px] md:w-[280px] aspect-[2/3] flex items-center justify-center text-vintage-gold/80 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</div>
+                    <div class="w-full h-[240px] md:h-[420px] flex items-center justify-center text-vintage-gold/80 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</div>
                   )}
                   {film.istNeu && (
                     <span class="absolute top-2 left-2 bg-kino-rot text-creme text-[10px] uppercase tracking-widest px-2 py-0.5 rounded">Neu</span>
                   )}
                 </div>
-                <h3 class="font-display text-base md:text-lg text-tiefschwarz leading-tight mb-1 group-hover:text-kino-rot transition-colors">{film.titel}</h3>
+                <h3 class="font-display text-base md:text-lg text-tiefschwarz leading-tight text-balance mb-1 group-hover:text-kino-rot transition-colors">{film.titel}</h3>
                 {film.hinweis && (
                   <span class="inline-block rounded px-2 py-0.5 mb-1 text-[11px] font-semibold tracking-wide" style="background: #C9A55C; color: #1A1310;">{film.hinweis}</span>
                 )}
