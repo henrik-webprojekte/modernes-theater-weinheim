@@ -85,8 +85,11 @@ function hexZuTextfarben(dunkel: boolean, accent: string) {
         <section id={saal.slug.current} class="px-6 py-16 md:py-20" style={`background: ${hintergrund};`}>
           <div class={`max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center ${bildLinks ? "" : "md:[direction:rtl]"}`}>
 
-            <div class={bildLinks ? "" : "md:[direction:ltr]"}>
-              {bildUrl ? (
+            {/* Ist für den Saal kein Foto hinterlegt, entfällt die Bildspalte
+                ganz und der Text nimmt die volle Breite ein — kein leerer
+                Rahmen, keine leere Spalte. */}
+            {bildUrl && (
+              <div class={bildLinks ? "" : "md:[direction:ltr]"}>
                 <div class="rounded border overflow-hidden" style={`border-color: ${accent};`}>
                   <img
                     src={bildUrl}
@@ -97,17 +100,10 @@ function hexZuTextfarben(dunkel: boolean, accent: string) {
                     class="block w-full h-auto"
                   />
                 </div>
-              ) : (
-                <div class="aspect-[4/3] rounded border overflow-hidden relative" style={`border-color: ${accent}; background: ${dunkel ? "#2A1A3A" : "#4A2818"};`}>
-                  <div class="absolute inset-0" style={`background: radial-gradient(ellipse at 40% 30%, ${accent}44 0%, transparent 70%);`}></div>
-                  <div class="absolute bottom-3 left-0 right-0 text-center text-[10px] uppercase tracking-widest text-creme/85">
-                    Foto {saal.name}
-                  </div>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            <div class={bildLinks ? "" : "md:[direction:ltr]"}>
+            <div class:list={[bildLinks ? "" : "md:[direction:ltr]", !bildUrl && "md:col-span-2"]}>
               {saal.kicker && (
                 <p class="text-xs uppercase tracking-[0.3em] mb-2" style={`color: ${farben.kicker};`}>{saal.kicker}</p>
               )}

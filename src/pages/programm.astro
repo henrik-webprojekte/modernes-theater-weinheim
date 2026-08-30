@@ -170,7 +170,10 @@ const fskFarben: Record<number, string> = {
                 data-vorstellungen={film.vorstellungen?.length ?? 0}
               >
 
-                {film.plakat ? (
+                {/* Ohne hinterlegtes Plakat entfällt die Spalte ganz — der
+                    Text rückt nach links, statt neben einem leeren Kasten zu
+                    stehen. */}
+                {film.plakat && (
                   <div class="w-[100px] md:w-[140px] shrink-0 self-start rounded overflow-hidden border border-vintage-gold/40">
                     <img
                       src={urlFor(film.plakat).width(280).url()}
@@ -180,10 +183,6 @@ const fskFarben: Record<number, string> = {
                       loading="lazy"
                       class="block w-full h-auto"
                     />
-                  </div>
-                ) : (
-                  <div class="w-[100px] md:w-[140px] shrink-0 self-start aspect-[2/3] rounded overflow-hidden border border-vintage-gold/40 flex items-center justify-center" style="background: linear-gradient(135deg, #4A1414 0%, #2A0808 100%);">
-                    <span class="text-vintage-gold/70 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</span>
                   </div>
                 )}
 

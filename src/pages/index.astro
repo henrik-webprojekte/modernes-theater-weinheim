@@ -169,8 +169,10 @@ function formatEventDatum(event: Event): string {
                 class="group flex flex-col w-[var(--plakat-mobil)] md:w-[var(--plakat-desktop)]"
                 style={`--plakat-mobil: ${plakatBreite(film.plakat, PLAKAT_HOEHE_MOBIL)}px; --plakat-desktop: ${plakatBreite(film.plakat, PLAKAT_HOEHE_DESKTOP)}px;`}
               >
-                <div class="rounded overflow-hidden border border-vintage-gold/40 bg-tiefschwarz mb-3 relative" style="background: #1A1310;">
-                  {film.plakat ? (
+                {/* Kein Plakat, kein Rahmen: ohne Bild bleibt die Karte
+                    einfach textlich, statt einen leeren Kasten zu zeigen. */}
+                {film.plakat && (
+                  <div class="rounded overflow-hidden border border-vintage-gold/40 bg-tiefschwarz mb-3 relative" style="background: #1A1310;">
                     <img
                       src={urlFor(film.plakat).width(500).url()}
                       srcset={`${urlFor(film.plakat).width(300).url()} 300w, ${urlFor(film.plakat).width(500).url()} 500w, ${urlFor(film.plakat).width(700).url()} 700w`}
@@ -179,13 +181,16 @@ function formatEventDatum(event: Event): string {
                       loading="lazy"
                       class="block w-full h-[240px] md:h-[420px] object-cover transition-transform group-hover:scale-[1.02]"
                     />
-                  ) : (
-                    <div class="w-full h-[240px] md:h-[420px] flex items-center justify-center text-vintage-gold/80 text-[10px] uppercase tracking-widest text-center px-2">Kein Plakat</div>
-                  )}
-                  {film.istNeu && (
-                    <span class="absolute top-2 left-2 bg-kino-rot text-creme text-[10px] uppercase tracking-widest px-2 py-0.5 rounded">Neu</span>
-                  )}
-                </div>
+                    {film.istNeu && (
+                      <span class="absolute top-2 left-2 bg-kino-rot text-creme text-[10px] uppercase tracking-widest px-2 py-0.5 rounded">Neu</span>
+                    )}
+                  </div>
+                )}
+                {/* Ohne Plakat hat das Neu-Etikett keinen Rahmen mehr, in dem
+                    es sitzen könnte — dann steht es über dem Titel. */}
+                {!film.plakat && film.istNeu && (
+                  <span class="self-start bg-kino-rot text-creme text-[10px] uppercase tracking-widest px-2 py-0.5 rounded mb-2">Neu</span>
+                )}
                 <h3 class="font-display text-base md:text-lg text-tiefschwarz leading-tight text-balance mb-1 group-hover:text-kino-rot transition-colors">{film.titel}</h3>
                 {film.hinweis && (
                   <span class="inline-block rounded px-2 py-0.5 mb-1 text-[11px] font-semibold tracking-wide" style="background: #C9A55C; color: #1A1310;">{film.hinweis}</span>

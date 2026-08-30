@@ -42,7 +42,10 @@ const eintraege = await getRampenlicht()
               class="group flex gap-4 w-full rounded border border-vintage-gold/30 p-3 transition-colors hover:border-vintage-gold/70"
               style="background: #1A1310;"
             >
-              {e.bild ? (
+              {/* Ohne hinterlegtes Bild bleibt die Stelle leer statt einen
+                  leeren Rahmen zu zeigen — der Text nimmt die Kachel dann
+                  ganz ein. */}
+              {e.bild && (
                 <img
                   src={urlFor(e.bild).width(220).url()}
                   srcset={`${urlFor(e.bild).width(220).url()} 220w, ${urlFor(e.bild).width(360).url()} 360w`}
@@ -54,15 +57,6 @@ const eintraege = await getRampenlicht()
                     e.bildFormat === "hochkant" ? "aspect-[2/3]" : "aspect-[4/3]",
                   ]}
                 />
-              ) : (
-                <span
-                  aria-hidden="true"
-                  class:list={[
-                    "shrink-0 self-start w-[74px] rounded border border-vintage-gold/25",
-                    e.bildFormat === "hochkant" ? "aspect-[2/3]" : "aspect-[4/3]",
-                  ]}
-                  style="background: #241A15;"
-                ></span>
               )}
 
               <div class="min-w-0 flex flex-col">

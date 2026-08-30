@@ -165,12 +165,14 @@ const screeningEvents = gruppiert.flatMap((g) =>
 
       <div class="relative max-w-5xl mx-auto px-6 pb-16 flex flex-col md:flex-row gap-8 md:gap-10">
 
-        <div class="mx-auto md:mx-0 shrink-0">
-          <div
-            class="rounded overflow-hidden border border-vintage-gold/60 relative"
-            style="width: 200px;"
-          >
-            {film.plakat ? (
+        {/* Ohne hinterlegtes Plakat fällt die Plakat-Spalte weg, statt einen
+            leeren Rahmen zu zeigen. */}
+        {film.plakat && (
+          <div class="mx-auto md:mx-0 shrink-0">
+            <div
+              class="rounded overflow-hidden border border-vintage-gold/60 relative"
+              style="width: 200px;"
+            >
               <img
                 src={urlFor(film.plakat).width(400).url()}
                 srcset={`${urlFor(film.plakat).width(400).url()} 400w, ${urlFor(film.plakat).width(600).url()} 600w`}
@@ -180,13 +182,9 @@ const screeningEvents = gruppiert.flatMap((g) =>
                 fetchpriority="high"
                 class="block w-full h-auto"
               />
-            ) : (
-              <div class="w-full aspect-[2/3] flex items-center justify-center text-vintage-gold/80 text-xs uppercase tracking-widest text-center" style="background: linear-gradient(135deg, #4A1414 0%, #2A0808 100%);">
-                Kein Plakat
-              </div>
-            )}
+            </div>
           </div>
-        </div>
+        )}
 
         <div class="flex-1 min-w-0">
           <div class="flex flex-wrap items-center gap-2 mb-3">
