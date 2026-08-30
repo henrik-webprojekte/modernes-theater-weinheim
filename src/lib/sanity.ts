@@ -1,6 +1,7 @@
 ﻿import {createClient} from "@sanity/client"
 import imageUrlBuilder from "@sanity/image-url"
 import type {SanityImageSource} from "@sanity/image-url/lib/types/types"
+import {richtextZuText} from "./portableText"
 
 const projectId = import.meta.env.SANITY_PROJECT_ID
 const dataset = import.meta.env.SANITY_DATASET
@@ -471,13 +472,6 @@ export async function getAngepinnteEvents(): Promise<Event[]> {
   return alle.filter((e) => e.angepinnt && istEventAktuell(e)).sort(nachDatum)
 }
 
-/** Das eine Event für den Hinweis-Balken im Kopf jeder Seite: das
- *  nächststattfindende der angepinnten. Gibt es keins, bleibt der Balken weg. */
-export async function getHinweisEvent(): Promise<Event | null> {
-  const angepinnt = await getAngepinnteEvents()
-  return angepinnt[0] ?? null
-}
-
 export async function getKommendeEvents(limit = 3): Promise<Event[]> {
   const alle = await getEvents()
   return alle
@@ -510,6 +504,8 @@ export type RampenlichtEintrag = {
   kicker: string
   /** Termin im Klartext, z. B. „Mi 02.09. · 15:00 Uhr, Einlass 14:00". */
   termin?: string
+  /** Kurze Eckdaten unter dem Termin, z. B. Saal, Einlass, FSK, Laenge. */
+  details?: string[]
   /** Zusatz aus dem Feld „Hinweis" bzw. der Event-Kurzbeschreibung. */
   hinweis?: string
   ziel: string
@@ -530,6 +526,18 @@ export const EVENT_KATEGORIE_LABEL: Record<string, string> = {
 }
 
 const WOCHENTAGE_KURZ = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+
+/** „03.09.2026" bzw. „03.09.2026 – 06.09.2026" — wie zuvor im Hinweis-Balken. */
+function eventZeitraum(e: Event): string | undefined {
+  if (e.wiederkehrend) return e.wiederkehrend
+  if (!e.startDatum) return undefined
+  const lang = (iso: string) => {
+    const [j, m, t] = iso.split("-")
+    return `${t}.${m}.${j}`
+  }
+  if (!e.endDatum || e.endDatum === e.startDatum) return lang(e.startDatum)
+  return `${lang(e.startDatum)} – ${lang(e.endDatum)}`
+}
 
 function terminText(v: Vorstellung): string {
   const tag = WOCHENTAGE_KURZ[isoZuUtc(v.datum).getUTCDay()]
@@ -570,6 +578,14 @@ export async function getRampenlicht(limit = 3): Promise<RampenlichtEintrag[]> {
         titel: film.titel,
         kicker: v.istKaffeeTeeKino ? "Kaffee-Tee-Kino" : "Besondere Vorstellung",
         termin: terminText(v),
+        details: [
+          v.saal?.name ? `Saal ${v.saal.name}` : null,
+          v.format === "3D" ? "3D" : null,
+          v.istKaffeeTeeKino && v.einlass ? `Einlass ${v.einlass}` : null,
+          v.istKaffeeTeeKino && v.eintritt ? `Eintritt ${v.eintritt}` : null,
+          film.laenge ? `${film.laenge} Min` : null,
+          typeof film.fsk === "number" ? `FSK ${film.fsk}` : null,
+        ].filter((d): d is string => Boolean(d)),
         hinweis: film.hinweis,
         ziel: `/programm/${film.slug.current}`,
         bild: film.plakat,
@@ -580,15 +596,31 @@ export async function getRampenlicht(limit = 3): Promise<RampenlichtEintrag[]> {
 
   const ausFilmen: RampenlichtEintrag[] = filme
     .filter((f) => f.angepinnt && !filmeMitTermin.has(f._id))
-    .map((f) => ({
-      typ: "film" as const,
-      titel: f.titel,
-      kicker: f.istNeu ? "Neu im Programm" : "Unser Tipp",
-      hinweis: f.hinweis,
-      ziel: `/programm/${f.slug.current}`,
-      bild: f.plakat,
-      bildFormat: "hochkant" as const,
-    }))
+    .map((f) => {
+      // Ohne eigenen Pinn-Termin zeigt die Kachel die naechste regulaere
+      // Vorstellung — sonst stuende der Film ohne jede Zeitangabe da.
+      const naechste = (f.vorstellungen ?? [])
+        .filter((v) => v.datum >= heute)
+        .sort((a, b) => a.datum.localeCompare(b.datum) || a.uhrzeit.localeCompare(b.uhrzeit))[0]
+      return {
+        typ: "film" as const,
+        datum: naechste?.datum,
+        titel: f.titel,
+        kicker: f.istNeu ? "Neu im Programm" : "Unser Tipp",
+        termin: naechste ? `Nächste Vorstellung: ${terminText(naechste)}` : undefined,
+        details: [
+          f.genre ?? null,
+          f.laenge ? `${f.laenge} Min` : null,
+          typeof f.fsk === "number" ? `FSK ${f.fsk}` : null,
+          f.istIn3dVerfuegbar ? "auch in 3D" : null,
+          f.istOmU ? "OmU" : null,
+        ].filter((d): d is string => Boolean(d)),
+        hinweis: f.hinweis,
+        ziel: `/programm/${f.slug.current}`,
+        bild: f.plakat,
+        bildFormat: "hochkant" as const,
+      }
+    })
 
   const ausEvents: RampenlichtEintrag[] = events
     .filter((e) => e.angepinnt && istEventAktuell(e, heute))
@@ -597,8 +629,12 @@ export async function getRampenlicht(limit = 3): Promise<RampenlichtEintrag[]> {
       datum: e.wiederkehrend ? undefined : e.startDatum,
       titel: e.titel,
       kicker: EVENT_KATEGORIE_LABEL[e.kategorie] ?? e.kategorie ?? "Event",
-      termin: e.wiederkehrend || undefined,
-      hinweis: e.pinnHinweis,
+      termin: eventZeitraum(e),
+      details: [e.ort ?? null].filter((d): d is string => Boolean(d)),
+      // Der kurze Hinweis stand frueher im Balken ueber dem Header; ohne ihn
+      // greift die Kurzbeschreibung. Ausfuehrlich wird es erst auf der
+      // Event-Seite.
+      hinweis: e.pinnHinweis?.trim() || richtextZuText(e.kurzbeschreibung) || undefined,
       ziel: `/events/${e.slug.current}`,
       bild: e.bild,
       bildFormat: "quer" as const,

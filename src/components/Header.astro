@@ -1,6 +1,4 @@
 ---
-import EventHinweis from "./EventHinweis.astro"
-
 const nav = [
   {label: "Start", href: "/"},
   {label: "Programm", href: "/programm"},
@@ -16,10 +14,6 @@ const currentPath = Astro.url.pathname
 const navLinks = nav.slice(0, 4)
 const navRechts = nav.slice(4)
 ---
-
-{/* Hinweis-Balken sitzt ueber dem Header, damit die -10rem-Verzahnung
-    zwischen Filmstreifen und Hero-Bild unberuehrt bleibt. */}
-<EventHinweis />
 
 {/* mt-12: Im Ruhezustand schwebt der Filmstreifen 48px unter der Fensterkante
     (dahinter das Hero-Bild) — beim Scrollen dockt er durch sticky top-0 an.

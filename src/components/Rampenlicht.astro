@@ -67,7 +67,14 @@ const eintraege = await getRampenlicht()
                   {e.titel}
                 </h3>
                 {e.termin && (
-                  <p class="mt-1.5 text-xs uppercase tracking-widest text-creme/80">{e.termin}</p>
+                  <p class="mt-1.5 text-xs uppercase tracking-widest" style="color: #C9A55C;">
+                    {e.termin}
+                  </p>
+                )}
+                {e.details && e.details.length > 0 && (
+                  <p class="mt-1 text-xs leading-snug text-creme/70">
+                    {e.details.join(" · ")}
+                  </p>
                 )}
                 {e.hinweis && (
                   <p class="mt-1.5 text-xs leading-snug text-creme/65 rampenlicht-hinweis">

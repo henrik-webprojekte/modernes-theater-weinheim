@@ -85,15 +85,15 @@ export const eventType = defineType({
       title: "Anpinnen",
       type: "boolean",
       description:
-        "Hebt das Event hervor: es erscheint ganz oben auf der Event-Seite und bekommt einen Hinweis-Balken, den jeder Besucher auf jeder Seite sieht. Sparsam einsetzen — im Balken steht immer nur das nächste angepinnte Event.",
+        "Hebt das Event hervor: es erscheint ganz oben auf der Event-Seite und auf der Startseite im Block „Im Rampenlicht“. Sparsam einsetzen — im Rampenlicht ist nur Platz für die drei nächsten Einträge.",
       initialValue: false,
     }),
     defineField({
       name: "pinnHinweis",
-      title: "Text für den Hinweis-Balken (optional)",
+      title: "Kurzer Hinweis im Rampenlicht (optional)",
       type: "string",
       description:
-        "Kurzer Satz für den Balken, z. B. „40 Jahre Modernes Theater — wir feiern mit Ihnen“. Bleibt das Feld leer, wird der Titel des Events angezeigt. Wirkt nur, wenn „Anpinnen“ an ist.",
+        "Ein Satz für die Kachel auf der Startseite, z. B. „40 Jahre Modernes Theater — wir feiern mit Ihnen“. Bleibt das Feld leer, wird die Kurzbeschreibung angezeigt. Die ausführliche Beschreibung sieht man erst auf der Event-Seite. Wirkt nur, wenn „Anpinnen“ an ist.",
       hidden: ({parent}) => !parent?.angepinnt,
     }),
     defineField({
